@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import {
-    BookOpen, Braces, Database, Filter, Focus, Layers3, Moon, Search,
-    Sun, SunMoon, Telescope, Tags, X
+    Braces, Database, Filter, Info, Layers3, Moon, Search,
+    Sun, SunMoon, Tags, X
   } from '@lucide/svelte';
   import ParticleViewport from './components/ParticleViewport.svelte';
   import ParticleDetail from './components/ParticleDetail.svelte';
-  import ScaleJourney from './components/ScaleJourney.svelte';
+  import ScaleRuler from './components/ScaleRuler.svelte';
   import FormulaAtlas from './components/FormulaAtlas.svelte';
   import FilterPanel from './components/FilterPanel.svelte';
   import LayersPanel from './components/LayersPanel.svelte';
@@ -25,10 +25,10 @@
   let selectedMirror = $state(false);
   let zoomPercent = $state(100);
   let layers = $state<Record<LayerId, boolean>>({ composites: true, forces: true, antimatter: false, susy: false, 'dark-sector': false, 'quantum-gravity': false, strings: false });
-  let showScale = $state(false);
   let showFormula = $state(false);
   let hudPanel = $state<'search' | 'legend' | 'data' | 'filter' | 'layers' | null>(null);
   let showEncyclopedia = $state(false);
+  let searchInput = $state<HTMLInputElement | null>(null);
   let themeMode = $state<ThemeMode>('auto');
   let resolvedTheme = $state<ResolvedTheme>('dark');
   let solarSource = $state<'solar' | 'system'>('system');
@@ -106,13 +106,17 @@
     interaction = 'all';
   }
 
+  function toggleSearch(): void {
+    hudPanel = hudPanel === 'search' ? null : 'search';
+    if (hudPanel === 'search') window.setTimeout(() => searchInput?.focus(), 40);
+  }
+
   function handleKeydown(event: KeyboardEvent): void {
     if (event.key !== 'Escape') return;
-    if (selected) selected = null;
-    else if (showFormula) showFormula = false;
-    else if (showScale) showScale = false;
+    if (showFormula) showFormula = false;
     else if (showEncyclopedia) showEncyclopedia = false;
     else if (hudPanel) hudPanel = null;
+    else if (selected) selected = null;
   }
 
   onMount(() => {
@@ -147,27 +151,33 @@
     oncount={(count, unique) => { displayedCount = count; uniqueCount = unique; }}
   />
 
+  <ScaleRuler onfocus={(zone) => viewport?.focusZone?.(zone)}/>
+
   {#if filtering}
     <div class="results-badge"><Search size={14}/><b>{matches.size}</b> de {activeNodes.length} fichas <button type="button" onclick={resetFilters} aria-label="Quitar filtros"><X size={13}/></button></div>
   {/if}
 
   <nav class="hud-toolbar" aria-label="Herramientas científicas">
-    <button type="button" data-tooltip="Restablecer vista" aria-label={`Zoom ${zoomPercent}%. Restablecer vista`} onclick={() => viewport?.resetView?.()}><Focus size={16}/><b>{zoomPercent}%</b></button>
-    <button class:active={themeMode === 'auto'} type="button" data-tooltip={themeMode === 'auto' ? 'Tema automático · ciclo solar de Barcelona' : `Tema ${themeMode}`} aria-label="Cambiar tema: automático, claro u oscuro" onclick={cycleTheme}>{#if themeMode === 'auto'}<SunMoon size={17}/>{:else if themeMode === 'dark'}<Moon size={17}/>{:else}<Sun size={17}/>{/if}</button>
-    <button class:active={hudPanel === 'search'} type="button" data-tooltip="Buscar" aria-label="Buscar" onclick={() => hudPanel = hudPanel === 'search' ? null : 'search'}><Search size={17}/></button>
+    <div class:open={hudPanel === 'search'} class="hud-search-inline">
+      <button class:active={hudPanel === 'search'} type="button" data-tooltip="Buscar" aria-label="Buscar" onclick={toggleSearch}><Search size={17}/></button>
+      {#if hudPanel === 'search'}
+        <label><input bind:this={searchInput} value={query} oninput={(event) => query = event.currentTarget.value} placeholder="Buscar partícula, masa, fecha…" aria-label="Buscar en el atlas"/>{#if query}<button type="button" aria-label="Limpiar búsqueda" onclick={() => query = ''}><X size={14}/></button>{/if}</label>
+      {/if}
+    </div>
+    <button class:active={hudPanel === 'filter'} type="button" data-tooltip="Filtros" aria-label="Abrir filtros" onclick={() => hudPanel = hudPanel === 'filter' ? null : 'filter'}><Filter size={17}/></button>
+    <button type="button" data-tooltip="Información general" aria-label="Abrir manual general" onclick={() => { hudPanel = null; showEncyclopedia = true; }}><Info size={18}/></button>
     <button class:active={hudPanel === 'legend'} type="button" data-tooltip="Leyenda" aria-label="Abrir leyenda" onclick={() => hudPanel = hudPanel === 'legend' ? null : 'legend'}><Tags size={17}/></button>
     <button class:active={hudPanel === 'data'} type="button" data-tooltip="Datos del lienzo" aria-label="Abrir datos del lienzo" onclick={() => hudPanel = hudPanel === 'data' ? null : 'data'}><Database size={17}/></button>
-    <button class:active={hudPanel === 'filter'} type="button" data-tooltip="Filtros" aria-label="Abrir filtros" onclick={() => hudPanel = hudPanel === 'filter' ? null : 'filter'}><Filter size={17}/></button>
-    <button type="button" data-tooltip="Enciclopedia · 50 claves" aria-label="Abrir enciclopedia" onclick={() => showEncyclopedia = true}><BookOpen size={17}/></button>
-    <button type="button" data-tooltip="Escalas" aria-label="Abrir recorrido de escalas" onclick={() => showScale = true}><Telescope size={17}/></button>
     <button type="button" data-tooltip="Fórmulas" aria-label="Abrir capa matemática" onclick={() => showFormula = true}><Braces size={18}/></button>
     <button class:active={hudPanel === 'layers'} type="button" data-tooltip="Capas" aria-label="Abrir capas" onclick={() => hudPanel = hudPanel === 'layers' ? null : 'layers'}><Layers3 size={18}/></button>
+    <button class:active={themeMode === 'auto'} type="button" data-tooltip={themeMode === 'auto' ? 'Tema automático · ciclo solar de Barcelona' : `Tema ${themeMode}`} aria-label="Cambiar tema: automático, claro u oscuro" onclick={cycleTheme}>{#if themeMode === 'auto'}<SunMoon size={17}/>{:else if themeMode === 'dark'}<Moon size={17}/>{:else}<Sun size={17}/>{/if}</button>
+    <button class="zoom-readout" type="button" data-tooltip="Restablecer vista" aria-label={`Zoom ${zoomPercent}%. Restablecer vista`} onclick={() => viewport?.resetView?.()}><b>{zoomPercent}%</b></button>
   </nav>
 
-  {#if hudPanel === 'search' || hudPanel === 'filter'}
+  {#if hudPanel === 'filter'}
     <FilterPanel
       {query} {family} {interaction}
-      mode={hudPanel}
+      mode="filter"
       onquery={(value) => query = value}
       onfamily={(value) => family = value}
       oninteraction={(value) => interaction = value}
@@ -182,7 +192,6 @@
   {#if selected}
     <ParticleDetail particle={selected} antimatter={selectedMirror} onclose={() => selected = null}/>
   {/if}
-  {#if showScale}<ScaleJourney onclose={() => showScale = false}/>{/if}
   {#if showFormula}<FormulaAtlas onclose={() => showFormula = false}/>{/if}
   {#if showEncyclopedia}<EncyclopediaModal onclose={() => showEncyclopedia = false}/>{/if}
 </main>

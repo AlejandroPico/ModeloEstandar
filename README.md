@@ -2,7 +2,7 @@
 
 Atlas científico e interactivo para explorar las partículas elementales, las interacciones fundamentales descritas por el Modelo Estándar, la antimateria y algunas propuestas más allá de la teoría confirmada.
 
-> **Estado:** enciclopedia visual · `0.3.0`  
+> **Estado:** enciclopedia visual · `0.4.0`  
 > **Tecnologías:** Svelte 5 · TypeScript · Vite · KaTeX  
 > **Despliegue:** GitHub Pages mediante GitHub Actions  
 > **Arquitectura:** aplicación estática, sin backend
@@ -53,13 +53,14 @@ Cada partícula incluye:
 
 El modo **Antimateria** despliega una segunda estructura completa a la derecha, en lugar de sustituir las fichas existentes. El universo espejo replica dinámicamente todas las capas que estén activas. Los estados autoconjugados se conservan y quedan identificados como tales.
 
-### HUD, capas y enciclopedia
+### HUD, capas y manual general
 
-- barra compacta superior derecha con zoom restablecible, tema, búsqueda, leyenda, datos, filtros, información, escalas, fórmulas y capas;
+- barra rectangular superior derecha con búsqueda desplegable en línea, filtros, información, leyenda, datos, fórmulas, capas, tema y zoom restablecible;
 - capas independientes para compuestos, cuatro fuerzas, antimateria, supersimetría, sector oscuro, gravedad cuántica y cuerdas;
-- enciclopedia global de 50 conceptos;
-- dossier comparable de 50 puntos dentro de cada ficha;
-- historia, evidencia y fuentes separadas de las propiedades físicas.
+- manual global estructurado en diez capítulos, con índice vertical fijo y lector documental independiente;
+- regla de escala permanente a la izquierda, única para materia y antimateria y desacoplada del zoom del lienzo;
+- fichas sin listados numéricos artificiales: los datos se integran en resumen, propiedades, interacciones, historia, fórmula y fuentes;
+- historia, evidencia, interpretación matemática y propiedades físicas desarrolladas por separado.
 
 ### Más allá del Modelo Estándar
 
@@ -120,17 +121,17 @@ src/
 │  ├─ ParticleCard.svelte       # ficha progresiva del lienzo
 │  ├─ NodeVisual.svelte         # átomo, hadrones, cuerdas y branas en SVG
 │  ├─ ParticleDetail.svelte     # documentación de cada partícula
-│  ├─ FilterPanel.svelte        # búsqueda y filtros
+│  ├─ FilterPanel.svelte        # filtros científicos
 │  ├─ FormulaAtlas.svelte       # capa matemática
-│  ├─ ScaleJourney.svelte       # átomo → partículas elementales
+│  ├─ ScaleRuler.svelte         # regla fija de 10⁻¹⁰ m a Planck
 │  ├─ LayersPanel.svelte        # capas observadas e hipotéticas
 │  ├─ LegendPanel.svelte        # código visual del atlas
 │  ├─ DataPanel.svelte          # métricas del lienzo
-│  └─ EncyclopediaModal.svelte  # guía general de 50 conceptos
+│  └─ EncyclopediaModal.svelte  # manual con índice y capítulos
 ├─ data/
 │  ├─ particles.ts              # dataset científico local
 │  ├─ forces.ts                 # cuatro interacciones fundamentales
-│  ├─ science.ts                # escalas, enciclopedia y dossiers
+│  ├─ science.ts                # escalas y contenido del manual
 │  └─ types.ts
 ├─ lib/
 │  ├─ format.ts                 # KaTeX y utilidades

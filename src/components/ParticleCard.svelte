@@ -26,8 +26,17 @@
 
   const visibleSymbol = $derived(antimatter && !particle.selfConjugate ? particle.antiparticle : particle.symbol);
   const visibleName = $derived(antimatter && !particle.selfConjugate ? particle.antiparticleName : particle.name);
-  const detailLevel = $derived(zoom < 0.95 ? 0 : zoom < 1.35 ? 1 : zoom < 1.9 ? 2 : 3);
+  const detailLevel = $derived(zoom < 1.38 ? 0 : zoom < 1.72 ? 1 : zoom < 2.15 ? 2 : 3);
   const symbolWide = $derived(visibleSymbol.length > 1);
+  const statusLabel = $derived(
+    antimatter && !particle.selfConjugate
+      ? 'ANTIMATERIA'
+      : particle.evidence === 'hypothetical'
+        ? 'HIPÓTESIS'
+        : particle.family === 'force'
+          ? 'INTERACCIÓN'
+          : 'OBSERVADA'
+  );
 </script>
 
 <button
@@ -45,13 +54,13 @@
   onclick={() => onselect(particle)}
 >
   <span class="card-topline">
-    <span>{particle.evidence === 'observed' ? particle.discovered.split('·')[0].trim() : 'NO OBSERVADA'}</span>
+    <span>{statusLabel}</span>
     <span class="family-dot">{#if particle.family === 'force'}<CircleGauge size={12} strokeWidth={1.8}/>{:else}<Atom size={12} strokeWidth={1.8} />{/if}</span>
   </span>
 
   {#if particle.visual}<NodeVisual type={particle.visual}/>{/if}
-  <span class={`particle-symbol${symbolWide ? ' symbol-wide' : ''}`}>{visibleSymbol}</span>
   <span class="particle-name">{visibleName}</span>
+  <span class={`particle-symbol${symbolWide ? ' symbol-wide' : ''}`}>{visibleSymbol}</span>
 
   {#if detailLevel >= 1}
     <span class="quick-stats">
@@ -75,9 +84,9 @@
     </span>
   {/if}
 
-  {#if particle.evidence === 'hypothetical'}
-    <span class="theory-mark"><Sparkles size={12} /> hipótesis</span>
-  {:else if antimatter}
-    <span class="theory-mark antimatter-mark">{particle.selfConjugate ? 'autoconjugada' : 'antimateria'}</span>
+  {#if detailLevel >= 3 && particle.evidence === 'hypothetical'}
+    <span class="card-certainty"><Sparkles size={11}/> no observada</span>
+  {:else if detailLevel >= 3 && antimatter && particle.selfConjugate}
+    <span class="card-certainty antimatter-mark">autoconjugada</span>
   {/if}
 </button>

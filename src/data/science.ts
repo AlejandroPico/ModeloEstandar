@@ -1,6 +1,3 @@
-import type { Particle } from './types';
-import { interactionLabels } from './particles';
-
 export interface ScalePoint {
   exponent: string;
   metres: string;
@@ -80,43 +77,130 @@ const topicRows: Array<[string, string, string]> = [
 
 export const encyclopediaTopics: EncyclopediaTopic[] = topicRows.map(([category, title, text], index) => ({ number: index + 1, category, title, text }));
 
-export interface DossierPoint { number: number; category: string; label: string; value: string; }
+export interface ManualSection { eyebrow: string; title: string; text: string; key?: string; }
+export interface ManualChapter {
+  id: string;
+  kicker: string;
+  title: string;
+  subtitle: string;
+  intro: string;
+  formula?: string;
+  formulaNote?: string;
+  sections: ManualSection[];
+}
 
-const familyLabel: Record<Particle['family'], string> = {
-  quark: 'quark elemental', lepton: 'leptón elemental', gauge: 'bosón gauge', scalar: 'bosón escalar', composite: 'sistema compuesto', force: 'interacción fundamental', theory: 'entidad hipotética', string: 'objeto extendido teórico'
+const chapterMeta: Record<string, Omit<ManualChapter, 'sections'>> = {
+  'Mapa general': {
+    id: 'mapa', kicker: 'ORIENTACIÓN', title: 'El mapa de la materia', subtitle: 'Campos, partículas y estructura',
+    intro: 'Antes de interpretar una ficha hay que distinguir tres ideas: una partícula elemental no es una bolita clásica, una estructura compuesta no es la simple suma de piezas inmóviles y el Modelo Estándar no pretende describir toda la física conocida.',
+    formula: 'E² = p²c² + m²c⁴', formulaNote: 'La energía de una partícula depende de su momento y de su masa en reposo; para un fotón, m = 0.'
+  },
+  Fermiones: {
+    id: 'fermiones', kicker: 'CONSTITUYENTES', title: 'Fermiones: la materia elemental', subtitle: 'Quarks, leptones y generaciones',
+    intro: 'Los fermiones elementales conocidos se organizan en quarks y leptones. Aparecen en tres generaciones con el mismo patrón de números cuánticos, pero masas y estabilidades radicalmente distintas.',
+    formula: 'S = 1/2', formulaNote: 'Todos los fermiones elementales del Modelo Estándar tienen spin semientero y obedecen el principio de exclusión de Pauli.'
+  },
+  Interacciones: {
+    id: 'interacciones', kicker: 'DINÁMICA', title: 'Las cuatro interacciones fundamentales', subtitle: 'Qué fuerza actúa y mediante qué campo',
+    intro: 'Fuerte, electromagnética, débil y gravedad constituyen la clasificación habitual. El Modelo Estándar incorpora descripciones cuánticas de las tres primeras; la gravedad se describe con enorme éxito mediante relatividad general, pero no forma parte de ese marco cuántico.',
+    formula: 'SU(3)C × SU(2)L × U(1)Y', formulaNote: 'Ésta es la estructura de simetrías gauge del Modelo Estándar antes de la ruptura electrodébil.'
+  },
+  Bosones: {
+    id: 'bosones', kicker: 'CAMPOS', title: 'Bosones y mediadores', subtitle: 'Gluón, fotón, W, Z y Higgs',
+    intro: 'Los bosones gauge permiten describir cómo los campos intercambian energía, momento y números cuánticos. El bosón de Higgs pertenece al sector escalar: es esencial para el mecanismo de masas, pero no es una quinta fuerza fundamental.',
+    formula: 'mW = gv/2', formulaNote: 'La masa del W está ligada al acoplamiento débil g y al valor esperado del campo de Higgs v.'
+  },
+  Hadrones: {
+    id: 'hadrones', kicker: 'COMPOSICIÓN', title: 'Hadrones: quarks confinados', subtitle: 'Bariones, mesones y fuerza residual',
+    intro: 'Protones, neutrones, piones y kaones no son elementales. Son estados ligados de quarks, antiquarks y gluones cuya masa y comportamiento emergen mayoritariamente de la dinámica de la cromodinámica cuántica.',
+    formula: 'π⁺ = u d̄', formulaNote: 'El contenido de valencia del pión positivo es un quark arriba y un antiquark abajo.'
+  },
+  'Átomos y núcleos': {
+    id: 'atomos', kicker: 'EMERGENCIA', title: 'Del nucleón al átomo', subtitle: 'Núcleos, electrones e isótopos',
+    intro: 'Los átomos aparecen varios niveles por encima de las partículas elementales. Electromagnetismo liga electrones y núcleos; la interacción nuclear residual permite que protones y neutrones formen núcleos.',
+    formula: 'r ≈ r₀A¹ᐟ³', formulaNote: 'El radio nuclear crece aproximadamente con la raíz cúbica del número másico A, con r₀ del orden de 1,2 fm.'
+  },
+  Escalas: {
+    id: 'escalas', kicker: 'RESOLUCIÓN', title: 'Tamaño, energía y distancia', subtitle: 'Cómo se interpreta la regla izquierda',
+    intro: 'La escala del atlas representa órdenes de magnitud, no fotografías a escala. Entre dos potencias de diez puede no existir una nueva capa estable de materia: a menudo cambia el régimen experimental o la teoría efectiva más útil.',
+    formula: 'λ ≈ h/p', formulaNote: 'Una sonda con mayor momento tiene menor longitud de onda asociada y puede resolver estructuras más pequeñas.'
+  },
+  Experimentos: {
+    id: 'experimentos', kicker: 'EVIDENCIA', title: 'Cómo sabemos que una partícula existe', subtitle: 'Detectores, colisiones y estadística',
+    intro: 'Los detectores no fotografían partículas como objetos cotidianos. Registran ionización, luz, depósitos de energía y trayectorias; después se reconstruyen procesos y se comparan distribuciones con predicciones y fondos.',
+    formula: 'Z ≈ 5σ', formulaNote: 'En física de partículas suele exigirse una significación cercana a cinco desviaciones estándar antes de hablar de descubrimiento.'
+  },
+  'Más allá': {
+    id: 'mas-alla', kicker: 'FRONTERA', title: 'Más allá del Modelo Estándar', subtitle: 'Supersimetría, sector oscuro y gravedad cuántica',
+    intro: 'Una teoría puede ser matemáticamente atractiva y, aun así, carecer de confirmación. Las capas opcionales del atlas separan deliberadamente candidatos, extensiones y objetos teóricos del inventario observado.',
+    formula: 'ℓP = √(ℏG/c³)', formulaNote: 'La longitud de Planck combina constantes fundamentales; no constituye una prueba de que el espacio sea granular ni de que existan cuerdas.'
+  },
+  'Lectura crítica': {
+    id: 'lectura', kicker: 'MÉTODO', title: 'Cómo leer una afirmación científica', subtitle: 'Observado, inferido e hipotético',
+    intro: 'El atlas usa el diseño para comunicar certeza epistemológica. Color, borde y capa nunca deben transformar una posibilidad teórica en un hecho experimental.',
+    formula: 'dato → modelo → inferencia', formulaNote: 'Una medición adquiere significado al interpretarse con un modelo, sus supuestos y sus incertidumbres.'
+  }
 };
 
-export function particleDossier(particle: Particle): DossierPoint[] {
-  const participates = (key: keyof typeof interactionLabels): string => particle.interactions.includes(key) ? `Sí · ${interactionLabels[key]}` : 'No participa directamente';
-  const sources = particle.sources.map((source) => source.label);
-  const values: Array<[string, string, string]> = [
-    ['Identidad', 'Nombre', particle.name], ['Identidad', 'Nombre internacional', particle.englishName], ['Identidad', 'Símbolo', particle.symbol], ['Identidad', 'Clasificación', familyLabel[particle.family]],
-    ['Identidad', 'Zona del atlas', particle.zone ?? 'Modelo Estándar'], ['Identidad', 'Estado', particle.evidence === 'observed' ? 'Observada o interacción confirmada' : 'Hipotética; no observada'],
-    ['Identidad', 'Marco', particle.theory ?? 'Modelo Estándar / física establecida'], ['Identidad', 'Escala', particle.scale ?? 'Sin tamaño propio asignado'],
-    ['Identidad', 'Estructura', particle.constituents?.length ? 'Compuesta o relacionada con constituyentes' : particle.family === 'force' ? 'Interacción/campo, no partícula material' : 'Sin estructura interna observada'],
-    ['Identidad', 'Resumen', particle.summary],
-    ['Propiedades', 'Masa o parámetro', particle.mass], ['Propiedades', 'Carga', particle.charge], ['Propiedades', 'Spin', particle.spin], ['Propiedades', 'Generación', particle.generation?.toString() ?? 'No aplica'],
-    ['Propiedades', 'Carga de color', particle.colorCharge ? 'Sí' : 'No'], ['Propiedades', 'Vida o alcance', particle.lifetime], ['Propiedades', 'Estabilidad', /estable/i.test(particle.lifetime) ? particle.lifetime : 'Inestable, confinada o dependiente del modelo'],
-    ['Antimateria', 'Antipartícula', `${particle.antiparticle} · ${particle.antiparticleName}`], ['Antimateria', 'Autoconjugación', particle.selfConjugate ? 'Es su propia antipartícula' : 'Posee estado de antimateria distinto'],
-    ['Interacciones', 'Número de sectores indicados', particle.interactions.length.toString()], ['Interacciones', 'Fuerte', participates('strong')], ['Interacciones', 'Electromagnética', participates('electromagnetic')],
-    ['Interacciones', 'Débil', participates('weak')], ['Interacciones', 'Higgs', participates('higgs')], ['Interacciones', 'Gravedad', participates('gravity')],
-    ['Composición', 'Constituyentes enlazados', particle.constituents?.join(', ') ?? 'Ninguno conocido o no aplica'], ['Composición', 'Lectura de valencia', particle.constituentSummary ?? 'No aplica'],
-    ['Composición', 'Descripción', particle.composition], ['Composición', 'Función física', particle.role], ['Composición', 'Proceso característico', particle.decays],
-    ['Matemáticas', 'Relación principal', particle.formula], ['Matemáticas', 'Unidades', 'Las masas se expresan habitualmente en eV/c² y las escalas en metros o femtómetros.'],
-    ['Matemáticas', 'Interpretación del spin', `Spin ${particle.spin}; es un número cuántico, no una rotación clásica de una esfera.`],
-    ['Matemáticas', 'Campo y cuanto', particle.family === 'force' ? 'La ficha representa una interacción; sus mediadores aparecen enlazados.' : 'La partícula se interpreta como excitación de uno o varios campos cuánticos.'],
-    ['Historia', 'Descubrimiento', particle.discovered], ['Historia', 'Tipo de evidencia', particle.evidence === 'observed' ? 'Evidencia experimental aceptada' : 'Predicción o candidato sin detección confirmada'],
-    ['Historia', 'Confianza', particle.confidence ?? 'Integrada en la física experimental establecida'], ['Historia', 'Teoría asociada', particle.theory ?? 'Modelo Estándar, QED, QCD o teoría electrodébil según el sector'],
-    ['Fuentes', 'Número de fuentes', sources.length.toString()], ['Fuentes', 'Fuente principal', sources[0] ?? 'Sin fuente enlazada'], ['Fuentes', 'Fuente adicional', sources[1] ?? 'No añadida todavía'],
-    ['Visualización', 'Modo espejo', particle.mirrorNote ?? (particle.selfConjugate ? 'El espejo repite la misma especie para comparar.' : `El espejo muestra ${particle.antiparticleName}.`)],
-    ['Visualización', 'Relaciones', particle.constituents?.length ? 'Al seleccionar, se iluminan constituyentes y estructuras que la contienen.' : 'Al seleccionar, se iluminan mediadores e interacciones relacionadas.'],
-    ['Visualización', 'Escala gráfica', 'La posición expresa orden de magnitud; el dibujo no reproduce tamaños relativos exactos.'],
-    ['Visualización', 'Iconografía', particle.visual ? `Representación didáctica: ${particle.visual}.` : 'Símbolo tipográfico; no implica forma geométrica real.'],
-    ['Preguntas abiertas', 'Límite conocido', particle.evidence === 'hypothetical' ? 'No existe detección confirmada.' : 'Las medidas futuras pueden aumentar precisión o revelar desviaciones.'],
-    ['Preguntas abiertas', 'Dependencia del modelo', particle.theory ? `Sus propiedades dependen de ${particle.theory}.` : 'Los parámetros medidos se interpretan dentro de teorías y convenciones concretas.'],
-    ['Preguntas abiertas', 'Matiz científico', particle.note ?? 'No debe confundirse la ilustración con una fotografía ni con una esfera clásica.'],
-    ['Lectura', 'Criterio editorial', 'Se separan observación, interpretación teórica e hipótesis para no presentar especulación como hecho.'],
-    ['Lectura', 'Siguiente paso', sources.length ? `Consultar ${sources[0]} para valores, incertidumbres y bibliografía técnica.` : 'Consultar revisiones experimentales especializadas.']
-  ];
-  return values.map(([category, label, value], index) => ({ number: index + 1, category, label, value }));
-}
+const manualDetails: Record<string, string> = {
+  'Qué estudia la física de partículas': 'El objetivo no es sólo enumerar entidades. También se determinan simetrías, leyes de conservación, probabilidades de transición y condiciones bajo las que una descripción deja de ser válida. El atlas conecta por ello fichas, campos, fuerzas, escalas y sistemas compuestos.',
+  'Qué es el Modelo Estándar': 'Combina cromodinámica cuántica y teoría electrodébil en una teoría de campos contrastada con enorme precisión. Sus parámetros se miden experimentalmente: el modelo no predice por sí solo todos sus valores.',
+  'Partícula y campo': 'El campo existe en todo el espacio y admite excitaciones cuantizadas. La imagen de una esfera puede ayudar como icono, pero falla al explicar interferencia, creación y aniquilación o el hecho de que partículas idénticas sean indistinguibles.',
+  'Elemental no significa diminuta': 'Los experimentos de dispersión buscan desviaciones respecto al comportamiento puntual. Cuando no aparecen, se establece una cota sobre posibles tamaños o subestructuras; esa cota puede mejorar con nuevos aceleradores.',
+  'Materia compuesta': 'La composición es dinámica. Un protón no contiene tres quarks inmóviles: contiene campos de quarks y gluones, pares virtuales y energía de interacción. Del mismo modo, la nube electrónica de un átomo es un estado cuántico, no una órbita planetaria.',
+  Quarks: 'Arriba, abajo, encanto, extraño, cima y fondo poseen cargas eléctricas fraccionarias y carga de color. Nunca se observan aislados en condiciones ordinarias; al intentar separarlos, la energía del campo produce nuevos hadrones.',
+  'Leptones cargados': 'El electrón es estable; muón y tau decaen mediante la interacción débil. Que compartan carga y spin pero difieran tanto en masa constituye parte del problema abierto del sabor.',
+  Neutrinos: 'Los tres sabores se producen y detectan en procesos débiles. La oscilación demuestra que tienen masa no nula, un hecho que exige extender la formulación mínima original del Modelo Estándar.',
+  'Tres generaciones': 'La materia cotidiana estable usa casi exclusivamente la primera generación. Las otras aparecen en rayos cósmicos y colisiones de alta energía y decaen rápidamente hacia estados más ligeros.',
+  Antimateria: 'La antipartícula conserva la masa y el spin, pero invierte cargas aditivas. Materia y antimateria pueden aniquilarse en estados permitidos por las leyes de conservación; esto no significa que toda partícula neutra sea automáticamente su propia antipartícula.',
+  'Las cuatro fuerzas fundamentales': 'La palabra fuerza es una simplificación útil. En el nivel fundamental hablamos de interacciones entre campos. El alcance, la intensidad y las partículas afectadas dependen del mediador, las cargas y la energía del proceso.',
+  'Interacción fuerte': 'Los gluones transportan carga de color y se acoplan entre sí. Esta auto-interacción está detrás del confinamiento y de la libertad asintótica: a distancias muy pequeñas los quarks se comportan como si interactuaran más débilmente.',
+  'Fuerza nuclear residual': 'Entre protones y neutrones aparece un remanente de la interacción fuerte, comparable conceptualmente a cómo fuerzas intermoleculares emergen de átomos eléctricamente neutros. El intercambio de piones es una descripción efectiva útil a bajas energías.',
+  Electromagnetismo: 'Actúa sobre partículas con carga eléctrica y tiene alcance macroscópico porque el fotón no posee masa en reposo. QED permite calcular observables como el momento magnético del electrón con precisión extraordinaria.',
+  'Interacción débil': 'Puede transformar sabores y permite la desintegración beta. Como W y Z son masivos, su propagación está fuertemente limitada a distancias pequeñas; los neutrinos constituyen una de sus sondas principales.',
+  Gravedad: 'A escala de partículas es extremadamente débil frente a las otras interacciones. No obstante, domina estructuras astronómicas porque siempre es atractiva y la masa-energía no se neutraliza como la carga eléctrica.',
+  Electrodébil: 'Fotón y Z emergen de una mezcla de campos electrodébiles después de que el campo de Higgs adopte un valor no nulo en el vacío. A energías suficientemente altas la separación cotidiana entre electromagnetismo y débil deja de ser fundamental.',
+  Acoplamientos: 'La polarización del vacío modifica los valores efectivos al cambiar la energía. Por eso comparar “la fuerza más intensa” sin indicar escala y proceso puede inducir a error.',
+  Gluones: 'Existen ocho combinaciones de color independientes. Permanecen confinados dentro de hadrones y pueden contribuir a estados exóticos, chorros y una parte esencial del momento y la masa del protón.',
+  Fotón: 'Transporta energía y momento aunque su masa en reposo sea cero. El fotón real de la radiación y el lenguaje de intercambio en diagramas perturbativos no deben interpretarse siempre como pequeñas bolas viajando entre cargas.',
+  'Bosones W y Z': 'W± cambia la carga eléctrica de los participantes; Z media corrientes neutras. Sus descubrimientos en 1983 confirmaron de manera decisiva la estructura electrodébil.',
+  'Campo de Higgs': 'El acoplamiento con el vacío de Higgs genera masas para W, Z y fermiones elementales. La mayor parte de la masa de protones y neutrones, sin embargo, procede de la energía de QCD, no directamente del Higgs.',
+  'Bosón de Higgs': 'Observar el bosón fue observar una excitación del campo y verificar el mecanismo. Sus canales de producción y decaimiento siguen midiéndose para buscar pequeñas desviaciones respecto al Modelo Estándar.',
+  'El Higgs no es una quinta fuerza': 'Puede mediar interacciones y posee acoplamientos, pero la clasificación tradicional de cuatro fuerzas responde a otra organización conceptual. En el atlas aparece como sector escalar para evitar esa confusión.',
+  Bariones: 'El número bariónico y la estructura de tres quarks de valencia permiten agrupar protón, neutrón y resonancias. QCD admite además estados con contenido más complejo, siempre globalmente sin color observable.',
+  Mesones: 'Suelen ser inestables y desempeñan papeles distintos según su masa y sabores. Piones son los más ligeros; kaones introdujeron históricamente el concepto de extrañeza.',
+  Protón: 'Su contenido de valencia es uud, pero el reparto real de momento incluye gluones y un mar de pares quark-antiquark. Su estabilidad experimental es extraordinaria y la posible desintegración del protón sigue buscándose.',
+  Neutrón: 'Fuera del núcleo decae a protón, electrón y antineutrino electrónico. Dentro de un núcleo, balances de energía y números cuánticos pueden impedir o permitir transformaciones diferentes.',
+  'Pión positivo': 'Tiene carga +1, spin 0 y vida breve. Al decaer produce normalmente un muón positivo y un neutrino muónico; su papel nuclear es efectivo, mientras que el mediador fundamental de QCD es el gluón.',
+  Confinamiento: 'La energía almacenada en el tubo de flujo de color crece al separar quarks. Antes de obtener un quark libre resulta energéticamente favorable crear un nuevo par y formar hadrones sin color.',
+  'Átomo de hidrógeno': 'Su sencillez lo convierte en laboratorio de espectros, QED y constantes fundamentales. El protón es compuesto; el electrón no presenta subestructura observada.',
+  Deuterio: 'Su núcleo, el deuterón, liga un protón y un neutrón débilmente. Es un sistema esencial para estudiar fuerzas nucleares y nucleosíntesis primordial.',
+  Núcleos: 'La estabilidad resulta de la competencia entre atracción nuclear, repulsión eléctrica, niveles cuánticos y proporción entre protones y neutrones. No todos los agregados posibles forman estados ligados.',
+  'Escalas no continuas': 'La regla lateral explicita los huecos para no sugerir niveles inventados. Las etiquetas “transición” indican cambios de resolución o régimen, no nuevos ladrillos de materia.',
+  Femtómetro: 'Un femtómetro equivale a 10⁻¹⁵ m. En esta escala el lenguaje de nucleones, mesones y estructura hadrónica resulta natural.',
+  'Alcance débil': 'La relación entre masa del mediador y alcance explica por qué los procesos débiles son raros a baja energía. No es un borde geométrico exacto, sino un decaimiento característico de la propagación.',
+  'Límite de estructura': 'Decir “puntual hasta 10⁻¹⁹ m” resume una ausencia de desviaciones en los experimentos disponibles. No constituye una medición directa de radio cero.',
+  'Energía y distancia': 'La correspondencia es aproximada y depende de la transferencia de momento. Un acelerador más energético no mejora automáticamente toda medida: luminosidad, detectores y fondos también importan.',
+  Planck: 'A esa combinación de constantes se espera que efectos cuánticos de la gravedad sean relevantes. La enorme separación con las escalas experimentales explica por qué las propuestas son difíciles de contrastar.',
+  'Cómo se descubre una partícula': 'Se define una firma, se modelan fondos, se analizan controles y se estima la probabilidad de una fluctuación. Después se requieren comprobaciones sistemáticas y, con frecuencia, confirmación independiente.',
+  Detectores: 'Seguidores, calorímetros y cámaras de muones aportan mediciones complementarias. Neutrinos y candidatos invisibles se infieren por desequilibrios de energía y momento, no porque el detector los vea directamente.',
+  Colisionadores: 'La energía cinética puede convertirse en masa de nuevas partículas. La luminosidad determina cuántas colisiones se producen y, junto a las secciones eficaces, cuántos eventos útiles se esperan.',
+  'Rayos cósmicos': 'La naturaleza proporcionó energías extremas antes de los aceleradores. Su flujo y energía inicial son menos controlables, pero continúan siendo fundamentales para neutrinos y física de astropartículas.',
+  Incertidumbre: 'Hay incertidumbres estadísticas y sistemáticas, además de dependencias teóricas. Una cifra sin intervalo, definición y método es insuficiente para una comparación de precisión.',
+  'Por qué buscar nueva física': 'El éxito del modelo no elimina sus límites. No explica la materia oscura, la gravedad cuántica ni por qué el universo observable contiene mucha más materia que antimateria.',
+  Supersimetría: 'Relaciona bosones y fermiones e introduce compañeros supersimétricos. Las versiones simples están muy restringidas por los experimentos, pero el espacio completo de modelos es amplio.',
+  'Sectores oscuros': 'Pueden contener nuevas fuerzas y partículas neutras bajo las interacciones conocidas. Los portales del Higgs, vectorial o neutrínico describen posibles conexiones con el sector visible.',
+  Gravitón: 'En una cuantización perturbativa sería un bosón sin masa de spin 2. Mostrarlo como ficha hipotética no implica que la relatividad general necesite esa partícula para funcionar como teoría clásica.',
+  'Cuerdas y branas': 'En estos marcos los objetos fundamentales son extendidos y sus modos de vibración se interpretan como partículas. Las escalas y compactificaciones dependen del modelo y no se han observado directamente.',
+  'Tres etiquetas imprescindibles': '“Observado” describe evidencia aceptada; “inferido” puede depender de un marco bien contrastado; “hipotético” designa una predicción aún no detectada. Mantener estas categorías separadas es parte del contenido científico, no sólo del diseño.'
+};
+
+export const encyclopediaChapters: ManualChapter[] = Object.entries(chapterMeta).map(([category, meta]) => ({
+  ...meta,
+  sections: encyclopediaTopics.filter((topic) => topic.category === category).map((topic, index) => ({
+    eyebrow: `${meta.kicker} · ${String(index + 1).padStart(2, '0')}`,
+    title: topic.title,
+    text: `${topic.text}\n\n${manualDetails[topic.title] ?? ''}`,
+    key: index === 0 ? topic.text : undefined
+  }))
+}));

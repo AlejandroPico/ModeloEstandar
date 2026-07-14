@@ -3,7 +3,6 @@
   import type { Particle, Interaction, ParticleZone } from '../data/types';
   import ParticleCard from './ParticleCard.svelte';
   import { clamp } from '../lib/format';
-  import { scalePoints } from '../data/science';
 
   let {
     particles,
@@ -43,8 +42,8 @@
 
   const sideWidth = 1230;
   const mirrorGap = 150;
-  const cardWidth = 180;
-  const cardHeight = 126;
+  const cardWidth = 190;
+  const cardHeight = 138;
   const worldWidth = $derived(antimatter ? sideWidth * 2 + mirrorGap : sideWidth);
   const hasBeyond = $derived(theoryParticles.length > 0);
   const hasStrings = $derived(frontierObjects.length > 0);
@@ -93,13 +92,14 @@
     if (!viewport) return;
     const bounds = zoneBounds[zone];
     const rect = viewport.getBoundingClientRect();
-    const availableWidth = rect.width - 76;
+    const rulerWidth = rect.width > 780 ? 274 : 142;
+    const availableWidth = Math.max(160, rect.width - rulerWidth - 34);
     const availableHeight = rect.height - 118;
     const targetHeight = zone === 'all' ? worldHeight : Math.min(bounds.height, worldHeight - bounds.y);
     const scale = clamp(Math.min(availableWidth / worldWidth, availableHeight / targetHeight), 0.28, 1.45);
     camera = {
       scale,
-      x: (rect.width - worldWidth * scale) / 2,
+      x: rulerWidth + (availableWidth - worldWidth * scale) / 2,
       y: (rect.height - targetHeight * scale) / 2 - bounds.y * scale
     };
     if (animated) {
@@ -214,14 +214,6 @@
       {@const offset = mirror ? sideWidth + mirrorGap : 0}
       <section class:mirror class="matter-universe" style={`left:${offset}px;width:${sideWidth}px;height:${worldHeight}px;`} aria-label={mirror ? 'Antimateria' : 'Materia'}>
         <header class="universe-heading"><span>{mirror ? 'UNIVERSO ESPEJO' : 'ESTRUCTURA DE LA MATERIA'}</span><strong>{mirror ? 'antimateria y equivalentes autoconjugados' : 'de lo compuesto a lo elemental'}</strong></header>
-
-        <div class="scale-spine" aria-label="Escala de longitudes">
-          {#each scalePoints as point, index}
-            <div class={`scale-tick kind-${point.kind} ${point.exponent === '10⁻³⁵' ? 'planck-tick' : ''}`} style={`top:${point.exponent === '10⁻³⁵' ? 2375 : 105 + index * 115}px;`}>
-              <b>{point.exponent} m</b><span>{point.title}</span><small>{point.description}</small>
-            </div>
-          {/each}
-        </div>
 
         {#if hasComposites}<div class="zone-panel atom-zone"><span class="zone-scale">≈10⁻¹⁰ m</span><b>ÁTOMOS</b><small>hidrógeno mínimo y deuterio comparativo</small></div>{/if}
         {#if hasComposites}<div class="zone-panel composite-zone"><span class="zone-scale">≈10⁻¹⁴–10⁻¹⁵ m</span><b>NÚCLEOS, NUCLEONES Y MESONES</b><small>sistemas compuestos; el pión es un mesón u + d̄</small></div>{/if}
