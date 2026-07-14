@@ -1,21 +1,15 @@
 <script lang="ts">
   import { ArrowRight, Box, CircleDot, Info, X } from '@lucide/svelte';
+  import { scalePoints } from '../data/science';
   let { onclose }: { onclose: () => void } = $props();
   let active = $state(0);
-  const steps = [
-    { scale: '10⁻¹⁰ m', title: 'Átomo', subtitle: 'Nube electrónica + núcleo', text: 'Un átomo no es una bolita maciza. Casi todo su volumen corresponde a la distribución cuántica de electrones.' },
-    { scale: '10⁻¹⁴ m', title: 'Núcleo', subtitle: 'Protones + neutrones', text: 'El núcleo concentra casi toda la masa del átomo, aunque ocupa una fracción diminuta de su tamaño.' },
-    { scale: '10⁻¹⁵ m', title: 'Nucleón', subtitle: 'Protón o neutrón', text: 'Protones y neutrones no son elementales: contienen quarks, antiquarks y gluones en un estado dinámico.' },
-    { scale: '<10⁻¹⁹ m', title: 'Elementales', subtitle: 'Quarks, leptones y campos', text: 'Aquí comienza el territorio confirmado del Modelo Estándar: no se ha observado estructura interna en estas partículas.' },
-    { scale: 'desconocida', title: 'Más allá', subtitle: 'Hipótesis y nuevas simetrías', text: 'Supersimetría, axiones o sectores oscuros amplían la teoría, pero ninguna de sus nuevas partículas ha sido confirmada.' },
-    { scale: '1,616 × 10⁻³⁵ m', title: 'Planck', subtitle: 'Cuerdas, branas y gravedad cuántica', text: 'La longitud de Planck marca una frontera natural para nuestras teorías actuales. No prueba que existan cuerdas ni que posean exactamente ese tamaño.' }
-  ];
+  const steps = scalePoints.map((point) => ({ scale: `${point.exponent} m`, title: point.title, subtitle: point.kind === 'object' ? 'Estructura o alcance característico' : point.kind === 'limit' ? 'Límite físico o experimental' : 'Intervalo de transición', text: point.description }));
 </script>
 
 <div class="modal-backdrop" role="presentation" onclick={(event) => event.target === event.currentTarget && onclose()}>
   <div class="scale-modal" role="dialog" aria-modal="true" aria-label="Del átomo al Modelo Estándar">
     <header>
-      <div><span class="eyebrow">RUTA DE ESCALA</span><h2>Del átomo a la frontera de Planck</h2><p>Seis paradas para separar lo observado de lo hipotético.</p></div>
+      <div><span class="eyebrow">RUTA DE ESCALA</span><h2>Del átomo a la frontera de Planck</h2><p>Once órdenes señalados, incluidos los intervalos sin una nueva estructura universal.</p></div>
       <button class="icon-button" type="button" aria-label="Cerrar" onclick={onclose}><X size={19} /></button>
     </header>
     <div class="scale-visual">

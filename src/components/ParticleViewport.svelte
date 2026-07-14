@@ -3,10 +3,12 @@
   import type { Particle, Interaction, ParticleZone } from '../data/types';
   import ParticleCard from './ParticleCard.svelte';
   import { clamp } from '../lib/format';
+  import { scalePoints } from '../data/science';
 
   let {
     particles,
     compositeParticles = [],
+    forceEntities = [],
     theoryParticles = [],
     frontierObjects = [],
     showTheory = false,
@@ -20,6 +22,7 @@
   }: {
     particles: Particle[];
     compositeParticles?: Particle[];
+    forceEntities?: Particle[];
     theoryParticles?: Particle[];
     frontierObjects?: Particle[];
     showTheory?: boolean;
@@ -38,14 +41,19 @@
   let pointer = { x: 0, y: 0 };
   let resizeObserver: ResizeObserver | undefined;
 
-  const sideWidth = 1180;
+  const sideWidth = 1230;
   const mirrorGap = 150;
   const cardWidth = 180;
   const cardHeight = 126;
   const worldWidth = $derived(antimatter ? sideWidth * 2 + mirrorGap : sideWidth);
-  const worldHeight = $derived(showTheory ? 2180 : 1370);
+  const hasBeyond = $derived(theoryParticles.length > 0);
+  const hasStrings = $derived(frontierObjects.length > 0);
+  const hasComposites = $derived(compositeParticles.length > 0);
+  const hasForces = $derived(forceEntities.length > 0);
+  const worldHeight = $derived(hasStrings ? 2710 : hasBeyond ? 2325 : 1940);
   const visibleNodes = $derived([
     ...compositeParticles,
+    ...forceEntities,
     ...particles,
     ...(showTheory ? [...theoryParticles, ...frontierObjects] : [])
   ]);
@@ -63,20 +71,22 @@
 
   function positionFor(particle: Particle, mirror = false): { x: number; y: number } {
     const offset = mirror ? sideWidth + mirrorGap : 0;
-    if (particle.zone === 'atom') return { x: offset + 500, y: 94 };
-    if (particle.zone === 'composite') return { x: offset + 248 + (particle.column - 2) * 214, y: 340 + (particle.row - 1) * 145 };
-    if (particle.family === 'theory' || particle.zone === 'beyond') return { x: offset + 78 + (particle.column - 1) * 208, y: 1485 + (particle.row - 1) * 145 };
-    if (particle.family === 'string' || particle.zone === 'planck') return { x: offset + 78 + (particle.column - 1) * 208, y: 1880 + (particle.row - 1) * 145 };
-    return { x: offset + 78 + (particle.column - 1) * 208, y: 760 + (particle.row - 1) * 145 };
+    if (particle.zone === 'atom') return { x: offset + 300 + (particle.column - 2) * 250, y: 115 };
+    if (particle.zone === 'composite') return { x: offset + 140 + (particle.column - 2) * 208, y: 600 + (particle.row - 1) * 145 };
+    if (particle.family === 'force' || particle.zone === 'forces') return { x: offset + 140 + (particle.column - 1) * 250, y: 1035 };
+    if (particle.family === 'theory' || particle.zone === 'beyond') return { x: offset + 140 + (particle.column - 1) * 208, y: 2020 + (particle.row - 1) * 145 };
+    if (particle.family === 'string' || particle.zone === 'planck') return { x: offset + 140 + (particle.column - 1) * 208, y: 2410 + (particle.row - 1) * 145 };
+    return { x: offset + 140 + (particle.column - 1) * 208, y: 1340 + (particle.row - 1) * 145 };
   }
 
   const zoneBounds: Record<ParticleZone | 'all', { y: number; height: number }> = {
-    atom: { y: 0, height: 285 },
-    composite: { y: 245, height: 345 },
-    standard: { y: 610, height: 745 },
-    beyond: { y: 1400, height: 390 },
-    planck: { y: 1800, height: 365 },
-    all: { y: 0, height: 2180 }
+    atom: { y: 0, height: 310 },
+    composite: { y: 500, height: 420 },
+    forces: { y: 930, height: 280 },
+    standard: { y: 1280, height: 620 },
+    beyond: { y: 1935, height: 390 },
+    planck: { y: 2325, height: 380 },
+    all: { y: 0, height: 2710 }
   };
 
   function focusZone(zone: ParticleZone | 'all' = 'standard', animated = true): void {
@@ -151,11 +161,11 @@
 
   function forceTargets(interactions: Interaction[]): Particle[] {
     const ids = new Set<string>();
-    if (interactions.includes('strong')) ids.add('gluon');
-    if (interactions.includes('electromagnetic')) ids.add('photon');
-    if (interactions.includes('weak')) { ids.add('z-boson'); ids.add('w-boson'); }
+    if (interactions.includes('strong')) { ids.add('gluon'); ids.add('strong-force'); }
+    if (interactions.includes('electromagnetic')) { ids.add('photon'); ids.add('electromagnetic-force'); }
+    if (interactions.includes('weak')) { ids.add('z-boson'); ids.add('w-boson'); ids.add('weak-force'); }
     if (interactions.includes('higgs')) ids.add('higgs');
-    if (interactions.includes('gravity')) ids.add('graviton');
+    if (interactions.includes('gravity')) { ids.add('graviton'); ids.add('gravity-force'); }
     return visibleNodes.filter((item) => ids.has(item.id) && item.id !== selectedId);
   }
 
@@ -205,9 +215,18 @@
       <section class:mirror class="matter-universe" style={`left:${offset}px;width:${sideWidth}px;height:${worldHeight}px;`} aria-label={mirror ? 'Antimateria' : 'Materia'}>
         <header class="universe-heading"><span>{mirror ? 'UNIVERSO ESPEJO' : 'ESTRUCTURA DE LA MATERIA'}</span><strong>{mirror ? 'antimateria y equivalentes autoconjugados' : 'de lo compuesto a lo elemental'}</strong></header>
 
-        <div class="zone-panel atom-zone"><span class="zone-scale">≈10⁻¹⁰ m</span><b>ÁTOMO</b><small>estructura electromagnética</small></div>
-        <div class="zone-panel composite-zone"><span class="zone-scale">≈10⁻¹⁵ m</span><b>HADRONES Y NÚCLEO</b><small>sistemas compuestos por quarks y gluones</small></div>
-        <div class="zone-panel standard-zone"><span class="zone-scale">&lt;10⁻¹⁹ m</span><b>MODELO ESTÁNDAR</b><small>sin estructura interna observada</small></div>
+        <div class="scale-spine" aria-label="Escala de longitudes">
+          {#each scalePoints as point, index}
+            <div class={`scale-tick kind-${point.kind} ${point.exponent === '10⁻³⁵' ? 'planck-tick' : ''}`} style={`top:${point.exponent === '10⁻³⁵' ? 2375 : 105 + index * 115}px;`}>
+              <b>{point.exponent} m</b><span>{point.title}</span><small>{point.description}</small>
+            </div>
+          {/each}
+        </div>
+
+        {#if hasComposites}<div class="zone-panel atom-zone"><span class="zone-scale">≈10⁻¹⁰ m</span><b>ÁTOMOS</b><small>hidrógeno mínimo y deuterio comparativo</small></div>{/if}
+        {#if hasComposites}<div class="zone-panel composite-zone"><span class="zone-scale">≈10⁻¹⁴–10⁻¹⁵ m</span><b>NÚCLEOS, NUCLEONES Y MESONES</b><small>sistemas compuestos; el pión es un mesón u + d̄</small></div>{/if}
+        {#if hasForces}<div class="zone-panel forces-zone"><span class="zone-scale">CAMPO / ALCANCE</span><b>LAS CUATRO INTERACCIONES FUNDAMENTALES</b><small>tres dentro del Modelo Estándar; gravedad fuera de él</small></div>{/if}
+        <div class="zone-panel standard-zone"><span class="zone-scale">&lt;10⁻¹⁹ m</span><b>MODELO ESTÁNDAR · PARTÍCULAS ELEMENTALES</b><small>sin estructura interna observada</small></div>
 
         <div class="world-heading matter-heading"><span>PARTÍCULAS DE MATERIA</span><strong>fermiones · spin ½</strong></div>
         <div class="world-heading force-heading"><span>MEDIADORES</span><strong>bosones gauge · spin 1</strong></div>
@@ -216,8 +235,10 @@
         <div class="generation-label g3"><small>GENERACIÓN</small><b>III</b><span>muy masiva</span></div>
         <div class="family-label quarks">QUARKS</div><div class="family-label leptons">LEPTONES</div><div class="family-label gauge">FUERZAS</div><div class="family-label scalar">CAMPO</div>
 
-        {#if showTheory}
+        {#if hasBeyond}
           <div class="zone-panel beyond-zone"><span class="zone-scale">NO OBSERVADO</span><b>MÁS ALLÁ DEL MODELO ESTÁNDAR</b><small>supersimetría, sectores oscuros y gravedad cuántica</small></div>
+        {/if}
+        {#if hasStrings}
           <div class="zone-panel planck-zone"><span class="zone-scale">ℓₚ = 1,616255 × 10⁻³⁵ m</span><b>FRONTERA DE PLANCK</b><small>cuerdas, branas y teoría M · marcos teóricos</small></div>
         {/if}
       </section>

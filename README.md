@@ -2,7 +2,7 @@
 
 Atlas científico e interactivo para explorar las partículas elementales, las interacciones fundamentales descritas por el Modelo Estándar, la antimateria y algunas propuestas más allá de la teoría confirmada.
 
-> **Estado:** enciclopedia visual · `0.2.0`  
+> **Estado:** enciclopedia visual · `0.3.0`  
 > **Tecnologías:** Svelte 5 · TypeScript · Vite · KaTeX  
 > **Despliegue:** GitHub Pages mediante GitHub Actions  
 > **Arquitectura:** aplicación estática, sin backend
@@ -26,10 +26,12 @@ La ruta de escala integrada conecta seis niveles y diferencia explícitamente ev
 - 12 fermiones de materia organizados en tres generaciones.
 - 4 bosones gauge: gluón, fotón, Z y W.
 - Bosón de Higgs diferenciado como bosón escalar.
-- Deuterio, protón, neutrón y pión como sistemas compuestos.
+- Hidrógeno, deuterio, núcleos, nucleones y mesones como sistemas compuestos.
+- Las cuatro interacciones fundamentales como fichas: fuerte, electromagnetismo, débil y gravedad.
 - Zoom alrededor del cursor.
 - Desplazamiento por arrastre.
 - Navegación directa por órdenes de escala.
+- Regla de `10⁻¹⁰` a `10⁻¹⁹ m`, incluidos los intervalos sin una nueva estructura universal, más la frontera de Planck.
 - Niveles de información progresivos según la ampliación.
 - Conexiones visuales animadas entre una estructura y sus constituyentes o mediadores.
 
@@ -49,7 +51,15 @@ Cada partícula incluye:
 
 ### Antimateria
 
-El modo **Antimateria** despliega una segunda estructura completa a la derecha, en lugar de sustituir las fichas existentes. El contador cambia de 21 a 42 fichas y el universo espejo se actualiza dinámicamente al abrir o cerrar “Más allá”. Los estados autoconjugados se conservan y quedan identificados como tales.
+El modo **Antimateria** despliega una segunda estructura completa a la derecha, en lugar de sustituir las fichas existentes. El universo espejo replica dinámicamente todas las capas que estén activas. Los estados autoconjugados se conservan y quedan identificados como tales.
+
+### HUD, capas y enciclopedia
+
+- barra compacta superior derecha con zoom restablecible, tema, búsqueda, leyenda, datos, filtros, información, escalas, fórmulas y capas;
+- capas independientes para compuestos, cuatro fuerzas, antimateria, supersimetría, sector oscuro, gravedad cuántica y cuerdas;
+- enciclopedia global de 50 conceptos;
+- dossier comparable de 50 puntos dentro de cada ficha;
+- historia, evidencia y fuentes separadas de las propiedades físicas.
 
 ### Más allá del Modelo Estándar
 
@@ -75,7 +85,7 @@ La guía de fórmulas introduce:
 
 - búsqueda por nombre, símbolo, resumen, fecha y propiedades visibles;
 - filtros por familia e interacción;
-- tema claro, oscuro y automático según amanecer/anochecer local, con respaldo en la preferencia del sistema;
+- tema claro, oscuro y automático según el ciclo solar estacional de Barcelona;
 - controles con nombre accesible y ayuda contextual;
 - navegación de fichas por pestañas;
 - adaptación a escritorio, tableta y móvil;
@@ -112,9 +122,15 @@ src/
 │  ├─ ParticleDetail.svelte     # documentación de cada partícula
 │  ├─ FilterPanel.svelte        # búsqueda y filtros
 │  ├─ FormulaAtlas.svelte       # capa matemática
-│  └─ ScaleJourney.svelte       # átomo → partículas elementales
+│  ├─ ScaleJourney.svelte       # átomo → partículas elementales
+│  ├─ LayersPanel.svelte        # capas observadas e hipotéticas
+│  ├─ LegendPanel.svelte        # código visual del atlas
+│  ├─ DataPanel.svelte          # métricas del lienzo
+│  └─ EncyclopediaModal.svelte  # guía general de 50 conceptos
 ├─ data/
 │  ├─ particles.ts              # dataset científico local
+│  ├─ forces.ts                 # cuatro interacciones fundamentales
+│  ├─ science.ts                # escalas, enciclopedia y dossiers
 │  └─ types.ts
 ├─ lib/
 │  ├─ format.ts                 # KaTeX y utilidades

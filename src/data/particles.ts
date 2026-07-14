@@ -208,14 +208,22 @@ export const theoryParticles: TheoryParticle[] = [
 
 export const compositeParticles: Particle[] = [
   {
-    id: 'deuterium', symbol: '²H', name: 'átomo de deuterio', englishName: 'deuterium atom', family: 'composite', zone: 'atom', row: 1, column: 3,
+    id: 'hydrogen', symbol: '¹H', name: 'átomo de hidrógeno', englishName: 'hydrogen atom', family: 'composite', zone: 'atom', layer: 'composites', row: 1, column: 2,
+    mass: '≈1,008 u', charge: '0', spin: 'Sistema compuesto', interactions: ['electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1766–1913 · hidrógeno y estructura atómica', lifetime: 'Estable',
+    antiparticle: '¹H̄', antiparticleName: 'antihidrógeno', visual: 'atom', scale: '≈10⁻¹⁰ m', constituents: ['proton', 'electron'],
+    constituentSummary: '1 protón + 1 electrón', summary: 'El átomo más sencillo y abundante: un electrón ligado a un protón.',
+    composition: 'La interacción electromagnética liga el electrón al protón; el protón contiene quarks y gluones.', role: 'Ejemplo mínimo para recorrer desde la química hasta el Modelo Estándar.',
+    decays: 'Estable en su estado fundamental.', formula: '{}^1_1\\mathrm H=p+e^-', note: 'Se usa como átomo inicial porque evita añadir un neutrón que no es necesario para formar hidrógeno ordinario.', sources: [PDG, CERN_SM]
+  },
+  {
+    id: 'deuterium', symbol: '²H', name: 'átomo de deuterio', englishName: 'deuterium atom', family: 'composite', zone: 'atom', layer: 'composites', row: 1, column: 4,
     mass: '≈2,014 u', charge: '0', spin: 'Sistema compuesto', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1931 · deuterio', lifetime: 'Estable',
     antiparticle: '²H̄', antiparticleName: 'átomo de antideuterio', visual: 'atom', scale: '≈10⁻¹⁰ m', constituents: ['proton', 'neutron', 'electron'],
     constituentSummary: '1 protón + 1 neutrón + 1 electrón', summary: 'Isótopo estable del hidrógeno cuyo núcleo contiene un protón y un neutrón.', composition: 'Un electrón ligado electromagnéticamente a un deuterón formado por un protón y un neutrón.',
     role: 'Permite recorrer visualmente desde un átomo completo hasta sus constituyentes elementales.', decays: 'Estable.', formula: '{}^2_1\\mathrm H=p+n+e^-', sources: [PDG, CERN_SM]
   },
   {
-    id: 'proton', symbol: 'p', name: 'protón', englishName: 'proton', family: 'composite', zone: 'composite', row: 1, column: 2,
+    id: 'proton', symbol: 'p', name: 'protón', englishName: 'proton', family: 'composite', zone: 'composite', layer: 'composites', row: 1, column: 2,
     mass: '938,272 MeV/c²', charge: '+1 e', spin: '½', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1917–1919 · Rutherford', lifetime: 'Estable en las medidas actuales',
     antiparticle: 'p̄', antiparticleName: 'antiprotón', visual: 'proton', scale: '≈0,84 fm', constituents: ['up', 'up', 'down', 'gluon'],
     constituentSummary: 'uud de valencia + mar de quarks y gluones', summary: 'Barión estable que forma los núcleos atómicos y posee estructura interna dinámica.', composition: 'Dos quarks arriba y uno abajo de valencia, inmersos en gluones y pares quark–antiquark.',
@@ -223,18 +231,46 @@ export const compositeParticles: Particle[] = [
     note: 'La imagen de tres bolitas es didáctica: el protón real es un sistema cuántico dinámico.', sources: [PDG, CERN_SM]
   },
   {
-    id: 'neutron', symbol: 'n', name: 'neutrón', englishName: 'neutron', family: 'composite', zone: 'composite', row: 1, column: 3,
+    id: 'neutron', symbol: 'n', name: 'neutrón', englishName: 'neutron', family: 'composite', zone: 'composite', layer: 'composites', row: 1, column: 3,
     mass: '939,565 MeV/c²', charge: '0', spin: '½', interactions: ['strong', 'weak', 'higgs'], evidence: 'observed', discovered: '1932 · Chadwick', lifetime: '≈879,4 s cuando está libre',
     antiparticle: 'n̄', antiparticleName: 'antineutrón', visual: 'neutron', scale: '≈0,8 fm', constituents: ['up', 'down', 'down', 'gluon'],
     constituentSummary: 'udd de valencia + mar de quarks y gluones', summary: 'Barión neutro que estabiliza muchos núcleos y decae cuando permanece libre.', composition: 'Un quark arriba y dos abajo de valencia, además de gluones y pares virtuales.',
     role: 'Estructura nuclear, radiactividad beta y nucleosíntesis.', decays: 'n → p + e⁻ + ν̄ₑ.', formula: 'n\\rightarrow p+e^-+\\bar\\nu_e', sources: [PDG, CERN_SM]
   },
   {
-    id: 'pion-plus', symbol: 'π⁺', name: 'pión positivo', englishName: 'positive pion', family: 'composite', zone: 'composite', row: 1, column: 4,
+    id: 'pion-plus', symbol: 'π⁺', name: 'pión positivo', englishName: 'positive pion', family: 'composite', zone: 'composite', layer: 'composites', row: 1, column: 4,
     mass: '139,570 MeV/c²', charge: '+1 e', spin: '0', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1947 · rayos cósmicos', lifetime: '≈2,60 × 10⁻⁸ s',
     antiparticle: 'π⁻', antiparticleName: 'pión negativo', visual: 'field', scale: '<1 fm', constituents: ['up', 'down'],
-    constituentSummary: 'u + d̄', summary: 'Mesón ligero que ayuda a describir la fuerza nuclear residual entre nucleones.', composition: 'Un quark arriba y un antiquark abajo en un estado ligado.',
-    role: 'Interacción nuclear residual y cascadas de partículas.', decays: 'π⁺ → μ⁺ + νμ.', formula: '\\pi^+=u\\bar d', sources: [PDG]
+    constituentSummary: 'u + d̄', summary: 'Partícula subatómica compuesta: es el mesón cargado más ligero y ayuda a describir la fuerza nuclear residual entre nucleones.', composition: 'Un quark arriba y un antiquark abajo en un estado ligado. No forma parte de las 17 partículas elementales porque tiene estructura interna.',
+    role: 'Interacción nuclear residual, rayos cósmicos y cascadas de partículas.', decays: 'π⁺ → μ⁺ + νμ.', formula: '\\pi^+=u\\bar d', note: '“Mesón” significa un hadrón formado, en su descripción de valencia, por un quark y un antiquark.', sources: [PDG]
+  },
+  {
+    id: 'deuteron', symbol: 'd', name: 'deuterón', englishName: 'deuteron', family: 'composite', zone: 'composite', layer: 'composites', row: 2, column: 2,
+    mass: '1875,613 MeV/c²', charge: '+1 e', spin: '1', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1931–1932 · deuterio', lifetime: 'Estable',
+    antiparticle: 'd̄', antiparticleName: 'antideuterón', visual: 'field', scale: '≈2 fm', constituents: ['proton', 'neutron'], constituentSummary: '1 protón + 1 neutrón',
+    summary: 'Núcleo del deuterio: el sistema nuclear ligado más sencillo.', composition: 'Un protón y un neutrón ligados por la interacción nuclear residual.', role: 'Fusión, nucleosíntesis y pruebas de fuerzas nucleares.',
+    decays: 'Estable.', formula: 'd=p+n-2{,}224\\;\\mathrm{MeV}', sources: [PDG]
+  },
+  {
+    id: 'alpha-particle', symbol: 'α', name: 'partícula alfa', englishName: 'alpha particle', family: 'composite', zone: 'composite', layer: 'composites', row: 2, column: 3,
+    mass: '3727,38 MeV/c²', charge: '+2 e', spin: '0', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1899–1908 · Rutherford', lifetime: 'Estable',
+    antiparticle: 'ᾱ', antiparticleName: 'antipartícula alfa', visual: 'field', scale: '≈1,7 fm', constituents: ['proton', 'neutron'], constituentSummary: '2 protones + 2 neutrones',
+    summary: 'Núcleo de helio-4 emitido en ciertas desintegraciones radiactivas.', composition: 'Dos protones y dos neutrones fuertemente ligados.', role: 'Radiactividad alfa, nucleosíntesis y estructura nuclear.',
+    decays: 'Estable como núcleo aislado.', formula: '\\alpha={}^4_2\\mathrm{He}^{2+}', sources: [PDG]
+  },
+  {
+    id: 'pion-zero', symbol: 'π⁰', name: 'pión neutro', englishName: 'neutral pion', family: 'composite', zone: 'composite', layer: 'composites', row: 2, column: 4,
+    mass: '134,977 MeV/c²', charge: '0', spin: '0', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1950 · aceleradores', lifetime: '≈8,4 × 10⁻¹⁷ s',
+    antiparticle: 'π⁰', antiparticleName: 'pión neutro', selfConjugate: true, visual: 'field', scale: '<1 fm', constituents: ['up', 'down'], constituentSummary: 'superposición uū y dd̄',
+    summary: 'Mesón neutro muy breve relacionado con la interacción nuclear residual.', composition: 'Superposición cuántica de pares quark–antiquark ligeros.', role: 'Física hadrónica y producción de fotones.',
+    decays: 'Casi siempre π⁰ → γγ.', formula: '|\\pi^0\\rangle\\simeq\\frac{|u\\bar u\\rangle-|d\\bar d\\rangle}{\\sqrt2}', sources: [PDG]
+  },
+  {
+    id: 'kaon-plus', symbol: 'K⁺', name: 'kaón positivo', englishName: 'positive kaon', family: 'composite', zone: 'composite', layer: 'composites', row: 2, column: 5,
+    mass: '493,677 MeV/c²', charge: '+1 e', spin: '0', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1947 · rayos cósmicos', lifetime: '≈1,24 × 10⁻⁸ s',
+    antiparticle: 'K⁻', antiparticleName: 'kaón negativo', visual: 'field', scale: '<1 fm', constituents: ['up', 'strange'], constituentSummary: 'u + s̄',
+    summary: 'Mesón extraño que reveló nuevas reglas de conservación y ayudó a construir el modelo de quarks.', composition: 'Un quark arriba y un antiquark extraño.', role: 'Física del sabor, violación CP y estudios de interacción débil.',
+    decays: 'Posee varios canales débiles, entre ellos K⁺ → μ⁺νμ.', formula: 'K^+=u\\bar s', sources: [PDG]
   }
 ];
 

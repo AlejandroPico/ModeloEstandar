@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Atom, Sparkles } from '@lucide/svelte';
+  import { Atom, CircleGauge, Sparkles } from '@lucide/svelte';
   import type { Particle } from '../data/types';
   import { interactionLabels } from '../data/particles';
   import NodeVisual from './NodeVisual.svelte';
@@ -46,7 +46,7 @@
 >
   <span class="card-topline">
     <span>{particle.evidence === 'observed' ? particle.discovered.split('·')[0].trim() : 'NO OBSERVADA'}</span>
-    <span class="family-dot"><Atom size={12} strokeWidth={1.8} /></span>
+    <span class="family-dot">{#if particle.family === 'force'}<CircleGauge size={12} strokeWidth={1.8}/>{:else}<Atom size={12} strokeWidth={1.8} />{/if}</span>
   </span>
 
   {#if particle.visual}<NodeVisual type={particle.visual}/>{/if}
@@ -55,13 +55,19 @@
 
   {#if detailLevel >= 1}
     <span class="quick-stats">
-      <span><small>masa</small>{particle.mass}</span>
-      <span><small>carga</small>{particle.charge}</span>
-      <span><small>spin</small>{particle.spin}</span>
+      {#if particle.family === 'force'}
+        <span><small>alcance</small>{particle.scale}</span>
+        <span><small>campo</small>{particle.constituents?.length ?? 0}</span>
+        <span><small>estado</small>{particle.id === 'gravity-force' ? 'fuera SM' : 'SM'}</span>
+      {:else}
+        <span><small>masa</small>{particle.mass}</span>
+        <span><small>carga</small>{particle.charge}</span>
+        <span><small>spin</small>{particle.spin}</span>
+      {/if}
     </span>
   {/if}
 
-  {#if detailLevel >= 2}
+  {#if detailLevel >= 2 && particle.family !== 'force'}
     <span class="interaction-row">
       {#each particle.interactions as interaction}
         <i class={`interaction-chip interaction-${interaction}`} title={interactionLabels[interaction]}>{interactionLabels[interaction][0].toUpperCase()}</i>

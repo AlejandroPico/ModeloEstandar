@@ -17,6 +17,7 @@
   --gauge: #ff7a66;
   --scalar: #ffd45f;
   --composite: #42c7d9;
+  --force: #42d9b4;
   --theory: #70b9ff;
   --string: #ff9ed2;
   --strong: #ff657f;
@@ -201,6 +202,59 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .scale-track button { flex: 1 0 102px; }
 .scale-track > svg { flex: 0 0 auto; align-self: center; }
 
+/* v0.3 · patrón HUD de los atlas científicos */
+.hud-toolbar { position: absolute; z-index: 24; top: 16px; right: 18px; display: flex; align-items: center; gap: 4px; padding: 6px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg-elevated); box-shadow: 0 10px 34px rgba(0,0,0,.22); backdrop-filter: blur(22px); }
+.hud-toolbar button { position: relative; display: flex; align-items: center; justify-content: center; gap: 6px; height: 34px; min-width: 34px; padding: 0 8px; border: 1px solid transparent; border-radius: 9px; color: var(--muted); background: transparent; cursor: pointer; transition: color 140ms ease, border-color 140ms ease, background 140ms ease; }
+.hud-toolbar button:hover, .hud-toolbar button.active { color: var(--text); border-color: var(--line-strong); background: color-mix(in srgb, var(--text), transparent 92%); }
+.hud-toolbar button b { font-size: .58rem; font-variant-numeric: tabular-nums; }
+.app-shell.detail-open .hud-toolbar { right: 588px; }
+.hud-toolbar [data-tooltip]:hover::after, .hud-toolbar [data-tooltip]:focus-visible::after { opacity: 1; transform: translate(-50%,0); }
+.hud-toolbar [data-tooltip]::after { bottom: auto; top: calc(100% + 11px); }
+.filter-panel, .hud-panel { position: absolute; z-index: 23; top: 68px; right: 18px; left: auto; bottom: auto; width: min(390px, calc(100vw - 36px)); max-height: calc(100vh - 90px); padding: 17px; border: 1px solid var(--line); border-radius: 18px; background: var(--bg-elevated); box-shadow: var(--shadow); backdrop-filter: blur(24px); overflow: auto; animation: panelIn 180ms ease-out; }
+.hud-panel header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.hud-panel h2 { margin: 4px 0 0; font-size: 1.02rem; }.panel-intro { margin: 13px 0 17px; color: var(--muted); font-size: .64rem; line-height: 1.55; }
+
+.layer-group { margin-top: 15px; }.layer-group h3 { margin: 0 0 7px; color: var(--muted); font-size: .49rem; letter-spacing: .12em; text-transform: uppercase; }
+.layer-group button { display: grid; grid-template-columns: 34px 1fr 18px; align-items: center; gap: 9px; width: 100%; min-height: 54px; margin-top: 5px; padding: 8px; border: 1px solid var(--line); border-radius: 11px; color: var(--muted); background: transparent; text-align: left; cursor: pointer; }
+.layer-group button.active { color: var(--text); border-color: color-mix(in srgb, var(--composite), transparent 50%); background: color-mix(in srgb, var(--composite), transparent 93%); }
+.layer-icon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9px; background: color-mix(in srgb, var(--text), transparent 93%); }
+.layer-group button > span:nth-child(2) { display: grid; }.layer-group button b { font-size: .63rem; }.layer-group button small { margin-top: 3px; font-size: .51rem; line-height: 1.35; }
+.layer-group button i { width: 9px; height: 9px; border: 1px solid var(--muted); border-radius: 50%; }.layer-group button.active i { border-color: var(--composite); background: var(--composite); box-shadow: 0 0 9px var(--composite); }
+.layers-panel footer, .data-panel footer { display: flex; gap: 7px; margin-top: 15px; padding: 10px; border-radius: 10px; color: var(--muted); background: color-mix(in srgb, var(--text), transparent 95%); font-size: .55rem; line-height: 1.45; }
+
+.legend-list { display: grid; gap: 6px; margin-top: 16px; }.legend-list > div { display: flex; align-items: center; gap: 9px; padding: 8px; border: 1px solid var(--line); border-radius: 10px; }.legend-list i { flex: 0 0 auto; width: 9px; height: 32px; border-radius: 99px; background: var(--legend-color); box-shadow: 0 0 12px color-mix(in srgb, var(--legend-color), transparent 55%); }.legend-list span { display: grid; }.legend-list b { font-size: .62rem; }.legend-list small { margin-top: 2px; color: var(--muted); font-size: .51rem; }
+.legend-keys { margin: 15px 0 0; }.legend-keys > div { display: grid; grid-template-columns: 105px 1fr; gap: 9px; padding: 8px 0; border-top: 1px solid var(--line); }.legend-keys dt { font-size: .55rem; font-weight: 800; }.legend-keys dd { margin: 0; color: var(--muted); font-size: .54rem; }
+.data-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 16px; }.data-metrics article { display: grid; min-height: 112px; padding: 13px; border: 1px solid var(--line); border-radius: 12px; background: color-mix(in srgb, var(--bg), transparent 34%); }.data-metrics article span { font-family: Georgia, serif; font-size: 1.5rem; }.data-metrics article b { margin-top: 8px; font-size: .62rem; }.data-metrics article small { margin-top: 3px; color: var(--muted); font-size: .49rem; line-height: 1.35; }
+
+.universe-heading { left: 120px; }
+.zone-panel { left: 120px; width: 1070px; background: color-mix(in srgb, var(--panel-solid), transparent 12%); }
+.atom-zone { top: 65px; height: 230px; }.composite-zone { top: 540px; height: 360px; }.forces-zone { top: 955px; height: 230px; border-color: color-mix(in srgb, var(--force), transparent 62%); background: color-mix(in srgb, var(--force), transparent 96%); }
+.standard-zone { top: 1200px; height: 725px; }.beyond-zone { top: 1950px; height: 365px; background: color-mix(in srgb, var(--theory), transparent 95%); }.planck-zone { top: 2340px; height: 355px; background: color-mix(in srgb, var(--string), transparent 96%); }
+.world-heading { top: 1255px; }.matter-heading { left: 140px; width: 598px; }.force-heading { left: 764px; width: 404px; }
+.generation-label { top: 1295px; }.g1 { left: 140px; }.g2 { left: 348px; }.g3 { left: 556px; }
+.family-label { left: 112px; }.family-label.quarks { top: 1435px; }.family-label.leptons { top: 1725px; }.family-label.gauge { left: 742px; top: 1465px; }.family-label.scalar { left: 950px; top: 1525px; }
+
+.scale-spine { position: absolute; z-index: 1; left: 10px; top: 0; width: 102px; height: 100%; border-right: 1px solid var(--line); pointer-events: none; }
+.scale-tick { position: absolute; left: 0; width: 102px; padding: 6px 7px 0 0; border-top: 1px solid var(--line-strong); text-align: right; }
+.scale-tick::after { content: ''; position: absolute; right: -4px; top: -4px; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+.scale-tick b { display: block; font-family: Georgia, serif; font-size: .54rem; }.scale-tick span { display: block; margin-top: 3px; color: var(--text); font-size: .46rem; font-weight: 800; }.scale-tick small { display: block; margin-top: 3px; color: var(--muted); font-size: .4rem; line-height: 1.32; }
+.scale-tick.kind-object::after { background: var(--composite); }.scale-tick.kind-limit::after { background: var(--theory); }.scale-tick.planck-tick::after { background: var(--string); box-shadow: 0 0 11px var(--string); }
+
+.particle-card.family-force { border-color: color-mix(in srgb, var(--force), transparent 38%); background: linear-gradient(145deg, color-mix(in srgb, var(--force), var(--panel-solid) 86%), var(--panel-solid)); }
+.particle-card.family-force .particle-symbol.symbol-wide { top: 29px; max-width: 122px; font-size: 1.05rem; letter-spacing: -.04em; }.particle-card.family-force .particle-name { left: 12px; top: 54px; right: 10px; font-size: .64rem; }.particle-card.family-force .quick-stats { grid-template-columns: 1.4fr .55fr .75fr; }
+.detail-panel.family-force::before { background: var(--force); }.family-force .detail-symbol { background: color-mix(in srgb, var(--force), transparent 87%); }
+.family-force .detail-symbol { font-size: 1.05rem; overflow: hidden; }
+
+.detail-panel { width: min(560px, calc(100vw - 28px)); }.detail-tabs { scrollbar-width: thin; }
+.history-title { margin: 8px 0 14px !important; font-size: 1.1rem !important; }
+.dossier-list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }.dossier-list li { display: grid; grid-template-columns: 32px 1fr; gap: 9px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; }.dossier-list li > span { color: var(--composite); font-family: Georgia, serif; font-size: .7rem; }.dossier-list li div { min-width: 0; }.dossier-list small { display: block; color: var(--muted); font-size: .46rem; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }.dossier-list p { margin-top: 4px; color: var(--text); font-size: .62rem; line-height: 1.45; overflow-wrap: anywhere; }
+
+.encyclopedia-modal { display: flex; flex-direction: column; width: min(1420px, 97vw); height: min(900px, 94vh); border: 1px solid var(--line-strong); border-radius: 22px; background: var(--panel-solid); box-shadow: var(--shadow); overflow: hidden; animation: modalIn 220ms cubic-bezier(.2,.8,.2,1); }
+.encyclopedia-modal > header { display: flex; justify-content: space-between; gap: 20px; padding: 22px; border-bottom: 1px solid var(--line); }.encyclopedia-modal h2 { margin: 5px 0 2px; font-size: 1.28rem; }.encyclopedia-modal header p { margin: 0; color: var(--muted); font-size: .65rem; }
+.encyclopedia-tools { display: grid; grid-template-columns: 280px 1fr; gap: 12px; padding: 13px 20px; border-bottom: 1px solid var(--line); }.encyclopedia-tools label { display: flex; align-items: center; gap: 7px; padding: 0 10px; border: 1px solid var(--line); border-radius: 9px; }.encyclopedia-tools input { width: 100%; height: 35px; border: 0; outline: 0; color: var(--text); background: transparent; font-size: .62rem; }.encyclopedia-tools nav { display: flex; gap: 5px; overflow-x: auto; }.encyclopedia-tools nav button { flex: 0 0 auto; padding: 0 9px; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); background: transparent; font-size: .54rem; cursor: pointer; }.encyclopedia-tools nav button.active { color: var(--text); border-color: var(--line-strong); background: color-mix(in srgb, var(--theory), transparent 90%); }
+.encyclopedia-summary { display: flex; align-items: center; gap: 7px; padding: 10px 22px; color: var(--muted); font-size: .58rem; }.encyclopedia-summary b { color: var(--text); }
+.encyclopedia-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; min-height: 0; padding: 0 20px 22px; overflow: auto; }.encyclopedia-grid article { position: relative; min-height: 150px; padding: 17px; border: 1px solid var(--line); border-radius: 13px; background: color-mix(in srgb, var(--bg), transparent 40%); }.encyclopedia-grid article > span { position: absolute; top: 13px; right: 14px; color: color-mix(in srgb, var(--theory), transparent 25%); font-family: Georgia, serif; font-size: .72rem; }.encyclopedia-grid small { color: var(--theory); font-size: .45rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }.encyclopedia-grid h3 { margin: 9px 25px 7px 0; font-size: .74rem; }.encyclopedia-grid p { margin: 0; color: var(--muted); font-size: .61rem; line-height: 1.55; }
+
 @keyframes universeIn { from { opacity: 0; transform: translateX(-110px) scale(.985); } }
 @keyframes mirrorCardIn { from { opacity: 0; transform: translateX(-125px) scale(.93); } }
 @keyframes relatedPulse { 50% { filter: brightness(1.16); } }
@@ -211,11 +265,13 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 @keyframes modalIn { from { opacity: 0; transform: translateY(12px) scale(.98); } }
 
 @media (max-width: 980px) {
+  .app-shell.detail-open .hud-toolbar { display: none; }
   .legend-panel { display: none; }
   .scale-entry { min-width: 0; width: 320px; }
   .scale-entry-value { display: none; }
   .mode-group button span { display: none; }
   .guide-grid { grid-template-columns: repeat(2, 1fr); }
+  .encyclopedia-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 680px) {
   .brand-panel p, .viewport-help { display: none; }
@@ -225,7 +281,7 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
   .scale-entry > span:not(.scale-entry-icon) { display: none; }
   .main-toolbar { bottom: 10px; width: calc(100vw - 20px); justify-content: center; }
   .toolbar-divider { display: none; }
-  .filter-panel { left: 10px; right: 10px; bottom: 65px; width: auto; }
+  .filter-panel, .hud-panel { top: 62px; left: 10px; right: 10px; bottom: auto; width: auto; }
   .detail-panel { top: 8px; right: 8px; bottom: 8px; width: calc(100vw - 16px); }
   .detail-tabs button span { display: none; }
   .scale-track { grid-template-columns: repeat(4, 1fr); }.scale-track > svg { display: none; }.scale-track button { grid-template-columns: 1fr; }.scale-track button > span { grid-row: auto; }.scale-visual { height: 210px; }
@@ -234,6 +290,11 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
   .scale-rail { display: none; }
   .particle-count { right: 10px; bottom: 65px; }
   .particle-count > span:last-child { display: none; }
+  .hud-toolbar { top: 8px; right: 8px; max-width: calc(100vw - 16px); overflow-x: auto; scrollbar-width: none; }
+  .hud-toolbar button { flex: 0 0 auto; }
+  .app-shell.detail-open .hud-toolbar { right: 8px; }
+  .encyclopedia-modal { width: calc(100vw - 12px); height: calc(100vh - 12px); border-radius: 16px; }
+  .encyclopedia-modal > header { padding: 16px; }.encyclopedia-tools { grid-template-columns: 1fr; padding: 10px 14px; }.encyclopedia-tools nav { min-height: 35px; }.encyclopedia-grid { grid-template-columns: 1fr; padding: 0 12px 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }

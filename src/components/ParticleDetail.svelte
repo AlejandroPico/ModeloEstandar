@@ -1,19 +1,23 @@
 <script lang="ts">
-  import { BookOpen, ExternalLink, FlaskConical, Network, Scale, X } from '@lucide/svelte';
+  import { BookOpen, CalendarDays, ExternalLink, Files, FlaskConical, Network, Scale, X } from '@lucide/svelte';
   import type { Particle } from '../data/types';
   import { interactionLabels } from '../data/particles';
   import FormulaBlock from './FormulaBlock.svelte';
+  import { particleDossier } from '../data/science';
 
   let { particle, antimatter = false, onclose }: { particle: Particle; antimatter?: boolean; onclose: () => void } = $props();
-  let tab = $state<'summary' | 'properties' | 'interactions' | 'formula' | 'sources'>('summary');
+  let tab = $state<'summary' | 'properties' | 'interactions' | 'history' | 'formula' | 'dossier' | 'sources'>('summary');
   const visibleSymbol = $derived(antimatter && !particle.selfConjugate ? particle.antiparticle : particle.symbol);
   const visibleName = $derived(antimatter && !particle.selfConjugate ? particle.antiparticleName : particle.name);
-  const familyLabels = { quark: 'quark elemental', lepton: 'leptón elemental', gauge: 'bosón gauge', scalar: 'bosón escalar', composite: 'partícula compuesta', theory: 'partícula hipotética', string: 'objeto extendido teórico' } as const;
+  const familyLabels = { quark: 'quark elemental', lepton: 'leptón elemental', gauge: 'bosón gauge', scalar: 'bosón escalar', composite: 'partícula compuesta', force: 'interacción fundamental', theory: 'partícula hipotética', string: 'objeto extendido teórico' } as const;
+  const dossier = $derived(particleDossier(particle));
   const tabs = [
     { id: 'summary', label: 'Resumen', icon: BookOpen },
     { id: 'properties', label: 'Propiedades', icon: Scale },
     { id: 'interactions', label: 'Interacciones', icon: Network },
+    { id: 'history', label: 'Historia', icon: CalendarDays },
     { id: 'formula', label: 'Fórmula', icon: FlaskConical },
+    { id: 'dossier', label: '50 datos', icon: Files },
     { id: 'sources', label: 'Fuentes', icon: ExternalLink }
   ] as const;
 </script>
@@ -95,11 +99,30 @@
         </div>
         <article class="decay-card"><h3>Decaimiento o comportamiento</h3><p>{particle.decays}</p></article>
       </section>
+    {:else if tab === 'history'}
+      <section class="detail-section history-section">
+        <span class="composition-label">CRONOLOGÍA Y EVIDENCIA</span>
+        <h3 class="history-title">{particle.discovered}</h3>
+        <p class="detail-lead">{particle.evidence === 'observed' ? 'Esta ficha representa una entidad o interacción respaldada por evidencia experimental.' : 'Esta ficha representa una predicción, candidato u objeto teórico sin detección confirmada.'}</p>
+        <article><h3>Contexto del descubrimiento</h3><p>{particle.summary}</p></article>
+        <article><h3>Qué se mide</h3><p>{particle.evidence === 'observed' ? 'Los experimentos reconstruyen propiedades a partir de trayectorias, energía, momento, productos de decaimiento y significación estadística.' : 'Los experimentos buscan las firmas que produciría el modelo y publican límites cuando no aparece una señal significativa.'}</p></article>
+        <article><h3>Estado actual</h3><p>{particle.confidence ?? particle.lifetime}</p></article>
+        <aside class="science-note"><b>Una fecha no cuenta toda la historia</b><p>Propuesta teórica, primera evidencia y confirmación independiente pueden corresponder a años diferentes.</p></aside>
+      </section>
     {:else if tab === 'formula'}
       <section class="detail-section">
         <p class="section-intro">Una relación útil vinculada con esta partícula. La fórmula es una puerta de entrada, no una definición completa.</p>
         <FormulaBlock formula={particle.formula} />
         <article class="notation-card"><h3>Lectura técnica</h3><p>Las magnitudes se expresan habitualmente en electronvoltios y unidades naturales, donde <em>c = ℏ = 1</em>. La ficha conserva <em>c²</em> en las masas para facilitar la lectura inicial.</p></article>
+      </section>
+    {:else if tab === 'dossier'}
+      <section class="detail-section dossier-section">
+        <p class="section-intro">Cincuenta puntos normalizados para comparar esta ficha con cualquier otra sin confundir dato, interpretación e hipótesis.</p>
+        <ol class="dossier-list">
+          {#each dossier as point}
+            <li><span>{String(point.number).padStart(2, '0')}</span><div><small>{point.category} · {point.label}</small><p>{point.value}</p></div></li>
+          {/each}
+        </ol>
       </section>
     {:else}
       <section class="detail-section">
