@@ -17,6 +17,7 @@
     filtering = false,
     onselect,
     onzoom,
+    oncamera = () => {},
     oncount
   }: {
     particles: Particle[];
@@ -31,6 +32,7 @@
     filtering?: boolean;
     onselect: (particle: Particle, mirror: boolean) => void;
     onzoom: (percent: number) => void;
+    oncamera?: (camera: { x: number; y: number; scale: number }, animated: boolean) => void;
     oncount: (count: number, unique: number) => void;
   } = $props();
 
@@ -40,7 +42,7 @@
   let pointer = { x: 0, y: 0 };
   let resizeObserver: ResizeObserver | undefined;
 
-  const sideWidth = 1230;
+  const sideWidth = 1260;
   const mirrorGap = 150;
   const cardWidth = 190;
   const cardHeight = 138;
@@ -49,7 +51,7 @@
   const hasStrings = $derived(frontierObjects.length > 0);
   const hasComposites = $derived(compositeParticles.length > 0);
   const hasForces = $derived(forceEntities.length > 0);
-  const worldHeight = $derived(hasStrings ? 2710 : hasBeyond ? 2325 : 1940);
+  const worldHeight = $derived(hasStrings ? 2730 : hasBeyond ? 2345 : 1980);
   const visibleNodes = $derived([
     ...compositeParticles,
     ...forceEntities,
@@ -71,11 +73,11 @@
   function positionFor(particle: Particle, mirror = false): { x: number; y: number } {
     const offset = mirror ? sideWidth + mirrorGap : 0;
     if (particle.zone === 'atom') return { x: offset + 300 + (particle.column - 2) * 250, y: 115 };
-    if (particle.zone === 'composite') return { x: offset + 140 + (particle.column - 2) * 208, y: 600 + (particle.row - 1) * 145 };
-    if (particle.family === 'force' || particle.zone === 'forces') return { x: offset + 140 + (particle.column - 1) * 250, y: 1035 };
-    if (particle.family === 'theory' || particle.zone === 'beyond') return { x: offset + 140 + (particle.column - 1) * 208, y: 2020 + (particle.row - 1) * 145 };
-    if (particle.family === 'string' || particle.zone === 'planck') return { x: offset + 140 + (particle.column - 1) * 208, y: 2410 + (particle.row - 1) * 145 };
-    return { x: offset + 140 + (particle.column - 1) * 208, y: 1340 + (particle.row - 1) * 145 };
+    if (particle.zone === 'composite') return { x: offset + 160 + (particle.column - 2) * 210, y: 600 + (particle.row - 1) * 155 };
+    if (particle.family === 'force' || particle.zone === 'forces') return { x: offset + 160 + (particle.column - 1) * 250, y: 1035 };
+    if (particle.family === 'theory' || particle.zone === 'beyond') return { x: offset + 160 + (particle.column - 1) * 210, y: 2020 + (particle.row - 1) * 155 };
+    if (particle.family === 'string' || particle.zone === 'planck') return { x: offset + 160 + (particle.column - 1) * 210, y: 2410 + (particle.row - 1) * 155 };
+    return { x: offset + 160 + (particle.column - 1) * 210, y: 1340 + (particle.row - 1) * 155 };
   }
 
   const zoneBounds: Record<ParticleZone | 'all', { y: number; height: number }> = {
@@ -92,16 +94,17 @@
     if (!viewport) return;
     const bounds = zoneBounds[zone];
     const rect = viewport.getBoundingClientRect();
-    const rulerWidth = rect.width > 780 ? 274 : 142;
-    const availableWidth = Math.max(160, rect.width - rulerWidth - 34);
+    const axisWidth = rect.width > 780 ? 96 : 74;
+    const availableWidth = Math.max(160, rect.width - axisWidth - 28);
     const availableHeight = rect.height - 118;
     const targetHeight = zone === 'all' ? worldHeight : Math.min(bounds.height, worldHeight - bounds.y);
     const scale = clamp(Math.min(availableWidth / worldWidth, availableHeight / targetHeight), 0.28, 1.45);
     camera = {
       scale,
-      x: rulerWidth + (availableWidth - worldWidth * scale) / 2,
+      x: axisWidth + (availableWidth - worldWidth * scale) / 2,
       y: (rect.height - targetHeight * scale) / 2 - bounds.y * scale
     };
+    oncamera(camera, animated);
     if (animated) {
       viewport.dataset.animating = 'true';
       window.setTimeout(() => viewport?.removeAttribute('data-animating'), 470);
@@ -120,6 +123,7 @@
     const worldX = (px - camera.x) / camera.scale;
     const worldY = (py - camera.y) / camera.scale;
     camera = { scale: next, x: px - worldX * next, y: py - worldY * next };
+    oncamera(camera, false);
     onzoom(Math.round(next * 100));
   }
 
@@ -141,6 +145,7 @@
     const dx = event.clientX - pointer.x;
     const dy = event.clientY - pointer.y;
     camera = { ...camera, x: camera.x + dx, y: camera.y + dy };
+    oncamera(camera, false);
     pointer = { x: event.clientX, y: event.clientY };
   }
 

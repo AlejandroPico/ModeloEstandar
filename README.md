@@ -2,7 +2,7 @@
 
 Atlas científico e interactivo para explorar las partículas elementales, las interacciones fundamentales descritas por el Modelo Estándar, la antimateria y algunas propuestas más allá de la teoría confirmada.
 
-> **Estado:** enciclopedia visual · `0.4.0`  
+> **Estado:** enciclopedia visual · `0.5.0`  
 > **Tecnologías:** Svelte 5 · TypeScript · Vite · KaTeX  
 > **Despliegue:** GitHub Pages mediante GitHub Actions  
 > **Arquitectura:** aplicación estática, sin backend
@@ -30,8 +30,8 @@ La ruta de escala integrada conecta seis niveles y diferencia explícitamente ev
 - Las cuatro interacciones fundamentales como fichas: fuerte, electromagnetismo, débil y gravedad.
 - Zoom alrededor del cursor.
 - Desplazamiento por arrastre.
-- Navegación directa por órdenes de escala.
-- Regla de `10⁻¹⁰` a `10⁻¹⁹ m`, incluidos los intervalos sin una nueva estructura universal, más la frontera de Planck.
+- Eje vertical permanente de `10⁻¹⁰` a `10⁻¹⁹ m`, más la discontinuidad hasta Planck.
+- El eje ocupa el borde de la pantalla como en una gráfica: su línea queda fija y sus valores se desplazan y escalan con la cámara.
 - Niveles de información progresivos según la ampliación.
 - Conexiones visuales animadas entre una estructura y sus constituyentes o mediadores.
 
@@ -53,12 +53,13 @@ Cada partícula incluye:
 
 El modo **Antimateria** despliega una segunda estructura completa a la derecha, en lugar de sustituir las fichas existentes. El universo espejo replica dinámicamente todas las capas que estén activas. Los estados autoconjugados se conservan y quedan identificados como tales.
 
-### HUD, capas y manual general
+### HUD, capas y enciclopedia técnica
 
 - barra rectangular superior derecha con búsqueda desplegable en línea, filtros, información, leyenda, datos, fórmulas, capas, tema y zoom restablecible;
 - capas independientes para compuestos, cuatro fuerzas, antimateria, supersimetría, sector oscuro, gravedad cuántica y cuerdas;
-- manual global estructurado en diez capítulos, con índice vertical fijo y lector documental independiente;
-- regla de escala permanente a la izquierda, única para materia y antimateria y desacoplada del zoom del lienzo;
+- buscador de catálogo por nombre, símbolo, antimateria, propiedades, teoría, fecha, interacción, composición y fuentes;
+- enciclopedia con diez capítulos generales, un informe de quince apartados para cada una de las 46 entidades científicas y capítulos propios para las antipartículas no autoconjugadas;
+- eje gráfico permanente a la izquierda, único para materia y antimateria y sincronizado con zoom y desplazamiento;
 - fichas sin listados numéricos artificiales: los datos se integran en resumen, propiedades, interacciones, historia, fórmula y fuentes;
 - historia, evidencia, interpretación matemática y propiedades físicas desarrolladas por separado.
 
@@ -73,18 +74,21 @@ Dos zonas separadas y discontinuas presentan ejemplos no observados:
 
 Estas fichas utilizan la etiqueta **hipótesis / no observada** y declaran su marco teórico. No se mezclan con las partículas confirmadas ni se presentan las cuerdas como partículas ya descubiertas.
 
-### Capa matemática
+### Atlas matemático
 
-La guía de fórmulas introduce:
+El lector matemático reúne 47 fórmulas agrupadas y buscables. Cada entrada desarrolla significado, notación, uso, procedencia, límites, relaciones y fuentes. Incluye, entre otros bloques:
 
 - la descomposición por sectores de la lagrangiana;
 - el grupo gauge `SU(3)C × SU(2)L × U(1)Y`;
 - el potencial de Higgs;
-- el acoplamiento de Yukawa y las masas fermiónicas.
+- el acoplamiento de Yukawa y las masas fermiónicas;
+- QED, QCD, teoría electrodébil, estructura hadrónica y mezcla de sabores;
+- cinemática relativista, decaimientos, resonancias y magnitudes de colisionadores;
+- gravedad clásica, longitud de Planck y acciones de cuerdas.
 
 ### Exploración y accesibilidad
 
-- búsqueda por nombre, símbolo, resumen, fecha y propiedades visibles;
+- búsqueda ampliada por nombres de materia y antimateria, símbolos, resumen, masa, carga, spin, fecha, fórmula, teoría, composición, interacciones y fuentes;
 - filtros por familia e interacción;
 - tema claro, oscuro y automático según el ciclo solar estacional de Barcelona;
 - controles con nombre accesible y ayuda contextual;
@@ -123,7 +127,7 @@ src/
 │  ├─ ParticleDetail.svelte     # documentación de cada partícula
 │  ├─ FilterPanel.svelte        # filtros científicos
 │  ├─ FormulaAtlas.svelte       # capa matemática
-│  ├─ ScaleRuler.svelte         # regla fija de 10⁻¹⁰ m a Planck
+│  ├─ ScaleAxis.svelte          # eje fijo sincronizado con la cámara
 │  ├─ LayersPanel.svelte        # capas observadas e hipotéticas
 │  ├─ LegendPanel.svelte        # código visual del atlas
 │  ├─ DataPanel.svelte          # métricas del lienzo
@@ -131,7 +135,9 @@ src/
 ├─ data/
 │  ├─ particles.ts              # dataset científico local
 │  ├─ forces.ts                 # cuatro interacciones fundamentales
-│  ├─ science.ts                # escalas y contenido del manual
+│  ├─ science.ts                # escalas y capítulos fundamentales
+│  ├─ information.ts            # informes de entidades y antimateria
+│  ├─ formulae.ts               # atlas de 47 fórmulas documentadas
 │  └─ types.ts
 ├─ lib/
 │  ├─ format.ts                 # KaTeX y utilidades

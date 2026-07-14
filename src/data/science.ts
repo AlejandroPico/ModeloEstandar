@@ -80,12 +80,17 @@ export const encyclopediaTopics: EncyclopediaTopic[] = topicRows.map(([category,
 export interface ManualSection { eyebrow: string; title: string; text: string; key?: string; }
 export interface ManualChapter {
   id: string;
+  group?: string;
   kicker: string;
   title: string;
   subtitle: string;
   intro: string;
+  symbol?: string;
+  entityId?: string;
+  mirror?: boolean;
   formula?: string;
   formulaNote?: string;
+  sources?: Array<{ label: string; url: string }>;
   sections: ManualSection[];
 }
 
@@ -93,52 +98,52 @@ const chapterMeta: Record<string, Omit<ManualChapter, 'sections'>> = {
   'Mapa general': {
     id: 'mapa', kicker: 'ORIENTACIÓN', title: 'El mapa de la materia', subtitle: 'Campos, partículas y estructura',
     intro: 'Antes de interpretar una ficha hay que distinguir tres ideas: una partícula elemental no es una bolita clásica, una estructura compuesta no es la simple suma de piezas inmóviles y el Modelo Estándar no pretende describir toda la física conocida.',
-    formula: 'E² = p²c² + m²c⁴', formulaNote: 'La energía de una partícula depende de su momento y de su masa en reposo; para un fotón, m = 0.'
+    formula: 'E^2=p^2c^2+m^2c^4', formulaNote: 'La energía de una partícula depende de su momento y de su masa en reposo; para un fotón, m = 0.'
   },
   Fermiones: {
     id: 'fermiones', kicker: 'CONSTITUYENTES', title: 'Fermiones: la materia elemental', subtitle: 'Quarks, leptones y generaciones',
     intro: 'Los fermiones elementales conocidos se organizan en quarks y leptones. Aparecen en tres generaciones con el mismo patrón de números cuánticos, pero masas y estabilidades radicalmente distintas.',
-    formula: 'S = 1/2', formulaNote: 'Todos los fermiones elementales del Modelo Estándar tienen spin semientero y obedecen el principio de exclusión de Pauli.'
+    formula: 's=\\frac{1}{2}', formulaNote: 'Todos los fermiones elementales del Modelo Estándar tienen spin semientero y obedecen el principio de exclusión de Pauli.'
   },
   Interacciones: {
     id: 'interacciones', kicker: 'DINÁMICA', title: 'Las cuatro interacciones fundamentales', subtitle: 'Qué fuerza actúa y mediante qué campo',
     intro: 'Fuerte, electromagnética, débil y gravedad constituyen la clasificación habitual. El Modelo Estándar incorpora descripciones cuánticas de las tres primeras; la gravedad se describe con enorme éxito mediante relatividad general, pero no forma parte de ese marco cuántico.',
-    formula: 'SU(3)C × SU(2)L × U(1)Y', formulaNote: 'Ésta es la estructura de simetrías gauge del Modelo Estándar antes de la ruptura electrodébil.'
+    formula: 'SU(3)_C\\times SU(2)_L\\times U(1)_Y', formulaNote: 'Ésta es la estructura de simetrías gauge del Modelo Estándar antes de la ruptura electrodébil.'
   },
   Bosones: {
     id: 'bosones', kicker: 'CAMPOS', title: 'Bosones y mediadores', subtitle: 'Gluón, fotón, W, Z y Higgs',
     intro: 'Los bosones gauge permiten describir cómo los campos intercambian energía, momento y números cuánticos. El bosón de Higgs pertenece al sector escalar: es esencial para el mecanismo de masas, pero no es una quinta fuerza fundamental.',
-    formula: 'mW = gv/2', formulaNote: 'La masa del W está ligada al acoplamiento débil g y al valor esperado del campo de Higgs v.'
+    formula: 'm_W=\\frac{gv}{2}', formulaNote: 'La masa del W está ligada al acoplamiento débil g y al valor esperado del campo de Higgs v.'
   },
   Hadrones: {
     id: 'hadrones', kicker: 'COMPOSICIÓN', title: 'Hadrones: quarks confinados', subtitle: 'Bariones, mesones y fuerza residual',
     intro: 'Protones, neutrones, piones y kaones no son elementales. Son estados ligados de quarks, antiquarks y gluones cuya masa y comportamiento emergen mayoritariamente de la dinámica de la cromodinámica cuántica.',
-    formula: 'π⁺ = u d̄', formulaNote: 'El contenido de valencia del pión positivo es un quark arriba y un antiquark abajo.'
+    formula: '\\pi^+=u\\bar d', formulaNote: 'El contenido de valencia del pión positivo es un quark arriba y un antiquark abajo.'
   },
   'Átomos y núcleos': {
     id: 'atomos', kicker: 'EMERGENCIA', title: 'Del nucleón al átomo', subtitle: 'Núcleos, electrones e isótopos',
     intro: 'Los átomos aparecen varios niveles por encima de las partículas elementales. Electromagnetismo liga electrones y núcleos; la interacción nuclear residual permite que protones y neutrones formen núcleos.',
-    formula: 'r ≈ r₀A¹ᐟ³', formulaNote: 'El radio nuclear crece aproximadamente con la raíz cúbica del número másico A, con r₀ del orden de 1,2 fm.'
+    formula: 'r\\approx r_0 A^{1/3}', formulaNote: 'El radio nuclear crece aproximadamente con la raíz cúbica del número másico A, con r₀ del orden de 1,2 fm.'
   },
   Escalas: {
     id: 'escalas', kicker: 'RESOLUCIÓN', title: 'Tamaño, energía y distancia', subtitle: 'Cómo se interpreta la regla izquierda',
     intro: 'La escala del atlas representa órdenes de magnitud, no fotografías a escala. Entre dos potencias de diez puede no existir una nueva capa estable de materia: a menudo cambia el régimen experimental o la teoría efectiva más útil.',
-    formula: 'λ ≈ h/p', formulaNote: 'Una sonda con mayor momento tiene menor longitud de onda asociada y puede resolver estructuras más pequeñas.'
+    formula: '\\lambda\\approx\\frac{h}{p}', formulaNote: 'Una sonda con mayor momento tiene menor longitud de onda asociada y puede resolver estructuras más pequeñas.'
   },
   Experimentos: {
     id: 'experimentos', kicker: 'EVIDENCIA', title: 'Cómo sabemos que una partícula existe', subtitle: 'Detectores, colisiones y estadística',
     intro: 'Los detectores no fotografían partículas como objetos cotidianos. Registran ionización, luz, depósitos de energía y trayectorias; después se reconstruyen procesos y se comparan distribuciones con predicciones y fondos.',
-    formula: 'Z ≈ 5σ', formulaNote: 'En física de partículas suele exigirse una significación cercana a cinco desviaciones estándar antes de hablar de descubrimiento.'
+    formula: 'Z\\approx5\\sigma', formulaNote: 'En física de partículas suele exigirse una significación cercana a cinco desviaciones estándar antes de hablar de descubrimiento.'
   },
   'Más allá': {
     id: 'mas-alla', kicker: 'FRONTERA', title: 'Más allá del Modelo Estándar', subtitle: 'Supersimetría, sector oscuro y gravedad cuántica',
     intro: 'Una teoría puede ser matemáticamente atractiva y, aun así, carecer de confirmación. Las capas opcionales del atlas separan deliberadamente candidatos, extensiones y objetos teóricos del inventario observado.',
-    formula: 'ℓP = √(ℏG/c³)', formulaNote: 'La longitud de Planck combina constantes fundamentales; no constituye una prueba de que el espacio sea granular ni de que existan cuerdas.'
+    formula: '\\ell_P=\\sqrt{\\frac{\\hbar G}{c^3}}', formulaNote: 'La longitud de Planck combina constantes fundamentales; no constituye una prueba de que el espacio sea granular ni de que existan cuerdas.'
   },
   'Lectura crítica': {
     id: 'lectura', kicker: 'MÉTODO', title: 'Cómo leer una afirmación científica', subtitle: 'Observado, inferido e hipotético',
     intro: 'El atlas usa el diseño para comunicar certeza epistemológica. Color, borde y capa nunca deben transformar una posibilidad teórica en un hecho experimental.',
-    formula: 'dato → modelo → inferencia', formulaNote: 'Una medición adquiere significado al interpretarse con un modelo, sus supuestos y sus incertidumbres.'
+    formula: '\\text{dato}\\rightarrow\\text{modelo}\\rightarrow\\text{inferencia}', formulaNote: 'Una medición adquiere significado al interpretarse con un modelo, sus supuestos y sus incertidumbres.'
   }
 };
 
@@ -197,6 +202,7 @@ const manualDetails: Record<string, string> = {
 
 export const encyclopediaChapters: ManualChapter[] = Object.entries(chapterMeta).map(([category, meta]) => ({
   ...meta,
+  group: 'Fundamentos',
   sections: encyclopediaTopics.filter((topic) => topic.category === category).map((topic, index) => ({
     eyebrow: `${meta.kicker} · ${String(index + 1).padStart(2, '0')}`,
     title: topic.title,

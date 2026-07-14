@@ -6,7 +6,7 @@
   } from '@lucide/svelte';
   import ParticleViewport from './components/ParticleViewport.svelte';
   import ParticleDetail from './components/ParticleDetail.svelte';
-  import ScaleRuler from './components/ScaleRuler.svelte';
+  import ScaleAxis from './components/ScaleAxis.svelte';
   import FormulaAtlas from './components/FormulaAtlas.svelte';
   import FilterPanel from './components/FilterPanel.svelte';
   import LayersPanel from './components/LayersPanel.svelte';
@@ -24,6 +24,9 @@
   let selected = $state<Particle | null>(null);
   let selectedMirror = $state(false);
   let zoomPercent = $state(100);
+  let viewCamera = $state({ x: 0, y: 0, scale: 1 });
+  let axisAnimated = $state(false);
+  let axisTimer = 0;
   let layers = $state<Record<LayerId, boolean>>({ composites: true, forces: true, antimatter: false, susy: false, 'dark-sector': false, 'quantum-gravity': false, strings: false });
   let showFormula = $state(false);
   let hudPanel = $state<'search' | 'legend' | 'data' | 'filter' | 'layers' | null>(null);
@@ -50,18 +53,31 @@
   const showTheory = $derived(visibleTheory.length > 0 || visibleFrontier.length > 0);
   const antimatter = $derived(layers.antimatter);
   const activeNodes = $derived([...visibleComposites, ...visibleForces, ...particles, ...visibleTheory, ...visibleFrontier]);
+  const catalogNodes = [...compositeParticles, ...forceEntities, ...particles, ...theoryParticles, ...frontierObjects];
   const observedCount = $derived(activeNodes.filter((particle) => particle.evidence === 'observed').length);
   const hypotheticalCount = $derived(activeNodes.filter((particle) => particle.evidence === 'hypothetical').length);
   const selectedKey = $derived(selected ? `${selectedMirror ? 'anti:' : ''}${selected.id}` : '');
   const filtering = $derived(Boolean(query.trim()) || family !== 'all' || interaction !== 'all');
   const matches = $derived(new Set(activeNodes.filter((particle) => {
     const normalized = query.trim().toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
-    const haystack = [particle.name, particle.englishName, particle.symbol, particle.summary, particle.discovered, particle.spin, particle.mass]
+    const haystack = [particle.name, particle.englishName, particle.symbol, particle.antiparticleName, particle.antiparticle, particle.summary, particle.composition, particle.role, particle.decays, particle.discovered, particle.spin, particle.mass, particle.charge, particle.formula, particle.theory, particle.confidence, ...particle.sources.map((source) => source.label)]
       .join(' ').toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
     return (!normalized || haystack.includes(normalized))
       && (family === 'all' || particle.family === family)
       && (interaction === 'all' || particle.interactions.includes(interaction));
   }).map((particle) => particle.id)));
+  const searchResults = $derived.by(() => {
+    const needle = query.trim().toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
+    if (!needle) return [] as Array<{ particle: Particle; mirror: boolean; name: string; symbol: string }>;
+    return catalogNodes.flatMap((particle) => {
+      const matterText = [particle.name, particle.englishName, particle.symbol, particle.summary, particle.composition, particle.role, particle.decays, particle.mass, particle.charge, particle.spin, particle.discovered, particle.formula, particle.theory, particle.confidence].join(' ').toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
+      const antiText = `${particle.antiparticleName} ${particle.antiparticle} antimateria anti ${particle.summary}`.toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
+      const results: Array<{ particle: Particle; mirror: boolean; name: string; symbol: string }> = [];
+      if (matterText.includes(needle)) results.push({ particle, mirror: false, name: particle.name, symbol: particle.symbol });
+      if (!particle.selfConjugate && antiText.includes(needle)) results.push({ particle, mirror: true, name: particle.antiparticleName, symbol: particle.antiparticle });
+      return results;
+    }).slice(0, 16);
+  });
 
   $effect(() => {
     if (selected && !activeNodes.some((particle) => particle.id === selected?.id)) selected = null;
@@ -70,6 +86,21 @@
   function selectParticle(particle: Particle, mirror = false): void {
     selected = particle;
     selectedMirror = mirror;
+  }
+
+  function revealSearchResult(result: { particle: Particle; mirror: boolean }): void {
+    const particle = result.particle;
+    if (particle.family === 'composite') layers.composites = true;
+    if (particle.family === 'force') layers.forces = true;
+    if (['neutralino', 'gluino', 'sfermions', 'chargino'].includes(particle.id)) layers.susy = true;
+    if (['axion', 'sterile-neutrino', 'dark-photon'].includes(particle.id)) layers['dark-sector'] = true;
+    if (particle.family === 'theory' && !['neutralino', 'gluino', 'sfermions', 'chargino', 'axion', 'sterile-neutrino', 'dark-photon'].includes(particle.id)) layers['quantum-gravity'] = true;
+    if (particle.family === 'string') layers.strings = true;
+    if (result.mirror) layers.antimatter = true;
+    selected = particle;
+    selectedMirror = result.mirror;
+    hudPanel = null;
+    window.setTimeout(() => viewport?.focusZone?.(particle.zone ?? (particle.family === 'theory' ? 'beyond' : particle.family === 'string' ? 'planck' : 'standard')), 60);
   }
 
   function applyTheme(): void {
@@ -106,6 +137,13 @@
     interaction = 'all';
   }
 
+  function updateViewCamera(camera: { x: number; y: number; scale: number }, animated: boolean): void {
+    viewCamera = camera;
+    window.clearTimeout(axisTimer);
+    axisAnimated = animated;
+    if (animated) axisTimer = window.setTimeout(() => axisAnimated = false, 380);
+  }
+
   function toggleSearch(): void {
     hudPanel = hudPanel === 'search' ? null : 'search';
     if (hudPanel === 'search') window.setTimeout(() => searchInput?.focus(), 40);
@@ -126,6 +164,7 @@
     applyTheme();
     return () => {
       window.clearInterval(themeTimer);
+      window.clearTimeout(axisTimer);
     };
   });
 </script>
@@ -148,10 +187,11 @@
     {filtering}
     onselect={selectParticle}
     onzoom={(value) => zoomPercent = value}
+    oncamera={updateViewCamera}
     oncount={(count, unique) => { displayedCount = count; uniqueCount = unique; }}
   />
 
-  <ScaleRuler onfocus={(zone) => viewport?.focusZone?.(zone)}/>
+  <ScaleAxis camera={viewCamera} animated={axisAnimated}/>
 
   {#if filtering}
     <div class="results-badge"><Search size={14}/><b>{matches.size}</b> de {activeNodes.length} fichas <button type="button" onclick={resetFilters} aria-label="Quitar filtros"><X size={13}/></button></div>
@@ -162,6 +202,18 @@
       <button class:active={hudPanel === 'search'} type="button" data-tooltip="Buscar" aria-label="Buscar" onclick={toggleSearch}><Search size={17}/></button>
       {#if hudPanel === 'search'}
         <label><input bind:this={searchInput} value={query} oninput={(event) => query = event.currentTarget.value} placeholder="Buscar partícula, masa, fecha…" aria-label="Buscar en el atlas"/>{#if query}<button type="button" aria-label="Limpiar búsqueda" onclick={() => query = ''}><X size={14}/></button>{/if}</label>
+        {#if query}
+          <div class="hud-search-results" aria-label="Resultados de búsqueda">
+            <header><span>{searchResults.length} coincidencias directas</span><small>incluye capas ocultas y antimateria</small></header>
+            {#each searchResults as result}
+              <button type="button" onclick={() => revealSearchResult(result)}>
+                <span>{result.symbol}</span><span><b>{result.name}</b><small>{result.mirror ? 'antimateria' : result.particle.family} · {result.particle.evidence === 'observed' ? 'observada' : 'hipótesis'}</small></span>
+              </button>
+            {:else}
+              <p>No hay coincidencias. Prueba con un símbolo, una masa, una fecha, una interacción o un término teórico.</p>
+            {/each}
+          </div>
+        {/if}
       {/if}
     </div>
     <button class:active={hudPanel === 'filter'} type="button" data-tooltip="Filtros" aria-label="Abrir filtros" onclick={() => hudPanel = hudPanel === 'filter' ? null : 'filter'}><Filter size={17}/></button>
