@@ -2,7 +2,7 @@
 
 Atlas científico e interactivo para explorar las partículas elementales, las interacciones fundamentales descritas por el Modelo Estándar, la antimateria y algunas propuestas más allá de la teoría confirmada.
 
-> **Estado:** primera versión funcional · `0.1.0`  
+> **Estado:** enciclopedia visual · `0.2.0`  
 > **Tecnologías:** Svelte 5 · TypeScript · Vite · KaTeX  
 > **Despliegue:** GitHub Pages mediante GitHub Actions  
 > **Arquitectura:** aplicación estática, sin backend
@@ -13,10 +13,10 @@ La mayoría de las personas reconoce un átomo, pero la imagen escolar del núcl
 
 Este proyecto presenta el Modelo Estándar como un lienzo ampliable. La vista general conserva la claridad de una tabla; al acercarse aparecen masa, carga, spin e interacciones; al abrir una ficha se accede a explicaciones, propiedades, decaimientos, fórmulas y fuentes.
 
-La ruta de escala integrada conecta cuatro niveles:
+La ruta de escala integrada conecta seis niveles y diferencia explícitamente evidencia y especulación:
 
 ```text
-átomo → núcleo → protón/neutrón → quarks, gluones y leptones
+átomo → núcleo → nucleón → partículas elementales → nuevas hipótesis → frontera de Planck
 ```
 
 ## Funcionalidades
@@ -26,10 +26,12 @@ La ruta de escala integrada conecta cuatro niveles:
 - 12 fermiones de materia organizados en tres generaciones.
 - 4 bosones gauge: gluón, fotón, Z y W.
 - Bosón de Higgs diferenciado como bosón escalar.
+- Deuterio, protón, neutrón y pión como sistemas compuestos.
 - Zoom alrededor del cursor.
 - Desplazamiento por arrastre.
+- Navegación directa por órdenes de escala.
 - Niveles de información progresivos según la ampliación.
-- Conexiones visuales entre una partícula seleccionada y sus mediadores.
+- Conexiones visuales animadas entre una estructura y sus constituyentes o mediadores.
 
 ### Fichas documentales
 
@@ -47,19 +49,18 @@ Cada partícula incluye:
 
 ### Antimateria
 
-El modo **Antimateria** conjuga las partículas del tablero y conserva como propias antipartículas a los estados autoconyugados. La interfaz distingue entre una transformación conceptual del tablero y la existencia experimental de antipartículas.
+El modo **Antimateria** despliega una segunda estructura completa a la derecha, en lugar de sustituir las fichas existentes. El contador cambia de 21 a 42 fichas y el universo espejo se actualiza dinámicamente al abrir o cerrar “Más allá”. Los estados autoconjugados se conservan y quedan identificados como tales.
 
 ### Más allá del Modelo Estándar
 
-Una banda separada y discontinua presenta ejemplos no observados:
+Dos zonas separadas y discontinuas presentan ejemplos no observados:
 
 - gravitón;
-- neutralino;
-- gluino;
-- squarks y sleptones;
-- gravitino.
+- candidatos supersimétricos: neutralino, chargino, gluino, sfermiones y gravitino;
+- axión, neutrino estéril, fotón oscuro y monopolo magnético;
+- cuerda abierta, cuerda cerrada, D-brana, M2-brana, M5-brana y cuerda cósmica.
 
-Estas fichas utilizan la etiqueta **hipótesis / no observada**. No se mezclan con las partículas confirmadas.
+Estas fichas utilizan la etiqueta **hipótesis / no observada** y declaran su marco teórico. No se mezclan con las partículas confirmadas ni se presentan las cuerdas como partículas ya descubiertas.
 
 ### Capa matemática
 
@@ -74,7 +75,7 @@ La guía de fórmulas introduce:
 
 - búsqueda por nombre, símbolo, resumen, fecha y propiedades visibles;
 - filtros por familia e interacción;
-- tema claro y oscuro;
+- tema claro, oscuro y automático según amanecer/anochecer local, con respaldo en la preferencia del sistema;
 - controles con nombre accesible y ayuda contextual;
 - navegación de fichas por pestañas;
 - adaptación a escritorio, tableta y móvil;
@@ -95,6 +96,8 @@ La guía de fórmulas introduce:
 - [CERN · The Standard Model](https://home.cern/science/physics/standard-model/)
 - [CERN · The Higgs boson](https://home.cern/science/physics/higgs-boson/)
 - [CERN · Antimatter](https://home.cern/science/physics/antimatter/)
+- [CERN · Supersymmetry](https://home.cern/science/physics/supersymmetry/)
+- [NIST · Planck length](https://physics.nist.gov/cgi-bin/cuu/Value?plkl=)
 
 Los valores científicos se versionan en `src/data/particles.ts`. No se consultan APIs externas durante la navegación.
 
@@ -105,6 +108,7 @@ src/
 ├─ components/
 │  ├─ ParticleViewport.svelte   # cámara, zoom, arrastre y conexiones
 │  ├─ ParticleCard.svelte       # ficha progresiva del lienzo
+│  ├─ NodeVisual.svelte         # átomo, hadrones, cuerdas y branas en SVG
 │  ├─ ParticleDetail.svelte     # documentación de cada partícula
 │  ├─ FilterPanel.svelte        # búsqueda y filtros
 │  ├─ FormulaAtlas.svelte       # capa matemática
@@ -113,7 +117,8 @@ src/
 │  ├─ particles.ts              # dataset científico local
 │  └─ types.ts
 ├─ lib/
-│  └─ format.ts                 # KaTeX y utilidades
+│  ├─ format.ts                 # KaTeX y utilidades
+│  └─ solarTheme.ts             # tema solar local y respaldo del sistema
 ├─ styles/
 │  └─ global.css
 ├─ App.svelte
@@ -156,7 +161,7 @@ La dirección prevista es:
 La arquitectura deja preparados varios desarrollos posteriores:
 
 1. recorrido continuo de potencias de diez;
-2. construcción visual de protones, neutrones, mesones y átomos;
+2. más átomos, hadrones y estados ligados;
 3. diagramas de Feynman interactivos;
 4. mezclas CKM y PMNS;
 5. historia experimental y detectores;

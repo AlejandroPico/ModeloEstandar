@@ -1,6 +1,8 @@
-export type ParticleFamily = 'quark' | 'lepton' | 'gauge' | 'scalar' | 'theory';
+export type ParticleFamily = 'quark' | 'lepton' | 'gauge' | 'scalar' | 'composite' | 'theory' | 'string';
 export type Interaction = 'strong' | 'electromagnetic' | 'weak' | 'higgs' | 'gravity';
 export type Evidence = 'observed' | 'hypothetical';
+export type ParticleZone = 'atom' | 'composite' | 'standard' | 'beyond' | 'planck';
+export type ParticleVisual = 'atom' | 'proton' | 'neutron' | 'open-string' | 'closed-string' | 'brane' | 'cosmic-string' | 'field';
 
 export interface SourceLink {
   label: string;
@@ -16,6 +18,7 @@ export interface Particle {
   generation?: 1 | 2 | 3;
   row: number;
   column: number;
+  zone?: ParticleZone;
   mass: string;
   massEv?: number;
   charge: string;
@@ -34,6 +37,13 @@ export interface Particle {
   decays: string;
   formula: string;
   note?: string;
+  scale?: string;
+  visual?: ParticleVisual;
+  constituents?: string[];
+  constituentSummary?: string;
+  mirrorNote?: string;
+  theory?: string;
+  confidence?: string;
   sources: SourceLink[];
 }
 

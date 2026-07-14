@@ -3,6 +3,8 @@ import type { Particle, SourceLink, TheoryParticle } from './types';
 const PDG: SourceLink = { label: 'Particle Data Group · Review 2026', url: 'https://pdg.lbl.gov/' };
 const CERN_SM: SourceLink = { label: 'CERN · The Standard Model', url: 'https://home.cern/science/physics/standard-model/' };
 const CERN_HIGGS: SourceLink = { label: 'CERN · The Higgs boson', url: 'https://home.cern/science/physics/higgs-boson/' };
+const CERN_SUSY: SourceLink = { label: 'CERN · Supersymmetry', url: 'https://home.cern/science/physics/supersymmetry/' };
+const NIST_PLANCK: SourceLink = { label: 'NIST · CODATA Planck length', url: 'https://physics.nist.gov/cgi-bin/cuu/Value?plkl=' };
 
 const common = { evidence: 'observed' as const, sources: [PDG, CERN_SM] };
 
@@ -166,6 +168,116 @@ export const theoryParticles: TheoryParticle[] = [
     antiparticle: 'G̃', antiparticleName: 'gravitino', selfConjugate: true, summary: 'Compañero supersimétrico hipotético del gravitón en supergravedad.', composition: 'Campo de Rarita–Schwinger en formulaciones de supergravedad.',
     role: 'Conecta supersimetría local y gravedad.', decays: 'Dependientes del mecanismo de ruptura supersimétrica.', formula: 'G\\;(2)\\leftrightarrow\\tilde G\\;(\\tfrac32)',
     theory: 'Supergravedad', confidence: 'Sin evidencia experimental', sources: [CERN_SM, PDG]
+  },
+  {
+    id: 'chargino', symbol: 'χ̃±', name: 'chargino', englishName: 'chargino', family: 'theory', row: 2, column: 1,
+    mass: 'Desconocida', charge: '±1 e', spin: '½', interactions: ['electromagnetic', 'weak', 'higgs'], evidence: 'hypothetical', discovered: 'No observado', lifetime: 'Depende del modelo',
+    antiparticle: 'χ̃∓', antiparticleName: 'chargino de carga opuesta', summary: 'Estado cargado supersimétrico formado por winos e higgsinos cargados.', composition: 'Mezcla hipotética del sector electrodébil supersimétrico.',
+    role: 'Completaría el sector de electroweakinos junto a los neutralinos.', decays: 'Depende del espectro supersimétrico.', formula: '\\tilde\\chi_i^\\pm=V_{ij}\\psi_j^\\pm',
+    theory: 'Supersimetría (MSSM)', confidence: 'Sin evidencia experimental', sources: [CERN_SUSY, PDG]
+  },
+  {
+    id: 'axion', symbol: 'a?', name: 'axión', englishName: 'axion', family: 'theory', row: 2, column: 2,
+    mass: 'Muy pequeña; desconocida', charge: '0', spin: '0', interactions: ['electromagnetic'], evidence: 'hypothetical', discovered: 'No observado', lifetime: 'Potencialmente estable',
+    antiparticle: 'a?', antiparticleName: 'axión', selfConjugate: true, summary: 'Partícula hipotética propuesta para resolver el problema CP fuerte y posible candidata a materia oscura.', composition: 'Bosón pseudoescalar hipotético.',
+    role: 'Conectaría física de partículas, cosmología y materia oscura.', decays: 'Dependientes de la masa y los acoplamientos.', formula: '\\mathcal L\\supset-\\frac14g_{a\\gamma\\gamma}aF\\tilde F',
+    theory: 'Peccei–Quinn / axiones', confidence: 'Búsquedas activas; sin detección confirmada', sources: [PDG]
+  },
+  {
+    id: 'sterile-neutrino', symbol: 'νₛ?', name: 'neutrino estéril', englishName: 'sterile neutrino', family: 'theory', row: 2, column: 3,
+    mass: 'Desconocida', charge: '0', spin: '½', interactions: ['higgs'], evidence: 'hypothetical', discovered: 'No observado', lifetime: 'Depende del modelo',
+    antiparticle: 'ν̄ₛ?', antiparticleName: 'antineutrino estéril', summary: 'Neutrino hipotético que no participaría directamente en la interacción débil ordinaria.', composition: 'Fermión neutro adicional; podría mezclarse con neutrinos activos.',
+    role: 'Posible origen de masas de neutrinos y candidato cosmológico.', decays: 'Dependientes de su masa y mezcla.', formula: '\\nu_\\alpha=\\sum_iU_{\\alpha i}\\nu_i',
+    theory: 'Extensiones del sector neutrino', confidence: 'Sin evidencia concluyente', sources: [PDG]
+  },
+  {
+    id: 'dark-photon', symbol: 'A′?', name: 'fotón oscuro', englishName: 'dark photon', family: 'theory', row: 2, column: 4,
+    mass: 'Desconocida', charge: '0', spin: '1', interactions: ['electromagnetic'], evidence: 'hypothetical', discovered: 'No observado', lifetime: 'Depende del modelo',
+    antiparticle: 'A′?', antiparticleName: 'fotón oscuro', selfConjugate: true, summary: 'Bosón gauge hipotético de un sector oscuro que podría mezclarse débilmente con el fotón.', composition: 'Mediador vectorial hipotético de una simetría U(1) adicional.',
+    role: 'Portal posible entre materia ordinaria y materia oscura.', decays: 'Dependientes de masa y mezcla cinética.', formula: '\\mathcal L\\supset-\\frac{\\varepsilon}{2}F_{\\mu\\nu}F^{\\prime\\mu\\nu}',
+    theory: 'Sectores oscuros', confidence: 'Sin detección confirmada', sources: [PDG]
+  },
+  {
+    id: 'monopole', symbol: 'M?', name: 'monopolo magnético', englishName: 'magnetic monopole', family: 'theory', row: 2, column: 5,
+    mass: 'Desconocida', charge: 'Carga magnética', spin: 'Depende del modelo', interactions: ['electromagnetic'], evidence: 'hypothetical', discovered: 'No observado', lifetime: 'Potencialmente estable',
+    antiparticle: 'M̄?', antiparticleName: 'antimonopolo magnético', summary: 'Objeto hipotético con un único polo magnético, predicho por varias teorías de gran unificación.', composition: 'Solitón o partícula, según la teoría.',
+    role: 'Explicaría la cuantización de la carga eléctrica.', decays: 'No establecido.', formula: 'eg=\\frac{n\\hbar c}{2}',
+    theory: 'Gran unificación / Dirac', confidence: 'Sin detección experimental', sources: [PDG]
+  }
+];
+
+export const compositeParticles: Particle[] = [
+  {
+    id: 'deuterium', symbol: '²H', name: 'átomo de deuterio', englishName: 'deuterium atom', family: 'composite', zone: 'atom', row: 1, column: 3,
+    mass: '≈2,014 u', charge: '0', spin: 'Sistema compuesto', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1931 · deuterio', lifetime: 'Estable',
+    antiparticle: '²H̄', antiparticleName: 'átomo de antideuterio', visual: 'atom', scale: '≈10⁻¹⁰ m', constituents: ['proton', 'neutron', 'electron'],
+    constituentSummary: '1 protón + 1 neutrón + 1 electrón', summary: 'Isótopo estable del hidrógeno cuyo núcleo contiene un protón y un neutrón.', composition: 'Un electrón ligado electromagnéticamente a un deuterón formado por un protón y un neutrón.',
+    role: 'Permite recorrer visualmente desde un átomo completo hasta sus constituyentes elementales.', decays: 'Estable.', formula: '{}^2_1\\mathrm H=p+n+e^-', sources: [PDG, CERN_SM]
+  },
+  {
+    id: 'proton', symbol: 'p', name: 'protón', englishName: 'proton', family: 'composite', zone: 'composite', row: 1, column: 2,
+    mass: '938,272 MeV/c²', charge: '+1 e', spin: '½', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1917–1919 · Rutherford', lifetime: 'Estable en las medidas actuales',
+    antiparticle: 'p̄', antiparticleName: 'antiprotón', visual: 'proton', scale: '≈0,84 fm', constituents: ['up', 'up', 'down', 'gluon'],
+    constituentSummary: 'uud de valencia + mar de quarks y gluones', summary: 'Barión estable que forma los núcleos atómicos y posee estructura interna dinámica.', composition: 'Dos quarks arriba y uno abajo de valencia, inmersos en gluones y pares quark–antiquark.',
+    role: 'Junto con el neutrón construye los núcleos; su número define el elemento químico.', decays: 'No se ha observado su decaimiento.', formula: '|p\\rangle=|uud+g+q\\bar q\\rangle',
+    note: 'La imagen de tres bolitas es didáctica: el protón real es un sistema cuántico dinámico.', sources: [PDG, CERN_SM]
+  },
+  {
+    id: 'neutron', symbol: 'n', name: 'neutrón', englishName: 'neutron', family: 'composite', zone: 'composite', row: 1, column: 3,
+    mass: '939,565 MeV/c²', charge: '0', spin: '½', interactions: ['strong', 'weak', 'higgs'], evidence: 'observed', discovered: '1932 · Chadwick', lifetime: '≈879,4 s cuando está libre',
+    antiparticle: 'n̄', antiparticleName: 'antineutrón', visual: 'neutron', scale: '≈0,8 fm', constituents: ['up', 'down', 'down', 'gluon'],
+    constituentSummary: 'udd de valencia + mar de quarks y gluones', summary: 'Barión neutro que estabiliza muchos núcleos y decae cuando permanece libre.', composition: 'Un quark arriba y dos abajo de valencia, además de gluones y pares virtuales.',
+    role: 'Estructura nuclear, radiactividad beta y nucleosíntesis.', decays: 'n → p + e⁻ + ν̄ₑ.', formula: 'n\\rightarrow p+e^-+\\bar\\nu_e', sources: [PDG, CERN_SM]
+  },
+  {
+    id: 'pion-plus', symbol: 'π⁺', name: 'pión positivo', englishName: 'positive pion', family: 'composite', zone: 'composite', row: 1, column: 4,
+    mass: '139,570 MeV/c²', charge: '+1 e', spin: '0', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1947 · rayos cósmicos', lifetime: '≈2,60 × 10⁻⁸ s',
+    antiparticle: 'π⁻', antiparticleName: 'pión negativo', visual: 'field', scale: '<1 fm', constituents: ['up', 'down'],
+    constituentSummary: 'u + d̄', summary: 'Mesón ligero que ayuda a describir la fuerza nuclear residual entre nucleones.', composition: 'Un quark arriba y un antiquark abajo en un estado ligado.',
+    role: 'Interacción nuclear residual y cascadas de partículas.', decays: 'π⁺ → μ⁺ + νμ.', formula: '\\pi^+=u\\bar d', sources: [PDG]
+  }
+];
+
+export const frontierObjects: Particle[] = [
+  {
+    id: 'open-string', symbol: '⌁', name: 'cuerda abierta', englishName: 'open string', family: 'string', zone: 'planck', row: 1, column: 1,
+    mass: 'Depende del modo vibracional', charge: 'En sus extremos, según el modelo', spin: 'Emergente del modo', interactions: ['gravity'], evidence: 'hypothetical', discovered: 'No observada', lifetime: 'Concepto teórico',
+    antiparticle: '⌁', antiparticleName: 'cuerda abierta', selfConjugate: true, visual: 'open-string', scale: 'Escala próxima a Planck', summary: 'Objeto unidimensional hipotético con dos extremos.',
+    composition: 'No se considera hecha de partículas más pequeñas dentro de la teoría de cuerdas.', role: 'Sus modos de vibración se interpretarían como partículas diferentes.', decays: 'Puede dividirse o unirse en descripciones perturbativas.',
+    formula: 'S=-T\\int d^2\\sigma\\sqrt{-\\det h}', theory: 'Teoría de cuerdas', confidence: 'Marco matemático sin confirmación experimental', mirrorNote: 'No posee una “anticuerda” distinta por antimateria.', sources: [CERN_SM, NIST_PLANCK]
+  },
+  {
+    id: 'closed-string', symbol: '◯', name: 'cuerda cerrada', englishName: 'closed string', family: 'string', zone: 'planck', row: 1, column: 2,
+    mass: 'Depende del modo vibracional', charge: 'Variable', spin: 'Incluye modo spin 2', interactions: ['gravity'], evidence: 'hypothetical', discovered: 'No observada', lifetime: 'Concepto teórico',
+    antiparticle: '◯', antiparticleName: 'cuerda cerrada', selfConjugate: true, visual: 'closed-string', scale: 'Escala próxima a Planck', summary: 'Bucle unidimensional hipotético sin extremos.',
+    composition: 'Objeto fundamental de la teoría de cuerdas.', role: 'Contiene naturalmente un modo con propiedades de gravitón.', decays: 'Puede separarse y recombinarse.', formula: 'X^\\mu(\\sigma+2\\pi)=X^\\mu(\\sigma)',
+    theory: 'Teoría de cuerdas', confidence: 'Sin evidencia experimental', mirrorNote: 'No equivale a antimateria; se refleja solo para mantener la comparación.', sources: [CERN_SM, NIST_PLANCK]
+  },
+  {
+    id: 'd-brane', symbol: 'Dₚ', name: 'D-brana', englishName: 'D-brane', family: 'string', zone: 'planck', row: 1, column: 3,
+    mass: 'Tensión dependiente del modelo', charge: 'Cargas extendidas', spin: 'No es una partícula puntual', interactions: ['gravity'], evidence: 'hypothetical', discovered: 'No observada', lifetime: 'Objeto teórico',
+    antiparticle: 'D̄ₚ', antiparticleName: 'anti-D-brana', visual: 'brane', scale: 'p dimensiones espaciales', summary: 'Superficie extendida sobre la que pueden terminar cuerdas abiertas.',
+    composition: 'Objeto no perturbativo de teorías de supercuerdas.', role: 'Organiza campos gauge, dualidades y geometrías de dimensiones extra.', decays: 'Brana y antibrana pueden aniquilarse en ciertos modelos.', formula: 'S_{DBI}=-T_p\\int d^{p+1}\\xi\\sqrt{-\\det(G+F)}',
+    theory: 'Supercuerdas', confidence: 'Sin evidencia experimental', sources: [NIST_PLANCK]
+  },
+  {
+    id: 'm2-brane', symbol: 'M2', name: 'membrana M2', englishName: 'M2-brane', family: 'string', zone: 'planck', row: 1, column: 4,
+    mass: 'Tensión teórica', charge: 'Extendida', spin: 'Objeto 2D', interactions: ['gravity'], evidence: 'hypothetical', discovered: 'No observada', lifetime: 'Objeto teórico',
+    antiparticle: 'M̄2', antiparticleName: 'anti-M2', visual: 'brane', scale: '2 dimensiones espaciales', summary: 'Membrana bidimensional fundamental propuesta en teoría M.', composition: 'Objeto extendido en un espacio-tiempo de once dimensiones.',
+    role: 'Relaciona límites de distintas teorías de supercuerdas.', decays: 'Dependiente de la compactificación.', formula: 'S_{M2}=-T_{M2}\\int d^3\\xi\\sqrt{-g}', theory: 'Teoría M', confidence: 'Sin confirmación experimental', sources: [NIST_PLANCK]
+  },
+  {
+    id: 'm5-brane', symbol: 'M5', name: 'cinco-brana M5', englishName: 'M5-brane', family: 'string', zone: 'planck', row: 1, column: 5,
+    mass: 'Tensión teórica', charge: 'Extendida', spin: 'Objeto 5D', interactions: ['gravity'], evidence: 'hypothetical', discovered: 'No observada', lifetime: 'Objeto teórico',
+    antiparticle: 'M̄5', antiparticleName: 'anti-M5', visual: 'brane', scale: '5 dimensiones espaciales', summary: 'Objeto de cinco dimensiones espaciales propuesto en teoría M.', composition: 'Brana extendida en once dimensiones.',
+    role: 'Aparece en dualidades y compactificaciones de teoría M.', decays: 'Dependiente del fondo teórico.', formula: 'T_{M5}\\propto l_P^{-6}', theory: 'Teoría M', confidence: 'Sin confirmación experimental', sources: [NIST_PLANCK]
+  },
+  {
+    id: 'cosmic-string', symbol: '〰', name: 'cuerda cósmica', englishName: 'cosmic string', family: 'string', zone: 'planck', row: 2, column: 3,
+    mass: 'Energía por unidad de longitud', charge: 'Depende del modelo', spin: 'Defecto extendido', interactions: ['gravity'], evidence: 'hypothetical', discovered: 'No observada', lifetime: 'Potencialmente cosmológica',
+    antiparticle: '〰', antiparticleName: 'cuerda cósmica', selfConjugate: true, visual: 'cosmic-string', scale: 'Macroscópica, grosor microscópico', summary: 'Defecto topológico hipotético que podría atravesar distancias cosmológicas.',
+    composition: 'No debe confundirse automáticamente con una cuerda fundamental de teoría de cuerdas.', role: 'Podría producir lentes gravitacionales y ondas gravitacionales.', decays: 'Los bucles podrían radiar energía.',
+    formula: 'G\\mu/c^2', theory: 'Defectos topológicos / cosmología', confidence: 'Sin detección confirmada', mirrorNote: 'No tiene un equivalente de antimateria ordinario.', sources: [NIST_PLANCK]
   }
 ];
 

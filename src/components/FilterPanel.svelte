@@ -20,7 +20,7 @@
   <header><div><span class="eyebrow">EXPLORAR</span><h2>Filtrar el modelo</h2></div><button class="icon-button" type="button" aria-label="Cerrar filtros" onclick={onclose}><X size={18}/></button></header>
   <label class="search-field"><Search size={16}/><input value={query} oninput={(e) => onquery(e.currentTarget.value)} placeholder="electrón, spin, 1983…" /></label>
   <fieldset><legend>Familia</legend><div class="choice-grid">
-    {#each [['all','Todas'],['quark','Quarks'],['lepton','Leptones'],['gauge','Bosones gauge'],['scalar','Higgs']] as option}
+    {#each [['all','Todas'],['composite','Compuestas'],['quark','Quarks'],['lepton','Leptones'],['gauge','Bosones gauge'],['scalar','Higgs'],['theory','Hipotéticas'],['string','Cuerdas y branas']] as option}
       <button class:active={family === option[0]} type="button" onclick={() => onfamily(option[0] as ParticleFamily | 'all')}>{option[1]}</button>
     {/each}
   </div></fieldset>

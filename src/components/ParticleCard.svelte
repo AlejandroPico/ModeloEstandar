@@ -1,13 +1,16 @@
 <script lang="ts">
-  import { Atom, Eye, Sparkles } from '@lucide/svelte';
+  import { Atom, Sparkles } from '@lucide/svelte';
   import type { Particle } from '../data/types';
   import { interactionLabels } from '../data/particles';
+  import NodeVisual from './NodeVisual.svelte';
 
   let {
     particle,
     zoom = 1,
     selected = false,
     dimmed = false,
+    related = false,
+    constituent = false,
     antimatter = false,
     onselect
   }: {
@@ -15,6 +18,8 @@
     zoom?: number;
     selected?: boolean;
     dimmed?: boolean;
+    related?: boolean;
+    constituent?: boolean;
     antimatter?: boolean;
     onselect: (particle: Particle) => void;
   } = $props();
@@ -22,12 +27,16 @@
   const visibleSymbol = $derived(antimatter && !particle.selfConjugate ? particle.antiparticle : particle.symbol);
   const visibleName = $derived(antimatter && !particle.selfConjugate ? particle.antiparticleName : particle.name);
   const detailLevel = $derived(zoom < 0.95 ? 0 : zoom < 1.35 ? 1 : zoom < 1.9 ? 2 : 3);
+  const symbolWide = $derived(visibleSymbol.length > 1);
 </script>
 
 <button
   type="button"
   class:selected
   class:dimmed
+  class:related
+  class:constituent
+  class:antimatter-card={antimatter}
   class:theory={particle.family === 'theory'}
   class={`particle-card family-${particle.family}`}
   style={`--card-accent: var(--${particle.family});`}
@@ -40,7 +49,8 @@
     <span class="family-dot"><Atom size={12} strokeWidth={1.8} /></span>
   </span>
 
-  <span class="particle-symbol">{visibleSymbol}</span>
+  {#if particle.visual}<NodeVisual type={particle.visual}/>{/if}
+  <span class={`particle-symbol${symbolWide ? ' symbol-wide' : ''}`}>{visibleSymbol}</span>
   <span class="particle-name">{visibleName}</span>
 
   {#if detailLevel >= 1}
@@ -59,11 +69,9 @@
     </span>
   {/if}
 
-  {#if detailLevel >= 3}
-    <span class="inspect-hint"><Eye size={13} /> ficha científica</span>
-  {/if}
-
   {#if particle.evidence === 'hypothetical'}
     <span class="theory-mark"><Sparkles size={12} /> hipótesis</span>
+  {:else if antimatter}
+    <span class="theory-mark antimatter-mark">{particle.selfConjugate ? 'autoconjugada' : 'antimateria'}</span>
   {/if}
 </button>

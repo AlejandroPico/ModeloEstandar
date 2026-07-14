@@ -8,6 +8,7 @@
   let tab = $state<'summary' | 'properties' | 'interactions' | 'formula' | 'sources'>('summary');
   const visibleSymbol = $derived(antimatter && !particle.selfConjugate ? particle.antiparticle : particle.symbol);
   const visibleName = $derived(antimatter && !particle.selfConjugate ? particle.antiparticleName : particle.name);
+  const familyLabels = { quark: 'quark elemental', lepton: 'leptón elemental', gauge: 'bosón gauge', scalar: 'bosón escalar', composite: 'partícula compuesta', theory: 'partícula hipotética', string: 'objeto extendido teórico' } as const;
   const tabs = [
     { id: 'summary', label: 'Resumen', icon: BookOpen },
     { id: 'properties', label: 'Propiedades', icon: Scale },
@@ -22,7 +23,7 @@
     <div class="detail-identity">
       <span class="detail-symbol">{visibleSymbol}</span>
       <div>
-        <span class="eyebrow">{particle.evidence === 'observed' ? 'PARTÍCULA OBSERVADA' : 'HIPÓTESIS · NO OBSERVADA'}</span>
+        <span class="eyebrow">{particle.evidence === 'observed' ? (antimatter ? 'ESTADO DE ANTIMATERIA' : 'ESTRUCTURA OBSERVADA') : 'HIPÓTESIS · NO OBSERVADA'}</span>
         <h2>{visibleName}</h2>
         <p>{particle.englishName}</p>
       </div>
@@ -47,6 +48,18 @@
           <div><span>Carga eléctrica</span><strong>{particle.charge}</strong></div>
           <div><span>Spin</span><strong>{particle.spin}</strong></div>
         </div>
+        {#if particle.constituents?.length}
+          <article class="composition-card">
+            <span class="composition-label">CONSTRUIDA A PARTIR DE</span>
+            <h3>{particle.constituentSummary}</h3>
+            <div class="constituent-chips">
+              {#each [...new Set(particle.constituents)] as constituent}
+                <span>{constituent.replaceAll('-', ' ')}</span>
+              {/each}
+            </div>
+            <p>Al cerrar esta ficha, las tarjetas correspondientes permanecen iluminadas y conectadas en el lienzo.</p>
+          </article>
+        {/if}
         <article><h3>¿Qué es?</h3><p>{particle.composition}</p></article>
         <article><h3>Por qué importa</h3><p>{particle.role}</p></article>
         {#if particle.note}<aside class="science-note"><b>Matiz importante</b><p>{particle.note}</p></aside>{/if}
@@ -54,7 +67,7 @@
     {:else if tab === 'properties'}
       <section class="detail-section">
         <dl class="property-list">
-          <div><dt>Familia</dt><dd>{particle.family}</dd></div>
+          <div><dt>Familia</dt><dd>{familyLabels[particle.family]}</dd></div>
           {#if particle.generation}<div><dt>Generación</dt><dd>{particle.generation}</dd></div>{/if}
           <div><dt>Masa</dt><dd>{particle.mass}</dd></div>
           <div><dt>Carga</dt><dd>{particle.charge}</dd></div>
@@ -62,8 +75,12 @@
           <div><dt>Vida media / estado</dt><dd>{particle.lifetime}</dd></div>
           <div><dt>Antipartícula</dt><dd>{particle.selfConjugate ? 'Es su propia antipartícula' : `${particle.antiparticle} · ${particle.antiparticleName}`}</dd></div>
           <div><dt>Observación</dt><dd>{particle.discovered}</dd></div>
+          {#if particle.scale}<div><dt>Escala orientativa</dt><dd>{particle.scale}</dd></div>{/if}
+          {#if particle.theory}<div><dt>Marco teórico</dt><dd>{particle.theory}</dd></div>{/if}
+          {#if particle.confidence}<div><dt>Estado de evidencia</dt><dd>{particle.confidence}</dd></div>{/if}
           <div><dt>Carga de color</dt><dd>{particle.colorCharge ? 'Sí' : 'No'}</dd></div>
         </dl>
+        {#if antimatter && particle.mirrorNote}<aside class="science-note"><b>Sobre el reflejo</b><p>{particle.mirrorNote}</p></aside>{/if}
       </section>
     {:else if tab === 'interactions'}
       <section class="detail-section">

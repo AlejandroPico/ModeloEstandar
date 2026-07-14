@@ -1,67 +1,112 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import type { Particle, Interaction } from '../data/types';
+  import type { Particle, Interaction, ParticleZone } from '../data/types';
   import ParticleCard from './ParticleCard.svelte';
   import { clamp } from '../lib/format';
 
   let {
     particles,
+    compositeParticles = [],
     theoryParticles = [],
+    frontierObjects = [],
     showTheory = false,
     antimatter = false,
-    selectedId = '',
+    selectedKey = '',
     matches = new Set<string>(),
     filtering = false,
     onselect,
-    onzoom
+    onzoom,
+    oncount
   }: {
     particles: Particle[];
+    compositeParticles?: Particle[];
     theoryParticles?: Particle[];
+    frontierObjects?: Particle[];
     showTheory?: boolean;
     antimatter?: boolean;
-    selectedId?: string;
+    selectedKey?: string;
     matches?: Set<string>;
     filtering?: boolean;
-    onselect: (particle: Particle) => void;
+    onselect: (particle: Particle, mirror: boolean) => void;
     onzoom: (percent: number) => void;
+    oncount: (count: number, unique: number) => void;
   } = $props();
 
   let viewport: HTMLDivElement;
   let camera = $state({ x: 0, y: 0, scale: 1 });
   let dragging = $state(false);
-  let moved = $state(false);
   let pointer = { x: 0, y: 0 };
   let resizeObserver: ResizeObserver | undefined;
 
-  const worldWidth = 1080;
-  const worldHeight = $derived(showTheory ? 970 : 710);
-  const selected = $derived(particles.find((item) => item.id === selectedId));
+  const sideWidth = 1180;
+  const mirrorGap = 150;
+  const cardWidth = 180;
+  const cardHeight = 126;
+  const worldWidth = $derived(antimatter ? sideWidth * 2 + mirrorGap : sideWidth);
+  const worldHeight = $derived(showTheory ? 2180 : 1370);
+  const visibleNodes = $derived([
+    ...compositeParticles,
+    ...particles,
+    ...(showTheory ? [...theoryParticles, ...frontierObjects] : [])
+  ]);
+  const selectedMirror = $derived(selectedKey.startsWith('anti:'));
+  const selectedId = $derived(selectedKey.replace(/^anti:/, ''));
+  const selected = $derived(visibleNodes.find((item) => item.id === selectedId));
 
-  const positions = new Map<string, { x: number; y: number }>();
-  function positionFor(particle: Particle): { x: number; y: number } {
-    if (particle.family === 'theory') return { x: 52 + (particle.column - 1) * 202, y: 794 };
-    return { x: 52 + (particle.column - 1) * 202, y: 112 + (particle.row - 1) * 142 };
+  $effect(() => {
+    oncount(visibleNodes.length * (antimatter ? 2 : 1), visibleNodes.length);
+  });
+
+  function keyFor(particle: Particle, mirror: boolean): string {
+    return `${mirror ? 'anti:' : ''}${particle.id}`;
   }
 
-  function fit(animated = true): void {
+  function positionFor(particle: Particle, mirror = false): { x: number; y: number } {
+    const offset = mirror ? sideWidth + mirrorGap : 0;
+    if (particle.zone === 'atom') return { x: offset + 500, y: 94 };
+    if (particle.zone === 'composite') return { x: offset + 248 + (particle.column - 2) * 214, y: 340 + (particle.row - 1) * 145 };
+    if (particle.family === 'theory' || particle.zone === 'beyond') return { x: offset + 78 + (particle.column - 1) * 208, y: 1485 + (particle.row - 1) * 145 };
+    if (particle.family === 'string' || particle.zone === 'planck') return { x: offset + 78 + (particle.column - 1) * 208, y: 1880 + (particle.row - 1) * 145 };
+    return { x: offset + 78 + (particle.column - 1) * 208, y: 760 + (particle.row - 1) * 145 };
+  }
+
+  const zoneBounds: Record<ParticleZone | 'all', { y: number; height: number }> = {
+    atom: { y: 0, height: 285 },
+    composite: { y: 245, height: 345 },
+    standard: { y: 610, height: 745 },
+    beyond: { y: 1400, height: 390 },
+    planck: { y: 1800, height: 365 },
+    all: { y: 0, height: 2180 }
+  };
+
+  function focusZone(zone: ParticleZone | 'all' = 'standard', animated = true): void {
     if (!viewport) return;
+    const bounds = zoneBounds[zone];
     const rect = viewport.getBoundingClientRect();
-    const scale = clamp(Math.min((rect.width - 56) / worldWidth, (rect.height - 54) / worldHeight), 0.42, 1.2);
+    const availableWidth = rect.width - 76;
+    const availableHeight = rect.height - 118;
+    const targetHeight = zone === 'all' ? worldHeight : Math.min(bounds.height, worldHeight - bounds.y);
+    const scale = clamp(Math.min(availableWidth / worldWidth, availableHeight / targetHeight), 0.28, 1.45);
     camera = {
       scale,
       x: (rect.width - worldWidth * scale) / 2,
-      y: (rect.height - worldHeight * scale) / 2
+      y: (rect.height - targetHeight * scale) / 2 - bounds.y * scale
     };
-    if (animated) viewport.dataset.animating = 'true';
-    window.setTimeout(() => viewport?.removeAttribute('data-animating'), 380);
+    if (animated) {
+      viewport.dataset.animating = 'true';
+      window.setTimeout(() => viewport?.removeAttribute('data-animating'), 470);
+    }
     onzoom(Math.round(scale * 100));
   }
+
+  function resetView(): void { focusZone('standard'); }
+  function fitAll(): void { focusZone('all'); }
 
   function zoomAt(clientX: number, clientY: number, factor: number): void {
     const rect = viewport.getBoundingClientRect();
     const px = clientX - rect.left;
     const py = clientY - rect.top;
-    const next = clamp(camera.scale * factor, 0.42, 2.65);
+    const next = clamp(camera.scale * factor, 0.25, 2.8);
     const worldX = (px - camera.x) / camera.scale;
     const worldY = (py - camera.y) / camera.scale;
     camera = { scale: next, x: px - worldX * next, y: py - worldY * next };
@@ -77,7 +122,6 @@
     if (event.button !== 0) return;
     if (event.target instanceof Element && event.target.closest('button, a, input, [role="dialog"]')) return;
     dragging = true;
-    moved = false;
     pointer = { x: event.clientX, y: event.clientY };
     viewport.setPointerCapture(event.pointerId);
   }
@@ -86,7 +130,6 @@
     if (!dragging) return;
     const dx = event.clientX - pointer.x;
     const dy = event.clientY - pointer.y;
-    if (Math.abs(dx) + Math.abs(dy) > 2) moved = true;
     camera = { ...camera, x: camera.x + dx, y: camera.y + dy };
     pointer = { x: event.clientX, y: event.clientY };
   }
@@ -112,18 +155,35 @@
     if (interactions.includes('electromagnetic')) ids.add('photon');
     if (interactions.includes('weak')) { ids.add('z-boson'); ids.add('w-boson'); }
     if (interactions.includes('higgs')) ids.add('higgs');
-    return particles.filter((item) => ids.has(item.id) && item.id !== selectedId);
+    if (interactions.includes('gravity')) ids.add('graviton');
+    return visibleNodes.filter((item) => ids.has(item.id) && item.id !== selectedId);
+  }
+
+  function relationTargets(): Particle[] {
+    if (!selected) return [];
+    if (selected.constituents?.length) {
+      const ids = new Set(selected.constituents);
+      return visibleNodes.filter((item) => ids.has(item.id));
+    }
+    const reverse = visibleNodes.filter((item) => item.constituents?.includes(selected.id));
+    const forces = forceTargets(selected.interactions);
+    return [...new Map([...reverse, ...forces].map((item) => [item.id, item])).values()];
+  }
+
+  function isRelated(particle: Particle, mirror: boolean): boolean {
+    if (!selected) return false;
+    if (mirror !== selectedMirror) return antimatter && particle.id === selected.id;
+    return relationTargets().some((item) => item.id === particle.id);
   }
 
   onMount(() => {
-    for (const particle of [...particles, ...theoryParticles]) positions.set(particle.id, positionFor(particle));
-    resizeObserver = new ResizeObserver(() => fit(false));
+    resizeObserver = new ResizeObserver(() => focusZone('standard', false));
     resizeObserver.observe(viewport);
-    requestAnimationFrame(() => fit(false));
+    requestAnimationFrame(() => focusZone('standard', false));
     return () => resizeObserver?.disconnect();
   });
 
-  export { fit as resetView, zoomIn, zoomOut };
+  export { resetView, fitAll, focusZone, zoomIn, zoomOut };
 </script>
 
 <div
@@ -135,65 +195,75 @@
   onpointermove={pointerMove}
   onpointerup={pointerUp}
   onpointercancel={pointerUp}
-  ondblclick={(event) => { if (event.target === viewport) fit(); }}
+  ondblclick={(event) => { if (event.target === viewport) resetView(); }}
   role="application"
-  aria-label="Lienzo ampliable del Modelo Estándar. Usa la rueda para ampliar y arrastra el fondo para desplazarte."
+  aria-label="Enciclopedia ampliable de partículas y escalas. Usa la rueda para ampliar y arrastra el fondo para desplazarte."
 >
   <div class="particle-world" style={`width:${worldWidth}px;height:${worldHeight}px;transform:translate3d(${camera.x}px,${camera.y}px,0) scale(${camera.scale});`}>
-    <div class="world-heading matter-heading">
-      <span>PARTÍCULAS DE MATERIA</span>
-      <strong>fermiones · spin ½</strong>
-    </div>
-    <div class="world-heading force-heading">
-      <span>MEDIADORES</span>
-      <strong>bosones gauge · spin 1</strong>
-    </div>
-    <div class="generation-label g1"><small>GENERACIÓN</small><b>I</b><span>materia estable</span></div>
-    <div class="generation-label g2"><small>GENERACIÓN</small><b>II</b><span>más pesada</span></div>
-    <div class="generation-label g3"><small>GENERACIÓN</small><b>III</b><span>muy masiva</span></div>
-    <div class="family-label quarks">QUARKS</div>
-    <div class="family-label leptons">LEPTONES</div>
-    <div class="family-label gauge">FUERZAS</div>
-    <div class="family-label scalar">CAMPO</div>
+    {#each antimatter ? [false, true] : [false] as mirror}
+      {@const offset = mirror ? sideWidth + mirrorGap : 0}
+      <section class:mirror class="matter-universe" style={`left:${offset}px;width:${sideWidth}px;height:${worldHeight}px;`} aria-label={mirror ? 'Antimateria' : 'Materia'}>
+        <header class="universe-heading"><span>{mirror ? 'UNIVERSO ESPEJO' : 'ESTRUCTURA DE LA MATERIA'}</span><strong>{mirror ? 'antimateria y equivalentes autoconjugados' : 'de lo compuesto a lo elemental'}</strong></header>
 
-    {#if selected}
-      <svg class="interaction-lines" viewBox={`0 0 ${worldWidth} ${worldHeight}`} aria-hidden="true">
-        {#each forceTargets(selected.interactions) as target}
-          {@const from = positionFor(selected)}
-          {@const to = positionFor(target)}
-          <path d={`M ${from.x + 82} ${from.y + 60} C ${(from.x + to.x) / 2 + 82} ${from.y + 60}, ${(from.x + to.x) / 2 + 82} ${to.y + 60}, ${to.x + 82} ${to.y + 60}`} />
-        {/each}
+        <div class="zone-panel atom-zone"><span class="zone-scale">≈10⁻¹⁰ m</span><b>ÁTOMO</b><small>estructura electromagnética</small></div>
+        <div class="zone-panel composite-zone"><span class="zone-scale">≈10⁻¹⁵ m</span><b>HADRONES Y NÚCLEO</b><small>sistemas compuestos por quarks y gluones</small></div>
+        <div class="zone-panel standard-zone"><span class="zone-scale">&lt;10⁻¹⁹ m</span><b>MODELO ESTÁNDAR</b><small>sin estructura interna observada</small></div>
+
+        <div class="world-heading matter-heading"><span>PARTÍCULAS DE MATERIA</span><strong>fermiones · spin ½</strong></div>
+        <div class="world-heading force-heading"><span>MEDIADORES</span><strong>bosones gauge · spin 1</strong></div>
+        <div class="generation-label g1"><small>GENERACIÓN</small><b>I</b><span>materia estable</span></div>
+        <div class="generation-label g2"><small>GENERACIÓN</small><b>II</b><span>más pesada</span></div>
+        <div class="generation-label g3"><small>GENERACIÓN</small><b>III</b><span>muy masiva</span></div>
+        <div class="family-label quarks">QUARKS</div><div class="family-label leptons">LEPTONES</div><div class="family-label gauge">FUERZAS</div><div class="family-label scalar">CAMPO</div>
+
+        {#if showTheory}
+          <div class="zone-panel beyond-zone"><span class="zone-scale">NO OBSERVADO</span><b>MÁS ALLÁ DEL MODELO ESTÁNDAR</b><small>supersimetría, sectores oscuros y gravedad cuántica</small></div>
+          <div class="zone-panel planck-zone"><span class="zone-scale">ℓₚ = 1,616255 × 10⁻³⁵ m</span><b>FRONTERA DE PLANCK</b><small>cuerdas, branas y teoría M · marcos teóricos</small></div>
+        {/if}
+      </section>
+    {/each}
+
+    {#if antimatter}
+      <div class="mirror-axis" style={`left:${sideWidth + mirrorGap / 2}px;height:${worldHeight}px;`}><span>SIMETRÍA MATERIA ↔ ANTIMATERIA</span></div>
+      <svg class="mirror-flow" viewBox={`0 0 ${worldWidth} ${worldHeight}`} aria-hidden="true">
+        <path d={`M ${sideWidth - 54} 56 C ${sideWidth + 22} 18, ${sideWidth + mirrorGap - 22} 18, ${sideWidth + mirrorGap + 54} 56`} />
       </svg>
     {/if}
 
-    {#each particles as particle (particle.id)}
-      {@const position = positionFor(particle)}
-      <div class="card-position" style={`left:${position.x}px;top:${position.y}px;`}>
-        <ParticleCard
-          {particle}
-          zoom={camera.scale}
-          selected={particle.id === selectedId}
-          dimmed={filtering && !matches.has(particle.id)}
-          {antimatter}
-          {onselect}
-        />
-      </div>
-    {/each}
+    {#if selected}
+      <svg class="interaction-lines" viewBox={`0 0 ${worldWidth} ${worldHeight}`} aria-hidden="true">
+        {#each relationTargets() as target}
+          {@const from = positionFor(selected, selectedMirror)}
+          {@const to = positionFor(target, selectedMirror)}
+          <path class:composition-link={Boolean(selected.constituents?.length)} d={`M ${from.x + cardWidth / 2} ${from.y + cardHeight / 2} C ${(from.x + to.x) / 2 + cardWidth / 2} ${from.y + cardHeight / 2}, ${(from.x + to.x) / 2 + cardWidth / 2} ${to.y + cardHeight / 2}, ${to.x + cardWidth / 2} ${to.y + cardHeight / 2}`} />
+        {/each}
+        {#if antimatter}
+          {@const origin = positionFor(selected, selectedMirror)}
+          {@const counterpart = positionFor(selected, !selectedMirror)}
+          <path class="mirror-link" d={`M ${origin.x + cardWidth / 2} ${origin.y + cardHeight / 2} C ${sideWidth + mirrorGap / 2} ${origin.y - 70}, ${sideWidth + mirrorGap / 2} ${counterpart.y - 70}, ${counterpart.x + cardWidth / 2} ${counterpart.y + cardHeight / 2}`} />
+        {/if}
+      </svg>
+    {/if}
 
-    {#if showTheory}
-      <section class="theory-zone" aria-label="Partículas hipotéticas">
-        <span class="theory-zone-kicker">FUERA DEL MODELO ESTÁNDAR</span>
-        <strong>Territorio hipotético</strong>
-        <p>Ideas con motivación teórica, pero sin detección confirmada.</p>
-      </section>
-      {#each theoryParticles as particle (particle.id)}
-        {@const position = positionFor(particle)}
-        <div class="card-position" style={`left:${position.x}px;top:${position.y}px;`}>
-          <ParticleCard {particle} zoom={camera.scale} selected={particle.id === selectedId} {antimatter} {onselect} />
+    {#each antimatter ? [false, true] : [false] as mirror}
+      {#each visibleNodes as particle (keyFor(particle, mirror))}
+        {@const position = positionFor(particle, mirror)}
+        {@const key = keyFor(particle, mirror)}
+        <div class="card-position" style={`left:${position.x}px;top:${position.y}px;width:${cardWidth}px;height:${cardHeight}px;`}>
+          <ParticleCard
+            {particle}
+            zoom={camera.scale}
+            selected={key === selectedKey}
+            related={isRelated(particle, mirror)}
+            constituent={Boolean(selected?.constituents?.includes(particle.id) && mirror === selectedMirror)}
+            dimmed={filtering && !matches.has(particle.id)}
+            antimatter={mirror}
+            onselect={(item) => onselect(item, mirror)}
+          />
         </div>
       {/each}
-    {/if}
+    {/each}
   </div>
 
-  <div class="viewport-help" aria-hidden="true">rueda para ampliar · arrastra para recorrer · doble clic para encajar</div>
+  <div class="viewport-help" aria-hidden="true">rueda para ampliar · arrastra para recorrer · doble clic para volver al Modelo Estándar</div>
 </div>
