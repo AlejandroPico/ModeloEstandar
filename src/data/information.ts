@@ -1,10 +1,11 @@
-import { compositeParticles, frontierObjects, interactionLabels, particles, theoryParticles } from './particles';
+import { compositeParticles, frontierObjects, interactionLabels, particles, technologyObjects, theoryParticles } from './particles';
 import { forceEntities } from './forces';
 import { encyclopediaChapters, type ManualChapter, type ManualSection } from './science';
 import type { Interaction, Particle } from './types';
 
 export const catalogParticles: Particle[] = [
   ...particles,
+  ...technologyObjects,
   ...forceEntities,
   ...compositeParticles,
   ...theoryParticles,
@@ -19,7 +20,8 @@ const familyName: Record<Particle['family'], string> = {
   composite: 'sistema compuesto',
   force: 'interacción fundamental',
   theory: 'entidad hipotética',
-  string: 'objeto extendido teórico'
+  string: 'objeto extendido teórico',
+  technology: 'referencia tecnológica'
 };
 
 const groupName: Record<Particle['family'], string> = {
@@ -30,7 +32,8 @@ const groupName: Record<Particle['family'], string> = {
   composite: 'Materia compuesta',
   force: 'Interacciones',
   theory: 'Hipótesis y candidatos',
-  string: 'Cuerdas y branas'
+  string: 'Cuerdas y branas',
+  technology: 'Referencias de escala'
 };
 
 const interactionExplanation: Record<Interaction, string> = {
@@ -48,6 +51,7 @@ function interactionReport(particle: Particle): string {
 }
 
 function detectionReport(particle: Particle): string {
+  if (particle.family === 'technology') return `La ficha compara una dimensión funcional publicada —por ejemplo, longitud de puerta o transferencia— con escalas atómicas. Esa cifra no describe el tamaño completo del dispositivo ni equivale al nombre comercial de un nodo de fabricación.\n\nSe trata de una demostración experimental de ingeniería, no de una partícula ni de una capa adicional de materia.`;
   if (particle.evidence === 'hypothetical') return `No se ha reconstruido una señal aceptada para ${particle.name}. Los experimentos buscan productos visibles, energía o momento faltantes, resonancias, desviaciones angulares o alteraciones de tasas compatibles con ${particle.theory ?? 'el modelo que la predice'}. Cuando no aparece una señal, se publican límites sobre masas, vidas medias y acoplamientos.\n\nLa ausencia de detección no demuestra que toda versión de la idea sea imposible: restringe una región concreta de parámetros y depende de la energía, luminosidad, aceptación del detector y supuestos usados en el análisis.`;
   if (particle.family === 'composite') return `Los sistemas compuestos se identifican mediante masa invariante, carga, spin, vida media, productos de reacción y patrones espectroscópicos. La dispersión con sondas de longitud de onda pequeña permite medir factores de forma y resolver distribuciones internas.\n\nLa composición no se obtiene abriendo físicamente el objeto, sino comprobando que un modelo con constituyentes reproduce simultáneamente las secciones eficaces, los cocientes de desintegración y la dependencia con la transferencia de momento.`;
   if (particle.family === 'force') return `Una interacción no se descubre como una pieza aislada. Se establece a partir de regularidades entre procesos, leyes de conservación, dependencias angulares, alcance efectivo y variación del acoplamiento con la energía.\n\nLa evidencia más fuerte procede de que una misma estructura matemática explique numerosos experimentos distintos y anticipe nuevos mediadores o relaciones cuantitativas que después son observadas.`;
@@ -62,6 +66,7 @@ function historyReport(particle: Particle): string {
 }
 
 function compositionReport(particle: Particle): string {
+  if (particle.family === 'technology') return `${particle.composition}\n\nSus materiales contienen átomos y electrones ya representados en el atlas; el dispositivo emerge al organizarlos. La capa permanece separada para evitar mezclar un objeto fabricado con constituyentes fundamentales.`;
   if (particle.constituents?.length) return `${particle.composition}\n\nEl atlas resume la relación como “${particle.constituentSummary ?? particle.constituents.join(' + ')}”. Es una notación didáctica: los constituyentes forman un sistema cuántico dinámico con energía de interacción, polarización del vacío y, cuando corresponde, componentes adicionales más allá del contenido de valencia.`;
   if (particle.family === 'force') return `${particle.composition}\n\nUna interacción no debe imaginarse como materia compuesta. Se representa mediante campos, simetrías, cargas y mediadores. La ficha enlaza estos elementos para mostrar la relación entre el concepto de fuerza y los cuantos observables del campo.`;
   if (particle.family === 'string') return `${particle.composition}\n\nEl objeto es extendido por construcción matemática. Su dimensionalidad, tensión, modos permitidos y espacio de fondo determinan el espectro efectivo; ninguna visualización del atlas constituye una observación microscópica.`;
@@ -69,6 +74,7 @@ function compositionReport(particle: Particle): string {
 }
 
 function antimatterReport(particle: Particle, mirror: boolean): string {
+  if (particle.family === 'technology') return 'No se genera un “antitransistor” en el universo espejo. La función de esta ficha es únicamente comparar una escala de ingeniería con las escalas físicas del atlas.';
   if (mirror) return `${particle.antiparticleName} posee la misma masa y el mismo spin que ${particle.name}, mientras se invierten las cargas aditivas pertinentes. Su símbolo en el atlas es ${particle.antiparticle}.\n\nNo es una copia decorativa: corresponde a un estado físico distinto siempre que la partícula no sea autoconjugada. Sus canales deben respetar las mismas leyes de conservación bajo conjugación de carga, con las asimetrías permitidas por violación CP.`;
   if (particle.selfConjugate) return `${particle.name} se trata en el atlas como estado autoconjugado: su antipartícula no constituye una especie separada. Esto no significa que carezca de todos los números cuánticos, sino que la operación partícula–antipartícula devuelve el mismo tipo de cuanto.\n\nEn el universo espejo se repite para conservar la correspondencia visual, pero no debe contarse como una entidad física adicional.`;
   return `La antipartícula asociada es ${particle.antiparticleName}, con símbolo ${particle.antiparticle}. Conserva masa y spin, mientras invierte las cargas aditivas apropiadas.\n\nEl atlas puede desplegar este estado en la estructura espejo. Materia y antimateria no significan masa positiva y negativa: ambas transportan energía positiva y responden gravitatoriamente según las pruebas disponibles.`;

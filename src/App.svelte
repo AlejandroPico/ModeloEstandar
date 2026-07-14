@@ -13,7 +13,7 @@
   import LegendPanel from './components/LegendPanel.svelte';
   import DataPanel from './components/DataPanel.svelte';
   import EncyclopediaModal from './components/EncyclopediaModal.svelte';
-  import { compositeParticles, frontierObjects, particles, theoryParticles } from './data/particles';
+  import { compositeParticles, frontierObjects, particles, technologyObjects, theoryParticles } from './data/particles';
   import { forceEntities } from './data/forces';
   import type { Interaction, LayerId, Particle, ParticleFamily } from './data/types';
   import { resolveSolarTheme } from './lib/solarTheme';
@@ -27,7 +27,9 @@
   let viewCamera = $state({ x: 0, y: 0, scale: 1 });
   let axisAnimated = $state(false);
   let axisTimer = 0;
-  let layers = $state<Record<LayerId, boolean>>({ composites: true, forces: true, antimatter: false, susy: false, 'dark-sector': false, 'quantum-gravity': false, strings: false });
+  let axisPositions = $state<number[]>([]);
+  let axisBreakY = $state(0);
+  let layers = $state<Record<LayerId, boolean>>({ composites: true, forces: true, antimatter: false, susy: false, 'dark-sector': false, 'collider-candidates': false, 'quantum-gravity': false, strings: false, technology: false });
   let showFormula = $state(false);
   let hudPanel = $state<'search' | 'legend' | 'data' | 'filter' | 'layers' | null>(null);
   let showEncyclopedia = $state(false);
@@ -44,16 +46,18 @@
 
   const visibleComposites = $derived(layers.composites ? compositeParticles : []);
   const visibleForces = $derived(layers.forces ? forceEntities : []);
+  const visibleTechnology = $derived(layers.technology ? technologyObjects : []);
   const visibleTheory = $derived(theoryParticles.filter((particle) => {
     if (['neutralino', 'gluino', 'sfermions', 'chargino'].includes(particle.id)) return layers.susy;
-    if (['axion', 'sterile-neutrino', 'dark-photon'].includes(particle.id)) return layers['dark-sector'];
+    if (['axion', 'sterile-neutrino', 'dark-photon', 'dark-higgs', 'dark-meson'].includes(particle.id)) return layers['dark-sector'];
+    if (['leptoquark', 'heavy-neutral-lepton', 'z-prime', 'w-prime', 'vector-like-quark', 'q-ball', 'dyon'].includes(particle.id)) return layers['collider-candidates'];
     return layers['quantum-gravity'];
   }));
   const visibleFrontier = $derived(layers.strings ? frontierObjects : []);
   const showTheory = $derived(visibleTheory.length > 0 || visibleFrontier.length > 0);
   const antimatter = $derived(layers.antimatter);
-  const activeNodes = $derived([...visibleComposites, ...visibleForces, ...particles, ...visibleTheory, ...visibleFrontier]);
-  const catalogNodes = [...compositeParticles, ...forceEntities, ...particles, ...theoryParticles, ...frontierObjects];
+  const activeNodes = $derived([...visibleTechnology, ...visibleComposites, ...visibleForces, ...particles, ...visibleTheory, ...visibleFrontier]);
+  const catalogNodes = [...technologyObjects, ...compositeParticles, ...forceEntities, ...particles, ...theoryParticles, ...frontierObjects];
   const observedCount = $derived(activeNodes.filter((particle) => particle.evidence === 'observed').length);
   const hypotheticalCount = $derived(activeNodes.filter((particle) => particle.evidence === 'hypothetical').length);
   const selectedKey = $derived(selected ? `${selectedMirror ? 'anti:' : ''}${selected.id}` : '');
@@ -90,11 +94,14 @@
 
   function revealSearchResult(result: { particle: Particle; mirror: boolean }): void {
     const particle = result.particle;
+    if (particle.layer && particle.layer !== 'antimatter') layers[particle.layer] = true;
     if (particle.family === 'composite') layers.composites = true;
     if (particle.family === 'force') layers.forces = true;
+    if (particle.family === 'technology') layers.technology = true;
     if (['neutralino', 'gluino', 'sfermions', 'chargino'].includes(particle.id)) layers.susy = true;
-    if (['axion', 'sterile-neutrino', 'dark-photon'].includes(particle.id)) layers['dark-sector'] = true;
-    if (particle.family === 'theory' && !['neutralino', 'gluino', 'sfermions', 'chargino', 'axion', 'sterile-neutrino', 'dark-photon'].includes(particle.id)) layers['quantum-gravity'] = true;
+    if (['axion', 'sterile-neutrino', 'dark-photon', 'dark-higgs', 'dark-meson'].includes(particle.id)) layers['dark-sector'] = true;
+    if (['leptoquark', 'heavy-neutral-lepton', 'z-prime', 'w-prime', 'vector-like-quark', 'q-ball', 'dyon'].includes(particle.id)) layers['collider-candidates'] = true;
+    if (particle.family === 'theory' && !['neutralino', 'gluino', 'sfermions', 'chargino', 'axion', 'sterile-neutrino', 'dark-photon', 'dark-higgs', 'dark-meson', 'leptoquark', 'heavy-neutral-lepton', 'z-prime', 'w-prime', 'vector-like-quark', 'q-ball', 'dyon'].includes(particle.id)) layers['quantum-gravity'] = true;
     if (particle.family === 'string') layers.strings = true;
     if (result.mirror) layers.antimatter = true;
     selected = particle;
@@ -125,7 +132,8 @@
     layers[layer] = !layers[layer];
     window.setTimeout(() => {
       if (layer === 'strings' && layers[layer]) viewport?.focusZone?.('planck');
-      else if (['susy', 'dark-sector', 'quantum-gravity'].includes(layer) && layers[layer]) viewport?.focusZone?.('beyond');
+      else if (layer === 'technology' && layers[layer]) viewport?.focusZone?.('technology');
+      else if (['susy', 'dark-sector', 'collider-candidates', 'quantum-gravity'].includes(layer) && layers[layer]) viewport?.focusZone?.('beyond');
       else if (layer === 'forces' && layers[layer]) viewport?.focusZone?.('forces');
       else viewport?.focusZone?.('standard');
     }, 40);
@@ -178,6 +186,7 @@
     {particles}
     compositeParticles={visibleComposites}
     forceEntities={visibleForces}
+    technologyObjects={visibleTechnology}
     theoryParticles={visibleTheory}
     frontierObjects={visibleFrontier}
     {showTheory}
@@ -188,10 +197,11 @@
     onselect={selectParticle}
     onzoom={(value) => zoomPercent = value}
     oncamera={updateViewCamera}
+    onlayout={(positions, breakY) => { axisPositions = positions; axisBreakY = breakY; }}
     oncount={(count, unique) => { displayedCount = count; uniqueCount = unique; }}
   />
 
-  <ScaleAxis camera={viewCamera} animated={axisAnimated}/>
+  <ScaleAxis camera={viewCamera} animated={axisAnimated} positions={axisPositions} breakWorldY={axisBreakY}/>
 
   {#if filtering}
     <div class="results-badge"><Search size={14}/><b>{matches.size}</b> de {activeNodes.length} fichas <button type="button" onclick={resetFilters} aria-label="Quitar filtros"><X size={13}/></button></div>

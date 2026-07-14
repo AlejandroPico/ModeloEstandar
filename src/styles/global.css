@@ -20,6 +20,7 @@
   --force: #42d9b4;
   --theory: #70b9ff;
   --string: #ff9ed2;
+  --technology: #57c7f3;
   --strong: #ff657f;
   --electromagnetic: #ffd45f;
   --weak: #73a4ff;
@@ -292,7 +293,7 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
 }
 
-/* v0.4 · manual, regla fija, HUD rectangular y fichas con LOD real */
+/* v0.6 · marcos dinámicos, escala ampliada y fichas con LOD real */
 .hud-toolbar {
   position: absolute;
   border-radius: 0;
@@ -483,3 +484,17 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
   .manual-layout { grid-template-columns: 150px 1fr; }.manual-index > label { margin: 8px; }.manual-index nav button { grid-template-columns: 1fr 12px; min-height: 54px; padding: 8px; }.manual-index nav button > span:first-child { display: none; }.manual-index nav button small { display: none; }.manual-index > footer { display: none; }.manual-reader { padding: 24px 18px 35px; }.manual-chapter-number { font-size: 3rem; }.manual-reader > header h2 { padding-right: 34px; }.manual-intro { font-size: .68rem; }
   .formula-library-layout { grid-template-columns: 145px 1fr; }.formula-library-index > label { margin: 8px; }.formula-library-index nav small { display: none; }.formula-library-reader { padding: 24px 16px 36px; }.formula-report-grid { grid-template-columns: 1fr; }.formula-report-grid section:last-child { grid-column: auto; }.formula-references > div, .manual-references > div { grid-template-columns: 1fr; }
 }
+
+/* El lienzo ampliado calcula las alturas en Svelte; aquí se fija sólo su ancho útil. */
+.universe-heading { left: 90px; right: 90px; }
+.zone-panel { left: 90px; width: 1240px; }
+.technology-zone { border-color: color-mix(in srgb, var(--technology), transparent 55%); background: linear-gradient(145deg, color-mix(in srgb, var(--technology), transparent 93%), color-mix(in srgb, var(--panel-solid), transparent 8%)); }
+.matter-heading { left: 130px; width: 700px; }
+.force-heading { left: 865px; width: 455px; }
+.g1 { left: 130px; }.g2 { left: 375px; }.g3 { left: 620px; }
+.family-label { left: 100px; }
+.family-label.gauge { left: 840px; }
+.family-label.scalar { left: 1085px; }
+.particle-card.family-technology { border-color: color-mix(in srgb, var(--technology), transparent 35%); background: linear-gradient(145deg, color-mix(in srgb, var(--technology), var(--panel-solid) 84%), var(--panel-solid)); }
+.detail-panel.family-technology::before { background: var(--technology); }
+.family-technology .detail-symbol { background: color-mix(in srgb, var(--technology), transparent 86%); }

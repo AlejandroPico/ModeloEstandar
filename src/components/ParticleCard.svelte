@@ -33,6 +33,8 @@
       ? 'ANTIMATERIA'
       : particle.evidence === 'hypothetical'
         ? 'HIPÓTESIS'
+        : particle.family === 'technology'
+          ? 'TECNOLOGÍA'
         : particle.family === 'force'
           ? 'INTERACCIÓN'
           : 'OBSERVADA'
@@ -46,7 +48,7 @@
   class:related
   class:constituent
   class:antimatter-card={antimatter}
-  class:theory={particle.family === 'theory'}
+  class:theory={particle.evidence === 'hypothetical'}
   class={`particle-card family-${particle.family}`}
   style={`--card-accent: var(--${particle.family});`}
   aria-label={`Abrir ficha de ${visibleName}`}

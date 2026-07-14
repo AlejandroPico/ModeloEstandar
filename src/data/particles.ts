@@ -5,6 +5,15 @@ const CERN_SM: SourceLink = { label: 'CERN · The Standard Model', url: 'https:/
 const CERN_HIGGS: SourceLink = { label: 'CERN · The Higgs boson', url: 'https://home.cern/science/physics/higgs-boson/' };
 const CERN_SUSY: SourceLink = { label: 'CERN · Supersymmetry', url: 'https://home.cern/science/physics/supersymmetry/' };
 const NIST_PLANCK: SourceLink = { label: 'NIST · CODATA Planck length', url: 'https://physics.nist.gov/cgi-bin/cuu/Value?plkl=' };
+const CERN_EXTRA_DIMENSIONS: SourceLink = { label: 'CERN · Extra dimensions and Kaluza–Klein states', url: 'https://home.cern/science/physics/extra-dimensions-gravitons-and-tiny-black-holes/' };
+const CERN_EXOTIC_HADRONS: SourceLink = { label: 'CERN · Bestiary of exotic hadrons', url: 'https://home.cern/bestiary-exotic-hadrons/' };
+const ATLAS_LEPTOQUARK: SourceLink = { label: 'ATLAS · Direct searches for leptoquarks', url: 'https://atlas.cern/Tags/leptoquarks' };
+const CMS_HNL: SourceLink = { label: 'CMS · Search for heavy neutral leptons', url: 'https://arxiv.org/abs/2403.00100' };
+const ATLAS_HEAVY: SourceLink = { label: 'ATLAS · Searches for new high-mass particles', url: 'https://atlas.cern/Updates/Briefing/Search-High-Mass-Particles' };
+const ATLAS_DARK_MESONS: SourceLink = { label: 'ATLAS · Direct search for dark mesons', url: 'https://atlas.cern/Updates/Briefing/Dark-Mesons' };
+const ATLAS_LHCP2024: SourceLink = { label: 'ATLAS · Exotic new-physics searches at LHCP 2024', url: 'https://atlas.cern/Updates/News/Summary-LHCP-2024' };
+const CERN_MOEDAL: SourceLink = { label: 'CERN · MoEDAL-MAPP exotic-particle programme', url: 'https://home.cern/science/experiments/moedal-mapp/' };
+const NATURE_ATOMIC_TRANSISTOR: SourceLink = { label: 'Nature Communications · Atomic transistors', url: 'https://www.nature.com/articles/s41467-022-32582-9' };
 
 const common = { evidence: 'observed' as const, sources: [PDG, CERN_SM] };
 
@@ -203,24 +212,102 @@ export const theoryParticles: TheoryParticle[] = [
     antiparticle: 'M̄?', antiparticleName: 'antimonopolo magnético', summary: 'Objeto hipotético con un único polo magnético, predicho por varias teorías de gran unificación.', composition: 'Solitón o partícula, según la teoría.',
     role: 'Explicaría la cuantización de la carga eléctrica.', decays: 'No establecido.', formula: 'eg=\\frac{n\\hbar c}{2}',
     theory: 'Gran unificación / Dirac', confidence: 'Sin detección experimental', sources: [PDG]
+  },
+  {
+    id: 'leptoquark', symbol: 'LQ?', name: 'leptoquark', englishName: 'leptoquark', family: 'theory', zone: 'beyond', layer: 'collider-candidates', row: 3, column: 1,
+    mass: 'Desconocida; límites dependen del modelo', charge: 'Fraccionaria según el estado', spin: '0 o 1', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'hypothetical', discovered: 'Buscado en ATLAS y CMS · no observado', lifetime: 'Dependiente del acoplamiento',
+    antiparticle: 'LQ̄?', antiparticleName: 'antileptoquark', colorCharge: true, summary: 'Bosón hipotético que conectaría directamente los sectores de quarks y leptones.', composition: 'Partícula elemental o compuesta según el modelo; transportaría simultáneamente números cuánticos leptónicos y de color.',
+    role: 'Aparece en teorías de gran unificación y en explicaciones de posibles anomalías de sabor.', decays: 'Se buscaría en pares quark–leptón y firmas resonantes.', formula: '\\mathcal L\\supset\\lambda\\,LQ\\,\\bar q\\ell',
+    theory: 'Gran unificación / extensiones del sabor', confidence: 'Búsquedas directas activas; sin señal confirmada', sources: [ATLAS_LEPTOQUARK, PDG]
+  },
+  {
+    id: 'heavy-neutral-lepton', symbol: 'N?', name: 'leptón neutro pesado', englishName: 'heavy neutral lepton', family: 'theory', zone: 'beyond', layer: 'collider-candidates', row: 3, column: 2,
+    mass: 'Desde MeV hasta TeV según el modelo', charge: '0', spin: '½', interactions: ['weak', 'higgs'], evidence: 'hypothetical', discovered: 'Buscado por CMS y otros experimentos · no observado', lifetime: 'Puede ser larga si la mezcla es pequeña',
+    antiparticle: 'N̄?', antiparticleName: 'antileptón neutro pesado', summary: 'Estado neutro pesado, de tipo Dirac o Majorana, que podría mezclarse con los neutrinos conocidos.', composition: 'Fermión adicional; generaliza la idea de neutrino estéril a regímenes de masa accesibles a colisionadores.',
+    role: 'Podría explicar masas de neutrinos y contribuir a la asimetría materia–antimateria.', decays: 'Podría producir vértices desplazados o estados con varios leptones.', formula: '\\nu_\\alpha=U_{\\alpha i}\\nu_i+V_{\\alpha N}N',
+    theory: 'Mecanismos seesaw / sector neutrino', confidence: 'CMS no observa evidencia y publica límites sobre la mezcla', sources: [CMS_HNL, PDG]
+  },
+  {
+    id: 'z-prime', symbol: 'Z′?', name: 'bosón Z prima', englishName: 'Z-prime boson', family: 'theory', zone: 'beyond', layer: 'collider-candidates', row: 3, column: 3,
+    mass: 'Desconocida; típicamente alta en búsquedas LHC', charge: '0', spin: '1', interactions: ['weak', 'higgs'], evidence: 'hypothetical', discovered: 'Buscado en resonancias y jets oscuros · no observado', lifetime: 'Dependiente del modelo',
+    antiparticle: 'Z′?', antiparticleName: 'bosón Z prima', selfConjugate: true, summary: 'Bosón gauge neutro adicional asociado a una posible nueva simetría U(1).', composition: 'Mediador vectorial elemental hipotético.',
+    role: 'Podría conectar el sector visible con materia oscura o revelar una fuerza adicional.', decays: 'Se busca en pares de leptones, quarks o chorros oscuros.', formula: '\\mathcal L\\supset g_{Z^\\prime}Z^\\prime_\\mu J^\\mu',
+    theory: 'Simetrías gauge extendidas / sectores oscuros', confidence: 'Sin resonancia confirmada', sources: [ATLAS_HEAVY, ATLAS_DARK_MESONS]
+  },
+  {
+    id: 'w-prime', symbol: 'W′?', name: 'bosón W prima', englishName: 'W-prime boson', family: 'theory', zone: 'beyond', layer: 'collider-candidates', row: 3, column: 4,
+    mass: 'Desconocida; típicamente alta en búsquedas LHC', charge: '±1 e', spin: '1', interactions: ['electromagnetic', 'weak', 'higgs'], evidence: 'hypothetical', discovered: 'Buscado como bosón vectorial pesado · no observado', lifetime: 'Dependiente del modelo',
+    antiparticle: 'W′∓?', antiparticleName: 'bosón W prima de carga opuesta', summary: 'Bosón cargado pesado adicional, análogo extendido del W.', composition: 'Mediador vectorial hipotético de grupos gauge ampliados.',
+    role: 'Probaría nuevas simetrías electrodébiles o sectores de bosones vectoriales pesados.', decays: 'Se busca en leptón–neutrino, quarks y pares de bosones.', formula: '\\mathcal L\\supset g^\\prime W_\\mu^{\\prime}J^\\mu',
+    theory: 'Gauge extendido / tripletes vectoriales pesados', confidence: 'Sin señal confirmada', sources: [ATLAS_HEAVY, PDG]
+  },
+  {
+    id: 'vector-like-quark', symbol: 'T/B?', name: 'quark vectorial pesado', englishName: 'vector-like quark', family: 'theory', zone: 'beyond', layer: 'collider-candidates', row: 3, column: 5,
+    mass: 'Desconocida; búsquedas en el régimen TeV', charge: 'Según el estado', spin: '½', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'hypothetical', discovered: 'Buscado por ATLAS y CMS · no observado', lifetime: 'Dependiente de mezcla y masa',
+    antiparticle: 'T̄/B̄?', antiparticleName: 'antiquark vectorial pesado', colorCharge: true, summary: 'Quark hipotético cuyos componentes quirales transformarían igual bajo la interacción electrodébil.', composition: 'Fermión coloreado adicional, no una cuarta generación ordinaria.',
+    role: 'Aparece en modelos de Higgs compuesto, dimensiones extra y soluciones al problema de naturalidad.', decays: 'Podría decaer a quarks junto con W, Z o Higgs.', formula: '\\mathcal L\\supset-M_Q\\bar QQ',
+    theory: 'Quarks vectoriales / Higgs compuesto', confidence: 'Búsquedas directas activas; sin detección', sources: [ATLAS_LHCP2024, PDG]
+  },
+  {
+    id: 'dark-higgs', symbol: 'hᴅ?', name: 'Higgs oscuro', englishName: 'dark Higgs boson', family: 'theory', zone: 'beyond', layer: 'dark-sector', row: 4, column: 1,
+    mass: 'Desconocida', charge: 'Habitualmente 0', spin: '0', interactions: ['higgs'], evidence: 'hypothetical', discovered: 'No observado', lifetime: 'Dependiente de los portales',
+    antiparticle: 'hᴅ?', antiparticleName: 'Higgs oscuro', selfConjugate: true, summary: 'Escalar hipotético que rompería una simetría en un sector oscuro y podría mezclarse con el Higgs conocido.', composition: 'Bosón escalar elemental hipotético.',
+    role: 'Daría masa a partículas oscuras y proporcionaría un portal con el Modelo Estándar.', decays: 'Canales visibles o invisibles según la mezcla.', formula: '\\mathcal L\\supset\\lambda_{HS}|H|^2|S|^2',
+    theory: 'Portal del Higgs / sectores oscuros', confidence: 'Sin detección confirmada', sources: [ATLAS_LHCP2024, PDG]
+  },
+  {
+    id: 'dark-meson', symbol: 'πᴅ?', name: 'mesón oscuro', englishName: 'dark meson', family: 'theory', zone: 'beyond', layer: 'dark-sector', row: 4, column: 2,
+    mass: 'Desconocida', charge: 'Bajo una fuerza oscura', spin: '0 o 1', interactions: ['higgs'], evidence: 'hypothetical', discovered: 'Primera búsqueda directa de ATLAS en 2024 · no observado', lifetime: 'Puede ser larga',
+    antiparticle: 'π̄ᴅ?', antiparticleName: 'antimesón oscuro', summary: 'Estado compuesto hipotético de constituyentes oscuros, análogo a piones o rho de QCD.', composition: 'Partícula compuesta dentro de una posible fuerza confinante oscura.',
+    role: 'Proporcionaría una estructura interna para parte de la materia oscura.', decays: 'Podría producir chorros oscuros o decaer a quarks pesados mediante un portal.', formula: '\\pi_D\\sim\\bar q_Dq_D',
+    theory: 'QCD oscura / valle oculto', confidence: 'ATLAS no observa señal y establece límites', sources: [ATLAS_DARK_MESONS]
+  },
+  {
+    id: 'q-ball', symbol: 'Q?', name: 'Q-ball', englishName: 'Q-ball', family: 'theory', zone: 'beyond', layer: 'collider-candidates', row: 4, column: 3,
+    mass: 'Macroscópica o subatómica según el modelo', charge: 'Conservada; puede ser grande', spin: 'Solitón escalar', interactions: ['electromagnetic', 'higgs'], evidence: 'hypothetical', discovered: 'Buscado por detectores de exóticas · no observado', lifetime: 'Potencialmente estable',
+    antiparticle: 'Q̄?', antiparticleName: 'anti-Q-ball', summary: 'Solitón no topológico hipotético formado por un campo escalar con una carga global conservada.', composition: 'Configuración colectiva de campo, no una partícula puntual elemental.',
+    role: 'Candidato en cosmología, materia oscura y algunos escenarios supersimétricos.', decays: 'Dependiente del potencial y de la carga.', formula: 'Q=\\int d^3x\\,j^0',
+    theory: 'Solitones no topológicos', confidence: 'Programa de búsqueda reconocido; sin detección', sources: [CERN_MOEDAL, PDG]
+  },
+  {
+    id: 'dyon', symbol: 'Dᵍ?', name: 'dyon', englishName: 'dyon', family: 'theory', zone: 'beyond', layer: 'collider-candidates', row: 4, column: 4,
+    mass: 'Desconocida', charge: 'Eléctrica y magnética', spin: 'Dependiente del modelo', interactions: ['electromagnetic'], evidence: 'hypothetical', discovered: 'Buscado por MoEDAL-MAPP · no observado', lifetime: 'Potencialmente estable',
+    antiparticle: 'D̄ᵍ?', antiparticleName: 'antidyon', summary: 'Objeto hipotético que portaría simultáneamente carga eléctrica y magnética.', composition: 'Partícula o solitón según el marco teórico.',
+    role: 'Extiende la idea del monopolo y aparece en teorías gauge y dualidades.', decays: 'No establecido.', formula: '(q,g)\\neq(0,0)',
+    theory: 'Teorías gauge / dualidad eléctrica-magnética', confidence: 'Sin detección experimental', sources: [CERN_MOEDAL, PDG]
+  },
+  {
+    id: 'micro-black-hole', symbol: 'μBH?', name: 'microagujero negro', englishName: 'microscopic black hole', family: 'theory', zone: 'beyond', layer: 'quantum-gravity', row: 4, column: 5,
+    mass: 'Dependiente de la escala de gravedad', charge: 'Variable', spin: 'Variable', interactions: ['gravity'], evidence: 'hypothetical', discovered: 'Buscado en escenarios de dimensiones extra · no observado', lifetime: 'Hipotéticamente muy breve',
+    antiparticle: 'μBH?', antiparticleName: 'microagujero negro', selfConjugate: true, summary: 'Objeto gravitatorio microscópico que podría producirse a energías accesibles sólo en ciertos modelos de dimensiones extra.', composition: 'Estado de curvatura extrema, no partícula elemental ordinaria.',
+    role: 'Señal espectacular de una escala de gravedad efectiva mucho menor que la de Planck convencional.', decays: 'Se esperaría evaporación o estados finales múltiples, dependiendo del modelo.', formula: 'r_s^{(4+n)}\\sim M_D^{-1}(M/M_D)^{1/(n+1)}',
+    theory: 'Dimensiones extra / gravedad cuántica', confidence: 'Escenario especulativo con búsquedas directas y sin señal', sources: [CERN_EXTRA_DIMENSIONS]
+  },
+  {
+    id: 'kk-excitation', symbol: 'KK?', name: 'estado Kaluza–Klein', englishName: 'Kaluza–Klein state', family: 'theory', zone: 'beyond', layer: 'quantum-gravity', row: 5, column: 1,
+    mass: 'Torre discreta dependiente de la compactificación', charge: 'Como el campo original', spin: 'Como el modo original', interactions: ['gravity', 'weak'], evidence: 'hypothetical', discovered: 'Buscado en resonancias de alta masa · no observado', lifetime: 'Dependiente del modelo',
+    antiparticle: 'KK̄?', antiparticleName: 'antiestado Kaluza–Klein', summary: 'Excitación pesada que aparecería si campos o gravedad se propagaran por dimensiones espaciales compactas.', composition: 'Modo de momento cuantizado en una dimensión adicional.',
+    role: 'Convertiría dimensiones extra en una torre observable de copias pesadas.', decays: 'Podría decaer a partículas del Modelo Estándar.', formula: 'm_n^2=m_0^2+n^2/R^2',
+    theory: 'Kaluza–Klein / dimensiones extra', confidence: 'CERN describe firmas buscadas; sin detección', sources: [CERN_EXTRA_DIMENSIONS, ATLAS_HEAVY]
+  },
+  {
+    id: 'radion', symbol: 'φʀ?', name: 'radion', englishName: 'radion', family: 'theory', zone: 'beyond', layer: 'quantum-gravity', row: 5, column: 2,
+    mass: 'Desconocida', charge: '0', spin: '0', interactions: ['higgs', 'gravity'], evidence: 'hypothetical', discovered: 'Buscado por ATLAS en resonancias · no observado', lifetime: 'Dependiente del modelo',
+    antiparticle: 'φʀ?', antiparticleName: 'radion', selfConjugate: true, summary: 'Campo escalar hipotético asociado al tamaño o separación de dimensiones extra.', composition: 'Modo geométrico efectivo de una compactificación.',
+    role: 'Estabilizaría la geometría de modelos tipo Randall–Sundrum y podría mezclarse con el Higgs.', decays: 'Podría decaer a pares de bosones o Higgs.', formula: '\\phi_R\\propto\\delta R(x)',
+    theory: 'Dimensiones extra de Randall–Sundrum', confidence: 'Sin resonancia confirmada', sources: [ATLAS_HEAVY, CERN_EXTRA_DIMENSIONS]
   }
 ];
 
 export const compositeParticles: Particle[] = [
   {
-    id: 'hydrogen', symbol: '¹H', name: 'átomo de hidrógeno', englishName: 'hydrogen atom', family: 'composite', zone: 'atom', layer: 'composites', row: 1, column: 2,
-    mass: '≈1,008 u', charge: '0', spin: 'Sistema compuesto', interactions: ['electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1766–1913 · hidrógeno y estructura atómica', lifetime: 'Estable',
-    antiparticle: '¹H̄', antiparticleName: 'antihidrógeno', visual: 'atom', scale: '≈10⁻¹⁰ m', constituents: ['proton', 'electron'],
-    constituentSummary: '1 protón + 1 electrón', summary: 'El átomo más sencillo y abundante: un electrón ligado a un protón.',
-    composition: 'La interacción electromagnética liga el electrón al protón; el protón contiene quarks y gluones.', role: 'Ejemplo mínimo para recorrer desde la química hasta el Modelo Estándar.',
-    decays: 'Estable en su estado fundamental.', formula: '{}^1_1\\mathrm H=p+e^-', note: 'Se usa como átomo inicial porque evita añadir un neutrón que no es necesario para formar hidrógeno ordinario.', sources: [PDG, CERN_SM]
-  },
-  {
-    id: 'deuterium', symbol: '²H', name: 'átomo de deuterio', englishName: 'deuterium atom', family: 'composite', zone: 'atom', layer: 'composites', row: 1, column: 4,
-    mass: '≈2,014 u', charge: '0', spin: 'Sistema compuesto', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1931 · deuterio', lifetime: 'Estable',
-    antiparticle: '²H̄', antiparticleName: 'átomo de antideuterio', visual: 'atom', scale: '≈10⁻¹⁰ m', constituents: ['proton', 'neutron', 'electron'],
-    constituentSummary: '1 protón + 1 neutrón + 1 electrón', summary: 'Isótopo estable del hidrógeno cuyo núcleo contiene un protón y un neutrón.', composition: 'Un electrón ligado electromagnéticamente a un deuterón formado por un protón y un neutrón.',
-    role: 'Permite recorrer visualmente desde un átomo completo hasta sus constituyentes elementales.', decays: 'Estable.', formula: '{}^2_1\\mathrm H=p+n+e^-', sources: [PDG, CERN_SM]
+    id: 'atom', symbol: 'A', name: 'átomo', englishName: 'atom', family: 'composite', zone: 'atom', layer: 'composites', row: 1, column: 3,
+    mass: 'Depende del elemento y del isótopo', charge: '0 en un átomo neutro', spin: 'Depende del estado', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1803–1932 · de Dalton al neutrón', lifetime: 'Estable o radiactivo según el núcleo',
+    antiparticle: 'Ā', antiparticleName: 'antiátomo', visual: 'atom', scale: '≈10⁻¹⁰ m', constituents: ['proton', 'neutron', 'electron'],
+    constituentSummary: 'Z protones + N neutrones + Z electrones en el estado neutro', summary: 'Ficha didáctica general que representa un átomo con núcleo y nube electrónica, sin limitarse a un elemento concreto.',
+    composition: 'El núcleo contiene protones y neutrones; los electrones ocupan estados cuánticos ligados por electromagnetismo. El número de neutrones varía entre isótopos y algunos núcleos no contienen ninguno.',
+    role: 'Punto de partida para recorrer desde la materia química hasta nucleones, quarks, leptones y campos.', decays: 'El átomo puede ser estable, ionizarse o sufrir transformaciones nucleares según el isótopo.',
+    formula: 'A=Z+N,\\qquad {}^A_ZX', note: 'No representa un elemento real concreto: reúne deliberadamente protón, neutrón y electrón para mostrar el árbol completo de composición.', sources: [PDG, CERN_SM]
   },
   {
     id: 'proton', symbol: 'p', name: 'protón', englishName: 'proton', family: 'composite', zone: 'composite', layer: 'composites', row: 1, column: 2,
@@ -271,6 +358,38 @@ export const compositeParticles: Particle[] = [
     antiparticle: 'K⁻', antiparticleName: 'kaón negativo', visual: 'field', scale: '<1 fm', constituents: ['up', 'strange'], constituentSummary: 'u + s̄',
     summary: 'Mesón extraño que reveló nuevas reglas de conservación y ayudó a construir el modelo de quarks.', composition: 'Un quark arriba y un antiquark extraño.', role: 'Física del sabor, violación CP y estudios de interacción débil.',
     decays: 'Posee varios canales débiles, entre ellos K⁺ → μ⁺νμ.', formula: 'K^+=u\\bar s', sources: [PDG]
+  },
+  {
+    id: 'tetraquark', symbol: 'T₄q', name: 'tetraquarks', englishName: 'tetraquarks', family: 'composite', zone: 'composite', layer: 'composites', row: 3, column: 2,
+    mass: 'Depende del estado; varios GeV en estados con encanto', charge: 'Variable', spin: 'Variable', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '2003–2022 · familia exótica establecida', lifetime: 'Muy breve',
+    antiparticle: 'T̄₄q', antiparticleName: 'antitetraquarks', visual: 'field', scale: '≈10⁻¹⁵ m', constituents: ['charm', 'up', 'down', 'strange'], constituentSummary: 'Dos quarks + dos antiquarks; contenido variable',
+    summary: 'Familia de hadrones exóticos con cuatro constituyentes de valencia, observada en múltiples estados.', composition: 'Puede organizarse como estado compacto de cuatro quarks o como molécula de dos mesones; la estructura precisa de varios candidatos continúa en debate.',
+    role: 'Amplía la clasificación tradicional de bariones y mesones y somete QCD no perturbativa a nuevas pruebas.', decays: 'Cada estado posee canales y anchuras propios.', formula: 'T\\sim qq\\bar q\\bar q', note: '“Observado” se refiere a resonancias experimentales; su geometría interna puede seguir siendo discutida.', sources: [CERN_EXOTIC_HADRONS, PDG]
+  },
+  {
+    id: 'pentaquark', symbol: 'P₅q', name: 'pentaquarks', englishName: 'pentaquarks', family: 'composite', zone: 'composite', layer: 'composites', row: 3, column: 3,
+    mass: 'Depende del estado; varios GeV en estados con encanto', charge: 'Variable', spin: 'Variable', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '2015–2022 · LHCb', lifetime: 'Muy breve',
+    antiparticle: 'P̄₅q', antiparticleName: 'antipentaquarks', visual: 'field', scale: '≈10⁻¹⁵ m', constituents: ['charm', 'up', 'down'], constituentSummary: 'Cuatro quarks + un antiquark; contenido variable',
+    summary: 'Familia de hadrones exóticos de cinco constituyentes de valencia observada por LHCb.', composition: 'Las señales pueden corresponder a configuraciones compactas o a moléculas hadrónicas; distintos estados pueden tener estructuras diferentes.',
+    role: 'Demuestra que QCD permite agregados más allá de los mesones y bariones convencionales.', decays: 'Se reconstruyen mediante cadenas de decaimiento de hadrones pesados.', formula: 'P\\sim qqqq\\bar q', note: 'No existe un único pentaquark universal: la ficha representa una familia de resonancias.', sources: [CERN_EXOTIC_HADRONS, PDG]
+  },
+  {
+    id: 'glueball', symbol: 'Gᵦ?', name: 'bola de gluones', englishName: 'glueball', family: 'composite', zone: 'composite', layer: 'composites', row: 3, column: 4,
+    mass: 'Predicha en el régimen GeV', charge: '0', spin: 'Estados 0, 2…', interactions: ['strong', 'higgs'], evidence: 'hypothetical', discovered: 'Predicha por QCD; candidatos sin identificación inequívoca', lifetime: 'Inestable',
+    antiparticle: 'Gᵦ?', antiparticleName: 'bola de gluones', selfConjugate: true, visual: 'field', scale: '≈10⁻¹⁵ m', constituents: ['gluon'], constituentSummary: 'Estado ligado dominado por gluones',
+    summary: 'Hadrón exótico predicho por la auto-interacción de los gluones, todavía sin identificación experimental inequívoca.', composition: 'Estado globalmente sin color construido principalmente a partir de campos gluónicos, con posible mezcla con mesones ordinarios.',
+    role: 'Sería una manifestación directa de que los gluones también se acoplan entre sí.', decays: 'Decaería a hadrones más ligeros y se mezclaría con estados escalares.', formula: 'G_{glue}\\sim\\mathrm{Tr}(F_{\\mu\\nu}F^{\\mu\\nu})', theory: 'Cromodinámica cuántica no perturbativa', confidence: 'Predicción sólida de QCD; asignación experimental aún discutida', sources: [PDG, CERN_EXOTIC_HADRONS]
+  }
+];
+
+export const technologyObjects: Particle[] = [
+  {
+    id: 'subnanometre-transistor', symbol: '<1 nm', name: 'transistor subnanométrico', englishName: 'sub-nanometre transistor', family: 'technology', zone: 'technology', layer: 'technology', row: 1, column: 3,
+    mass: 'No aplica: dispositivo colectivo', charge: 'Controla portadores eléctricos', spin: 'No aplica', interactions: ['electromagnetic'], evidence: 'observed', discovered: '2016–2022 · demostraciones experimentales', lifetime: 'Prototipo de laboratorio',
+    antiparticle: '<1 nm', antiparticleName: 'transistor subnanométrico', selfConjugate: true, visual: 'field', scale: 'Puerta física <1 nm; dispositivo completo mayor', constituents: ['electron'], constituentSummary: 'Material 2D + puerta atómica + contactos',
+    summary: 'Referencia tecnológica experimental para comparar la escala atómica con una puerta de transistor de longitud inferior a un nanómetro.', composition: 'Utiliza materiales bidimensionales y electrodos atómicamente finos. La dimensión subnanométrica corresponde a la puerta o longitud efectiva, no al tamaño completo del transistor ni a un nodo comercial.',
+    role: 'Sirve como comparador de escala y muestra cómo la ingeniería se aproxima a dimensiones atómicas.', decays: 'No decae como una partícula; conmuta corriente mediante control electrostático y transporte cuántico.',
+    formula: 'L_g<1\\,\\mathrm{nm}', note: 'Los nombres comerciales de nodos no equivalen directamente a una dimensión física. Esta ficha representa resultados de laboratorio, no producción industrial general.', sources: [NATURE_ATOMIC_TRANSISTOR]
   }
 ];
 

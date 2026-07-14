@@ -2,7 +2,7 @@
 
 Atlas científico e interactivo para explorar las partículas elementales, las interacciones fundamentales descritas por el Modelo Estándar, la antimateria y algunas propuestas más allá de la teoría confirmada.
 
-> **Estado:** enciclopedia visual · `0.5.0`  
+> **Estado:** enciclopedia visual · `0.6.0`  
 > **Tecnologías:** Svelte 5 · TypeScript · Vite · KaTeX  
 > **Despliegue:** GitHub Pages mediante GitHub Actions  
 > **Arquitectura:** aplicación estática, sin backend
@@ -26,12 +26,13 @@ La ruta de escala integrada conecta seis niveles y diferencia explícitamente ev
 - 12 fermiones de materia organizados en tres generaciones.
 - 4 bosones gauge: gluón, fotón, Z y W.
 - Bosón de Higgs diferenciado como bosón escalar.
-- Hidrógeno, deuterio, núcleos, nucleones y mesones como sistemas compuestos.
+- Un átomo didáctico general, núcleos, nucleones, mesones y familias de hadrones exóticos.
 - Las cuatro interacciones fundamentales como fichas: fuerte, electromagnetismo, débil y gravedad.
 - Zoom alrededor del cursor.
 - Desplazamiento por arrastre.
-- Eje vertical permanente de `10⁻¹⁰` a `10⁻¹⁹ m`, más la discontinuidad hasta Planck.
+- Eje vertical permanente de `10⁻⁹` a `10⁻¹⁹ m`, más la discontinuidad hasta Planck.
 - El eje ocupa el borde de la pantalla como en una gráfica: su línea queda fija y sus valores se desplazan y escalan con la cámara.
+- Recintos calculados desde su contenido: crecen automáticamente al añadir filas y nunca recortan las fichas.
 - Niveles de información progresivos según la ampliación.
 - Conexiones visuales animadas entre una estructura y sus constituyentes o mediadores.
 
@@ -56,9 +57,9 @@ El modo **Antimateria** despliega una segunda estructura completa a la derecha, 
 ### HUD, capas y enciclopedia técnica
 
 - barra rectangular superior derecha con búsqueda desplegable en línea, filtros, información, leyenda, datos, fórmulas, capas, tema y zoom restablecible;
-- capas independientes para compuestos, cuatro fuerzas, antimateria, supersimetría, sector oscuro, gravedad cuántica y cuerdas;
+- capas independientes para compuestos, cuatro fuerzas, antimateria, supersimetría, sector oscuro, candidatos de colisionador, gravedad cuántica, cuerdas y tecnología comparativa;
 - buscador de catálogo por nombre, símbolo, antimateria, propiedades, teoría, fecha, interacción, composición y fuentes;
-- enciclopedia con diez capítulos generales, un informe de quince apartados para cada una de las 46 entidades científicas y capítulos propios para las antipartículas no autoconjugadas;
+- enciclopedia con capítulos generales, un informe de quince apartados para cada entidad científica y capítulos propios para las antipartículas no autoconjugadas;
 - eje gráfico permanente a la izquierda, único para materia y antimateria y sincronizado con zoom y desplazamiento;
 - fichas sin listados numéricos artificiales: los datos se integran en resumen, propiedades, interacciones, historia, fórmula y fuentes;
 - historia, evidencia, interpretación matemática y propiedades físicas desarrolladas por separado.
@@ -70,9 +71,13 @@ Dos zonas separadas y discontinuas presentan ejemplos no observados:
 - gravitón;
 - candidatos supersimétricos: neutralino, chargino, gluino, sfermiones y gravitino;
 - axión, neutrino estéril, fotón oscuro y monopolo magnético;
+- leptoquarks, leptones neutros pesados, Z′/W′, quarks vectoriales, Q-balls y dyones;
+- Higgs y mesones oscuros, excitaciones de Kaluza–Klein, radion y microagujeros negros;
 - cuerda abierta, cuerda cerrada, D-brana, M2-brana, M5-brana y cuerda cósmica.
 
 Estas fichas utilizan la etiqueta **hipótesis / no observada** y declaran su marco teórico. No se mezclan con las partículas confirmadas ni se presentan las cuerdas como partículas ya descubiertas.
+
+La capa tecnológica añade, apagada por defecto, una referencia de transistor experimental subnanométrico. La dimensión indicada corresponde a una parte funcional del prototipo, no al dispositivo entero ni a un nodo comercial.
 
 ### Atlas matemático
 
@@ -112,6 +117,11 @@ El lector matemático reúne 47 fórmulas agrupadas y buscables. Cada entrada de
 - [CERN · The Higgs boson](https://home.cern/science/physics/higgs-boson/)
 - [CERN · Antimatter](https://home.cern/science/physics/antimatter/)
 - [CERN · Supersymmetry](https://home.cern/science/physics/supersymmetry/)
+- [CERN · Bestiary of exotic hadrons](https://home.cern/bestiary-exotic-hadrons/)
+- [CERN · Extra dimensions](https://home.cern/science/physics/extra-dimensions-gravitons-and-tiny-black-holes/)
+- [ATLAS · Leptoquark searches](https://atlas.cern/Tags/leptoquarks)
+- [CMS · Heavy neutral lepton search](https://arxiv.org/abs/2403.00100)
+- [Nature Communications · Atomic transistor](https://www.nature.com/articles/s41467-022-32582-9)
 - [NIST · Planck length](https://physics.nist.gov/cgi-bin/cuu/Value?plkl=)
 
 Los valores científicos se versionan en `src/data/particles.ts`. No se consultan APIs externas durante la navegación.

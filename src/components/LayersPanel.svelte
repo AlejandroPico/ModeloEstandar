@@ -1,19 +1,23 @@
 <script lang="ts">
-  import { Atom, Boxes, CircleGauge, Copy, MoonStar, Orbit, Sparkles, Waves, X } from '@lucide/svelte';
+  import { Atom, Boxes, CircleGauge, Copy, Cpu, MoonStar, Orbit, Radar, Sparkles, Waves, X } from '@lucide/svelte';
   import type { LayerId } from '../data/types';
 
   let { layers, ontoggle, onclose }: { layers: Record<LayerId, boolean>; ontoggle: (layer: LayerId) => void; onclose: () => void } = $props();
   const groups = [
     { title: 'Estructura observada', items: [
-      { id: 'composites' as const, label: 'Átomos y hadrones', detail: 'H, deuterio, núcleos, nucleones y mesones', icon: Atom },
+      { id: 'composites' as const, label: 'Átomo y hadrones', detail: 'Átomo general, nucleones, mesones y hadrones exóticos', icon: Atom },
       { id: 'forces' as const, label: 'Cuatro interacciones', detail: 'Fuerte, electromagnética, débil y gravedad', icon: CircleGauge },
       { id: 'antimatter' as const, label: 'Universo espejo', detail: 'Duplica exactamente las capas visibles', icon: Copy }
     ]},
     { title: 'Más allá · no observado', items: [
       { id: 'susy' as const, label: 'Supersimetría', detail: 'Neutralinos, charginos, gluinos y sfermiones', icon: Sparkles },
-      { id: 'dark-sector' as const, label: 'Sectores oscuros', detail: 'Axión, fotón oscuro y neutrino estéril', icon: MoonStar },
-      { id: 'quantum-gravity' as const, label: 'Gravedad cuántica', detail: 'Gravitón, gravitino y monopolo', icon: Orbit },
+      { id: 'dark-sector' as const, label: 'Sectores oscuros', detail: 'Axión, fotón, Higgs y mesones oscuros', icon: MoonStar },
+      { id: 'collider-candidates' as const, label: 'Candidatos de colisionador', detail: 'Leptoquarks, HNL, Z′/W′, VLQ, dyones y Q-balls', icon: Radar },
+      { id: 'quantum-gravity' as const, label: 'Gravedad y dimensiones extra', detail: 'Gravitón, KK, radion, monopolos y microagujeros negros', icon: Orbit },
       { id: 'strings' as const, label: 'Cuerdas y branas', detail: 'Cuerdas, D-branas, M2, M5 y defectos', icon: Waves }
+    ]},
+    { title: 'Referencias de escala', items: [
+      { id: 'technology' as const, label: 'Nanoelectrónica experimental', detail: 'Comparador opcional; no añade partículas al modelo', icon: Cpu }
     ]}
   ];
 </script>
@@ -33,5 +37,5 @@
       {/each}
     </section>
   {/each}
-  <footer><Boxes size={15}/><span>Las capas hipotéticas utilizan borde discontinuo y una etiqueta de evidencia.</span></footer>
+  <footer><Boxes size={15}/><span>El borde discontinuo identifica hipótesis. La tecnología aparece como comparador, nunca como partícula.</span></footer>
 </aside>

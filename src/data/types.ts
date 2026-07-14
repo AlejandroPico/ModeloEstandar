@@ -1,9 +1,9 @@
-export type ParticleFamily = 'quark' | 'lepton' | 'gauge' | 'scalar' | 'composite' | 'force' | 'theory' | 'string';
+export type ParticleFamily = 'quark' | 'lepton' | 'gauge' | 'scalar' | 'composite' | 'force' | 'theory' | 'string' | 'technology';
 export type Interaction = 'strong' | 'electromagnetic' | 'weak' | 'higgs' | 'gravity';
 export type Evidence = 'observed' | 'hypothetical';
-export type ParticleZone = 'atom' | 'composite' | 'forces' | 'standard' | 'beyond' | 'planck';
+export type ParticleZone = 'technology' | 'atom' | 'composite' | 'forces' | 'standard' | 'beyond' | 'planck';
 export type ParticleVisual = 'atom' | 'proton' | 'neutron' | 'open-string' | 'closed-string' | 'brane' | 'cosmic-string' | 'field';
-export type LayerId = 'composites' | 'forces' | 'antimatter' | 'susy' | 'dark-sector' | 'quantum-gravity' | 'strings';
+export type LayerId = 'composites' | 'forces' | 'antimatter' | 'susy' | 'dark-sector' | 'collider-candidates' | 'quantum-gravity' | 'strings' | 'technology';
 
 export interface SourceLink {
   label: string;

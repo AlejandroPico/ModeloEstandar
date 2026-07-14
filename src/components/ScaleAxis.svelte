@@ -3,15 +3,17 @@
 
   let {
     camera,
-    animated = false
+    animated = false,
+    positions = [],
+    breakWorldY = 0
   }: {
     camera: { x: number; y: number; scale: number };
     animated?: boolean;
+    positions?: number[];
+    breakWorldY?: number;
   } = $props();
 
-  const worldPositions = [115, 245, 375, 505, 620, 760, 900, 1040, 1180, 1340, 2410];
-  const marks = scalePoints.map((point, index) => ({ ...point, worldY: worldPositions[index] }));
-  const breakWorldY = 1875;
+  const marks = $derived(scalePoints.map((point, index) => ({ ...point, worldY: positions[index] ?? 0 })));
 </script>
 
 <aside class:animated class="scale-axis" aria-label="Eje vertical de escala física">

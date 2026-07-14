@@ -5,7 +5,8 @@
     ['composite','Estructuras compuestas','Átomos, núcleos y hadrones'], ['force','Interacciones','Las cuatro fuerzas fundamentales'],
     ['quark','Quarks','Fermiones con carga de color'], ['lepton','Leptones','Electrón, muón, tau y neutrinos'],
     ['gauge','Bosones gauge','Mediadores de las interacciones'], ['scalar','Higgs','Sector escalar'],
-    ['theory','Hipótesis','Predicciones no observadas'], ['string','Cuerdas y branas','Objetos extendidos teóricos']
+    ['theory','Hipótesis','Predicciones no observadas'], ['string','Cuerdas y branas','Objetos extendidos teóricos'],
+    ['technology','Referencia tecnológica','Comparación de escala; no es una partícula']
   ];
 </script>
 

@@ -78,3 +78,4 @@ export const formulaChapters: FormulaChapter[] = rows.map(([id, group, label, ti
 }));
 
 export const formulaGroups = [...new Set(formulaChapters.map((chapter) => chapter.group))];
+
