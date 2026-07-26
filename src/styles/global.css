@@ -16,11 +16,11 @@
   --lepton: #69d596;
   --gauge: #ff7a66;
   --scalar: #ffd45f;
-  --composite: #42c7d9;
-  --force: #42d9b4;
-  --theory: #70b9ff;
-  --string: #ff9ed2;
-  --technology: #57c7f3;
+  --composite: #16b8c8;
+  --force: #38d391;
+  --theory: #8b7cf6;
+  --string: #ff5fae;
+  --technology: #f3a83b;
   --strong: #ff657f;
   --electromagnetic: #ffd45f;
   --weak: #73a4ff;
@@ -39,6 +39,11 @@
   --line: rgba(48, 64, 91, 0.15);
   --line-strong: rgba(38, 85, 152, 0.36);
   --shadow: 0 22px 70px rgba(32, 44, 69, 0.16);
+  --composite: #007f95;
+  --force: #168456;
+  --theory: #6055c7;
+  --string: #c72b79;
+  --technology: #a76200;
 }
 
 * { box-sizing: border-box; }
@@ -163,6 +168,22 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .particle-card.antimatter-card { animation: mirrorCardIn 520ms cubic-bezier(.2,.85,.2,1) both; }
 .particle-card.family-composite { border-radius: 20px; }
 .particle-card.family-string { border-style: dashed; }
+.particle-card.family-composite,
+.particle-card.family-theory,
+.particle-card.family-string {
+  background:
+    linear-gradient(145deg,
+      color-mix(in srgb, var(--card-accent), var(--panel-solid) 76%),
+      color-mix(in srgb, var(--card-accent), var(--panel-solid) 90%));
+}
+:root[data-theme='light'] .particle-card.family-composite,
+:root[data-theme='light'] .particle-card.family-theory,
+:root[data-theme='light'] .particle-card.family-string {
+  background:
+    linear-gradient(145deg,
+      color-mix(in srgb, var(--card-accent), white 83%),
+      color-mix(in srgb, var(--card-accent), white 94%));
+}
 .particle-symbol, .particle-name, .quick-stats, .interaction-row, .card-topline, .theory-mark { z-index: 2; }
 .particle-symbol.symbol-wide { top: 31px; max-width: 51px; font-size: 1.6rem; letter-spacing: -.11em; }
 .particle-name { overflow-wrap: anywhere; }
@@ -171,7 +192,7 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .particle-card.family-theory .interaction-row, .particle-card.family-string .interaction-row { top: 68px; }
 .theory-mark { bottom: 7px; max-width: calc(100% - 20px); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .antimatter-mark { color: var(--string); }
-.node-visual { position: absolute; z-index: 1; right: 3px; top: 21px; width: 108px; height: 68px; color: var(--card-accent); opacity: .28; overflow: visible; pointer-events: none; }
+.node-visual { position: absolute; z-index: 1; right: 3px; top: 21px; width: 108px; height: 68px; color: var(--card-accent); opacity: .4; overflow: visible; pointer-events: none; }
 .node-visual ellipse, .node-visual circle, .node-visual path { fill: none; stroke: currentColor; stroke-width: 1.8; vector-effect: non-scaling-stroke; }
 .node-visual .core-a, .node-visual .quark.q1 { fill: var(--quark); stroke: none; }
 .node-visual .core-b, .node-visual .quark.q2 { fill: var(--gauge); stroke: none; }
@@ -224,9 +245,11 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .layers-panel footer, .data-panel footer { display: flex; gap: 7px; margin-top: 15px; padding: 10px; border-radius: 10px; color: var(--muted); background: color-mix(in srgb, var(--text), transparent 95%); font-size: .55rem; line-height: 1.45; }
 
 .legend-list { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1px; margin-top: 16px; border: 1px solid var(--line); background: var(--line); }.legend-list > div { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 8px 9px; background: var(--panel-solid); }.legend-list i { flex: 0 0 auto; width: 5px; height: 27px; background: var(--legend-color); box-shadow: 0 0 10px color-mix(in srgb, var(--legend-color), transparent 58%); }.legend-list span { display: grid; min-width: 0; }.legend-list b { overflow: hidden; font-size: .58rem; text-overflow: ellipsis; white-space: nowrap; }.legend-list small { margin-top: 2px; color: var(--muted); font-size: .47rem; line-height: 1.25; }
-.layers-coachmark { position: absolute; top: calc(100% + 14px); right: 78px; width: 250px; padding: 10px 12px; border: 1px solid var(--line-strong); color: var(--text); background: var(--panel-solid); box-shadow: var(--shadow); font-size: .58rem; line-height: 1.45; pointer-events: none; animation: coachmarkIn 260ms ease-out; }
-.layers-coachmark::before { content: ''; position: absolute; top: -6px; right: 15px; width: 10px; height: 10px; border-top: 1px solid var(--line-strong); border-left: 1px solid var(--line-strong); background: var(--panel-solid); transform: rotate(45deg); }
-@keyframes coachmarkIn { from { opacity: 0; transform: translateY(-5px); } }
+.layers-anchor { position: relative; display: inline-flex; flex: 0 0 auto; }
+.layers-anchor > button { width: 40px; height: 40px; }
+.layers-coachmark { position: absolute; z-index: 4; top: calc(100% + 14px); left: 50%; width: 250px; padding: 10px 12px; border: 1px solid var(--line-strong); color: var(--text); background: var(--panel-solid); box-shadow: var(--shadow); font-size: .58rem; line-height: 1.45; pointer-events: none; transform: translateX(-50%); animation: coachmarkIn 260ms ease-out; }
+.layers-coachmark::before { content: ''; position: absolute; top: -6px; left: calc(50% - 5px); width: 10px; height: 10px; border-top: 1px solid var(--line-strong); border-left: 1px solid var(--line-strong); background: var(--panel-solid); transform: rotate(45deg); }
+@keyframes coachmarkIn { from { opacity: 0; transform: translate(-50%, -5px); } }
 .detail-header-actions { display: flex; gap: 6px; }
 .detail-info-button { color: var(--composite); border-color: var(--line-strong); }
 .legend-keys { margin: 15px 0 0; }.legend-keys > div { display: grid; grid-template-columns: 105px 1fr; gap: 9px; padding: 8px 0; border-top: 1px solid var(--line); }.legend-keys dt { font-size: .55rem; font-weight: 800; }.legend-keys dd { margin: 0; color: var(--muted); font-size: .54rem; }

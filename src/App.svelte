@@ -253,8 +253,10 @@
     <button class:active={hudPanel === 'legend'} type="button" data-tooltip="Leyenda" aria-label="Abrir leyenda" onclick={() => hudPanel = hudPanel === 'legend' ? null : 'legend'}><Tags size={17}/></button>
     <button class:active={hudPanel === 'data'} type="button" data-tooltip="Datos del lienzo" aria-label="Abrir datos del lienzo" onclick={() => hudPanel = hudPanel === 'data' ? null : 'data'}><Database size={17}/></button>
     <button type="button" data-tooltip="Fórmulas" aria-label="Abrir capa matemática" onclick={() => showFormula = true}><Braces size={18}/></button>
-    {#if !hasActiveLayer && hudPanel !== 'layers'}<span class="layers-coachmark">Activa capas para descubrir compuestos, fuerzas, antimateria y nuevas hipótesis.</span>{/if}
-    <button class:active={hudPanel === 'layers'} class="layers-button" type="button" data-tooltip="Capas" aria-label="Abrir capas" onclick={() => hudPanel = hudPanel === 'layers' ? null : 'layers'}><Layers3 size={18}/></button>
+    <span class="layers-anchor">
+      {#if !hasActiveLayer && hudPanel !== 'layers'}<span class="layers-coachmark">Activa capas para descubrir compuestos, fuerzas, antimateria y nuevas hipótesis.</span>{/if}
+      <button class:active={hudPanel === 'layers'} class="layers-button" type="button" data-tooltip="Capas" aria-label="Abrir capas" onclick={() => hudPanel = hudPanel === 'layers' ? null : 'layers'}><Layers3 size={18}/></button>
+    </span>
     <button class:active={themeMode === 'auto'} type="button" data-tooltip={themeMode === 'auto' ? 'Tema automático' : `Tema ${themeMode}`} aria-label="Cambiar tema: automático, claro u oscuro" onclick={cycleTheme}>{#if themeMode === 'auto'}<SunMoon size={17}/>{:else if themeMode === 'dark'}<Moon size={17}/>{:else}<Sun size={17}/>{/if}</button>
     <button class="zoom-readout" type="button" data-tooltip="Restablecer vista" aria-label={`Zoom ${zoomPercent}%. Restablecer vista`} onclick={() => viewport?.resetView?.()}><b>{zoomPercent}%</b></button>
   </nav>
