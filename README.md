@@ -2,7 +2,7 @@
 
 Atlas científico e interactivo para explorar las partículas elementales, las interacciones fundamentales descritas por el Modelo Estándar, la antimateria y algunas propuestas más allá de la teoría confirmada.
 
-> **Estado:** enciclopedia visual · `0.6.0`  
+> **Estado:** enciclopedia visual · `0.7.0`
 > **Tecnologías:** Svelte 5 · TypeScript · Vite · KaTeX  
 > **Despliegue:** GitHub Pages mediante GitHub Actions  
 > **Arquitectura:** aplicación estática, sin backend
@@ -47,6 +47,8 @@ Cada partícula incluye:
 - antipartícula;
 - interacciones en las que participa;
 - comportamiento o decaimientos característicos;
+- estructura cuantitativa con recuentos de constituyentes de valencia;
+- carga de color, representación de SU(3)C y neutralidad observable;
 - fórmula renderizada con KaTeX;
 - enlaces a fuentes científicas.
 
@@ -59,7 +61,7 @@ El modo **Antimateria** despliega una segunda estructura completa a la derecha, 
 - barra rectangular superior derecha con búsqueda desplegable en línea, filtros, información, leyenda, datos, fórmulas, capas, tema y zoom restablecible;
 - capas independientes para compuestos, cuatro fuerzas, antimateria, supersimetría, sector oscuro, candidatos de colisionador, gravedad cuántica, cuerdas y tecnología comparativa;
 - buscador de catálogo por nombre, símbolo, antimateria, propiedades, teoría, fecha, interacción, composición y fuentes;
-- enciclopedia con capítulos generales, un informe de quince apartados para cada entidad científica y capítulos propios para las antipartículas no autoconjugadas;
+- enciclopedia con capítulos generales, un informe de dieciséis apartados para cada entidad científica y capítulos propios para las antipartículas no autoconjugadas;
 - eje gráfico permanente a la izquierda, único para materia y antimateria y sincronizado con zoom y desplazamiento;
 - fichas sin listados numéricos artificiales: los datos se integran en resumen, propiedades, interacciones, historia, fórmula y fuentes;
 - historia, evidencia, interpretación matemática y propiedades físicas desarrolladas por separado.
@@ -81,13 +83,14 @@ La capa tecnológica añade, apagada por defecto, una referencia de transistor e
 
 ### Atlas matemático
 
-El lector matemático reúne 47 fórmulas agrupadas y buscables. Cada entrada desarrolla significado, notación, uso, procedencia, límites, relaciones y fuentes. Incluye, entre otros bloques:
+El lector matemático reúne 51 fórmulas agrupadas y buscables. Cada entrada desarrolla significado, notación, uso, procedencia, límites, relaciones y fuentes. Incluye, entre otros bloques:
 
 - la descomposición por sectores de la lagrangiana;
 - el grupo gauge `SU(3)C × SU(2)L × U(1)Y`;
 - el potencial de Higgs;
 - el acoplamiento de Yukawa y las masas fermiónicas;
 - QED, QCD, teoría electrodébil, estructura hadrónica y mezcla de sabores;
+- tripletes de quark, octete gluónico, singlete bariónico y cargas de protón y neutrón;
 - cinemática relativista, decaimientos, resonancias y magnitudes de colisionadores;
 - gravedad clásica, longitud de Planck y acciones de cuerdas.
 
@@ -105,6 +108,8 @@ El lector matemático reúne 47 fórmulas agrupadas y buscables. Cada entrada de
 
 - **Elemental no significa “la bolita más pequeña”**: significa que no se ha observado estructura interna hasta la resolución experimental disponible.
 - Los quarks no se observan aislados debido al confinamiento de color.
+- Rojo, verde y azul son etiquetas de una carga cuántica de QCD, no colores ópticos; los hadrones observables son singletes de color.
+- `uud` y `udd` describen el contenido de valencia de protón y neutrón, no un inventario estático de todos los gluones y pares quark–antiquark.
 - Los neutrinos de sabor son combinaciones de estados de masa; por ello no se les asigna una masa simple en el tablero.
 - El campo de Higgs participa en el origen de las masas elementales, pero la mayor parte de la masa de protones y neutrones procede de la dinámica de la interacción fuerte.
 - La gravedad no forma parte del Modelo Estándar.
@@ -147,7 +152,7 @@ src/
 │  ├─ forces.ts                 # cuatro interacciones fundamentales
 │  ├─ science.ts                # escalas y capítulos fundamentales
 │  ├─ information.ts            # informes de entidades y antimateria
-│  ├─ formulae.ts               # atlas de 47 fórmulas documentadas
+│  ├─ formulae.ts               # atlas de 51 fórmulas documentadas
 │  └─ types.ts
 ├─ lib/
 │  ├─ format.ts                 # KaTeX y utilidades

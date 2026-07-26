@@ -7,12 +7,14 @@ export const forceEntities: Particle[] = [
   {
     id: 'strong-force', symbol: 'SU(3)꜀', name: 'interacción fuerte', englishName: 'strong interaction', family: 'force', zone: 'forces', layer: 'forces', row: 1, column: 1,
     mass: 'No aplica: es una interacción', charge: 'Carga de color', spin: 'Mediador: 1', interactions: ['strong'], evidence: 'observed', discovered: 'Décadas de 1960–1970 · QCD', lifetime: 'Alcance partónico; confinamiento',
-    antiparticle: 'SU(3)꜀', antiparticleName: 'interacción fuerte', selfConjugate: true, colorCharge: true, scale: 'Confinamiento ≈10⁻¹⁵ m', visual: 'field',
+    antiparticle: 'SU(3)꜀', antiparticleName: 'interacción fuerte', selfConjugate: true, colorCharge: true, colorState: 'representation-dependent',
+    colorFormula: 'SU(3)_C', colorDetail: 'La interacción fuerte actúa sobre la carga de color. Quarks y gluones transforman en representaciones distintas de SU(3)C; los estados observables ligados son singletes de color.', scale: 'Confinamiento ≈10⁻¹⁵ m', visual: 'field',
     constituents: ['gluon'], constituentSummary: 'Campo de gluones · simetría gauge SU(3)C',
     summary: 'La interacción que mantiene unidos los quarks dentro de los hadrones. Su versión residual contribuye a ligar protones y neutrones en los núcleos.',
     composition: 'No es una partícula ni una sustancia: es la dinámica del campo de color descrita por la cromodinámica cuántica.',
     role: 'Confinamiento, hadrones, núcleos y la mayor parte de la masa de protones y neutrones.',
-    decays: 'No decae. Su intensidad cambia con la energía y los gluones se acoplan entre sí.', formula: '\mathcal L_{QCD}=-\frac14G^a_{\mu\nu}G^{a\mu\nu}+\bar q(i\!\not\!D-m)q',
+    decays: 'No decae. Su intensidad cambia con la energía y los gluones se acoplan entre sí.',
+    formula: String.raw`\mathcal{L}_{\mathrm{QCD}}=-\frac{1}{4}G^a_{\mu\nu}G^{a\,\mu\nu}+\sum_f\bar q_f\left(i\gamma^\mu D_\mu-m_f\right)q_f`,
     note: 'El pión participa en la descripción efectiva de la fuerza nuclear residual, pero el mediador fundamental de QCD es el gluón.', sources: [CERN_FORCES, CERN_UNIFICATION]
   },
   {
@@ -22,7 +24,9 @@ export const forceEntities: Particle[] = [
     constituents: ['photon'], constituentSummary: 'Campo electromagnético · fotón',
     summary: 'Interacción entre partículas con carga eléctrica. Explica la luz, la electricidad, el magnetismo, los átomos y la química.',
     composition: 'En la descripción cuántica es una teoría gauge U(1) cuyo cuanto es el fotón.', role: 'Estructura atómica y molecular, radiación y casi todos los fenómenos cotidianos salvo gravedad.',
-    decays: 'No decae. El campo puede transferir energía y momento mediante fotones.', formula: '\partial_\mu F^{\mu\nu}=\mu_0J^\nu', sources: [CERN_FORCES, CERN_UNIFICATION]
+    decays: 'No decae. El campo puede transferir energía y momento mediante fotones.',
+    formula: String.raw`\partial_\mu F^{\mu\nu}=\mu_0J^\nu`,
+    note: '“\\partial” es el comando LaTeX de la derivada parcial ∂. Si se muestra como texto literal, el renderizador matemático ha fallado.', sources: [CERN_FORCES, CERN_UNIFICATION]
   },
   {
     id: 'weak-force', symbol: 'SU(2)ₗ', name: 'interacción débil', englishName: 'weak interaction', family: 'force', zone: 'forces', layer: 'forces', row: 1, column: 3,
@@ -32,7 +36,9 @@ export const forceEntities: Particle[] = [
     summary: 'Interacción de corto alcance que cambia sabores de quarks y leptones y hace posibles la desintegración beta y la fusión solar.',
     composition: 'Forma parte de la teoría electrodébil SU(2)L × U(1)Y; a bajas energías se distingue del electromagnetismo.',
     role: 'Radiactividad beta, neutrinos, producción de energía estelar y transformación de partículas.',
-    decays: 'No decae. Produce transiciones mediadas por W y Z masivos.', formula: '\mathcal L_F=-\frac{G_F}{\sqrt2}J^\mu J^\dagger_\mu', sources: [CERN_FORCES, CERN_UNIFICATION]
+    decays: 'No decae. Produce transiciones mediadas por W y Z masivos.',
+    formula: String.raw`\mathcal{L}_{F}=-\frac{G_F}{\sqrt{2}}J^\mu J^\dagger_\mu`,
+    note: 'Esta es la teoría efectiva de Fermi a bajas energías. La descripción fundamental es la teoría electrodébil SU(2)L × U(1)Y con bosones W y Z.', sources: [CERN_FORCES, CERN_UNIFICATION]
   },
   {
     id: 'gravity-force', symbol: 'Gμν', name: 'gravedad', englishName: 'gravitation', family: 'force', zone: 'forces', layer: 'forces', row: 1, column: 4,
@@ -42,7 +48,8 @@ export const forceEntities: Particle[] = [
     summary: 'Interacción fundamental observada que domina a gran escala. La relatividad general la describe como geometría del espacio-tiempo.',
     composition: 'No pertenece al Modelo Estándar. No existe todavía una teoría cuántica de la gravedad confirmada experimentalmente.',
     role: 'Órbitas, estrellas, galaxias, agujeros negros, expansión cosmológica y estructura del universo.',
-    decays: 'No decae. Las perturbaciones se propagan como ondas gravitacionales.', formula: 'G_{\mu\nu}+\Lambda g_{\mu\nu}=\frac{8\pi G}{c^4}T_{\mu\nu}',
+    decays: 'No decae. Las perturbaciones se propagan como ondas gravitacionales.',
+    formula: String.raw`G_{\mu\nu}+\Lambda g_{\mu\nu}=\frac{8\pi G}{c^4}T_{\mu\nu}`,
     note: 'La gravedad está confirmada; lo hipotético es su cuanto, el gravitón, y la teoría que la unifique con el Modelo Estándar.', sources: [CERN_FORCES]
   }
 ];

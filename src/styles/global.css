@@ -498,3 +498,92 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .particle-card.family-technology { border-color: color-mix(in srgb, var(--technology), transparent 35%); background: linear-gradient(145deg, color-mix(in srgb, var(--technology), var(--panel-solid) 84%), var(--panel-solid)); }
 .detail-panel.family-technology::before { background: var(--technology); }
 .family-technology .detail-symbol { background: color-mix(in srgb, var(--technology), transparent 86%); }
+
+/* v0.7 · estructura cuantitativa, carga de color y fichas más documentales */
+.property-sections > article,
+.formula-explanation > article,
+.composition-card {
+  padding: 17px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+.composition-card { border-bottom: 1px solid var(--line); }
+.constituent-chips span { border-radius: 3px; }
+.constituent-chips span b { color: var(--composite); font-size: .58rem; }
+.structure-section > article { margin: 0; padding: 20px 0; border-top: 1px solid var(--line); }
+.structure-section > article:last-child { border-bottom: 1px solid var(--line); }
+.structure-section h3 { margin: 6px 0 12px; font-size: .8rem; }
+.composition-ledger { margin: 15px 0; border-top: 1px solid var(--line); }
+.composition-ledger > div {
+  display: grid;
+  grid-template-columns: 72px 56px 1fr;
+  align-items: center;
+  min-height: 67px;
+  border-bottom: 1px solid var(--line);
+}
+.composition-ledger > div > strong {
+  color: var(--composite);
+  font-family: Georgia, serif;
+  font-size: 1rem;
+}
+.ledger-symbol {
+  font-family: Georgia, serif;
+  font-size: 1.05rem;
+}
+.composition-ledger > div > span:last-child { display: grid; gap: 3px; }
+.composition-ledger b { font-size: .67rem; }
+.composition-ledger small { color: var(--muted); font-size: .57rem; line-height: 1.45; }
+.structure-caveat {
+  margin-top: 15px !important;
+  padding: 13px 0 0;
+  border-top: 1px dashed var(--line);
+}
+.structure-caveat b { color: var(--text); }
+.color-state-visual {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin: 14px 0 16px;
+}
+.color-swatch {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 6px 9px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg), transparent 20%);
+}
+.color-swatch i {
+  display: block;
+  width: 13px;
+  height: 13px;
+  border: 1px solid rgba(255,255,255,.42);
+  border-radius: 50%;
+  background: var(--swatch);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--swatch), transparent 50%);
+}
+.color-swatch b { font-size: .56rem; text-transform: capitalize; }
+.color-red, .color-octet-1 { --swatch: #ff4f64; }
+.color-green, .color-octet-2 { --swatch: #42d98b; }
+.color-blue, .color-octet-3 { --swatch: #4e8dff; }
+.color-antired { --swatch: #4ce6e1; }
+.color-antigreen { --swatch: #ef65e5; }
+.color-antiblue { --swatch: #f0dc52; }
+.color-state-visual em { color: var(--muted); font-size: .58rem; font-style: normal; }
+.color-report > .formula-block,
+.structure-report > .formula-block {
+  margin: 15px 0;
+  border-radius: 0;
+  border-color: var(--line-strong);
+  background: transparent;
+}
+.color-report .science-note { margin-top: 16px; border-radius: 0; }
+
+@media (max-width: 520px) {
+  .composition-ledger > div { grid-template-columns: 50px 42px 1fr; }
+  .color-swatch { padding: 5px 7px; }
+}

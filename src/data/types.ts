@@ -4,10 +4,20 @@ export type Evidence = 'observed' | 'hypothetical';
 export type ParticleZone = 'technology' | 'atom' | 'composite' | 'forces' | 'standard' | 'beyond' | 'planck';
 export type ParticleVisual = 'atom' | 'proton' | 'neutron' | 'open-string' | 'closed-string' | 'brane' | 'cosmic-string' | 'field';
 export type LayerId = 'composites' | 'forces' | 'antimatter' | 'susy' | 'dark-sector' | 'collider-candidates' | 'quantum-gravity' | 'strings' | 'technology';
+export type ColorState = 'triplet' | 'antitriplet' | 'octet' | 'singlet' | 'representation-dependent' | 'none';
 
 export interface SourceLink {
   label: string;
   url: string;
+}
+
+export interface ConstituentDetail {
+  id: string;
+  symbol: string;
+  label: string;
+  count: string;
+  role: string;
+  antimatter?: boolean;
 }
 
 export interface Particle {
@@ -33,6 +43,9 @@ export interface Particle {
   antiparticleName: string;
   selfConjugate?: boolean;
   colorCharge?: boolean;
+  colorState?: ColorState;
+  colorDetail?: string;
+  colorFormula?: string;
   summary: string;
   composition: string;
   role: string;
@@ -43,6 +56,8 @@ export interface Particle {
   visual?: ParticleVisual;
   constituents?: string[];
   constituentSummary?: string;
+  constituentDetails?: ConstituentDetail[];
+  valenceFormula?: string;
   mirrorNote?: string;
   theory?: string;
   confidence?: string;

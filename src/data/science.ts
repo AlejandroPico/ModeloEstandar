@@ -42,6 +42,13 @@ const topicRows: Array<[string, string, string]> = [
   ['Interacciones', 'Gravedad', 'Está experimentalmente confirmada y se describe clásicamente con relatividad general, pero queda fuera del Modelo Estándar.'],
   ['Interacciones', 'Electrodébil', 'A energías altas, electromagnetismo e interacción débil son aspectos de una estructura unificada.'],
   ['Interacciones', 'Acoplamientos', 'La intensidad efectiva de una interacción depende de la escala de energía; no es un único número universal fijo.'],
+  ['Color y QCD', 'Qué significa color', 'Rojo, verde y azul son nombres convencionales de estados de una carga cuántica de QCD; no son colores visibles.'],
+  ['Color y QCD', 'Quarks y antiquarks', 'Los quarks transforman como un triplete de SU(3)C y los antiquarks como el antitriplete conjugado.'],
+  ['Color y QCD', 'Los ocho gluones', 'Los gluones forman un octete de combinaciones independientes de color y anticolor y por eso también transportan carga de color.'],
+  ['Color y QCD', 'Singletes observables', 'Los hadrones observables son globalmente neutros de color: bariones y mesones combinan sus constituyentes en singletes.'],
+  ['Color y QCD', 'Valencia, mar y gluones', 'uud o udd identifica el contenido de valencia y los números cuánticos netos; no enumera un número fijo de cuantos dentro del hadrón.'],
+  ['Color y QCD', 'Confinamiento y hadronización', 'Las entidades coloreadas no se observan aisladas en condiciones ordinarias; la separación produce nuevos hadrones sin color neto.'],
+  ['Color y QCD', 'Libertad asintótica', 'A transferencias de momento muy altas el acoplamiento fuerte disminuye, mientras a grandes distancias domina el régimen no perturbativo.'],
   ['Bosones', 'Gluones', 'Ocho estados de gluón transportan color y se acoplan entre sí.'],
   ['Bosones', 'Fotón', 'Es el cuanto del campo electromagnético, sin masa en reposo y con alcance infinito.'],
   ['Bosones', 'Bosones W y Z', 'Su gran masa limita el alcance de la interacción débil y permite procesos cargados y neutros.'],
@@ -114,6 +121,16 @@ const chapterMeta: Record<string, Omit<ManualChapter, 'sections'>> = {
     intro: 'Fuerte, electromagnética, débil y gravedad constituyen la clasificación habitual. El Modelo Estándar incorpora descripciones cuánticas de las tres primeras; la gravedad se describe con enorme éxito mediante relatividad general, pero no forma parte de ese marco cuántico.',
     formula: 'SU(3)_C\\times SU(2)_L\\times U(1)_Y', formulaNote: 'Ésta es la estructura de simetrías gauge del Modelo Estándar antes de la ruptura electrodébil.'
   },
+  'Color y QCD': {
+    id: 'color-qcd', kicker: 'CROMODINÁMICA', title: 'Carga de color y QCD', subtitle: 'Tripletes, antitripletes, octete y singletes',
+    intro: 'La palabra color es una analogía para organizar la carga de la interacción fuerte. Quarks, antiquarks y gluones transforman bajo SU(3)C; los hadrones observables combinan sus componentes de forma globalmente neutra.',
+    formula: '\\mathbf{3}\\otimes\\bar{\\mathbf{3}}=\\mathbf{8}\\oplus\\mathbf{1}',
+    formulaNote: 'Color por anticolor se descompone en un octete —los ocho gluones— y un singlete separado.',
+    sources: [
+      { label: 'CERN · The Standard Model', url: 'https://home.cern/science/physics/standard-model/' },
+      { label: 'CERN · Introduction to QCD', url: 'https://cds.cern.ch/record/454171/files/open-2000-255.pdf' }
+    ]
+  },
   Bosones: {
     id: 'bosones', kicker: 'CAMPOS', title: 'Bosones y mediadores', subtitle: 'Gluón, fotón, W, Z y Higgs',
     intro: 'Los bosones gauge permiten describir cómo los campos intercambian energía, momento y números cuánticos. El bosón de Higgs pertenece al sector escalar: es esencial para el mecanismo de masas, pero no es una quinta fuerza fundamental.',
@@ -170,6 +187,13 @@ const manualDetails: Record<string, string> = {
   Gravedad: 'A escala de partículas es extremadamente débil frente a las otras interacciones. No obstante, domina estructuras astronómicas porque siempre es atractiva y la masa-energía no se neutraliza como la carga eléctrica.',
   Electrodébil: 'Fotón y Z emergen de una mezcla de campos electrodébiles después de que el campo de Higgs adopte un valor no nulo en el vacío. A energías suficientemente altas la separación cotidiana entre electromagnetismo y débil deja de ser fundamental.',
   Acoplamientos: 'La polarización del vacío modifica los valores efectivos al cambiar la energía. Por eso comparar “la fuerza más intensa” sin indicar escala y proceso puede inducir a error.',
+  'Qué significa color': 'La analogía funciona porque tres etiquetas diferentes pueden combinarse para dar un estado neutro, como ocurre con la suma idealizada de colores de luz. La semejanza termina ahí: un detector no ve un quark rojo y el nombre de la base puede cambiar sin alterar las predicciones.',
+  'Quarks y antiquarks': 'Un quark posee un vector de estado en la representación fundamental 3. Bajo conjugación de carga, un antiquark transforma en 3̄. Decir que un quark “es rojo” significa elegir una base para describir su estado de color, no asignarle una propiedad clásica permanente.',
+  'Los ocho gluones': 'La descripción simplificada color–anticolor ayuda, pero los gluones físicos corresponden a combinaciones lineales sin traza. El noveno estado algebraico sería un singlete y no pertenece al octete gauge de QCD. Al portar color, los gluones se acoplan entre sí.',
+  'Singletes observables': 'En un barión, la función de onda de color combina tres quarks de forma antisimétrica. En un mesón, quark y antiquark forman una superposición neutra. El protón no tiene “un quark rojo fijo”: el estado completo intercambia color continuamente mediante gluones.',
+  'Valencia, mar y gluones': 'Dos quarks arriba y uno abajo en el protón —o uno arriba y dos abajo en el neutrón— fijan carga, número bariónico y sabores netos. El estado real contiene además campos gluónicos y pares quark–antiquark; por eso los gluones no pueden mostrarse con una cantidad entera estable.',
+  'Confinamiento y hadronización': 'Al aumentar la separación entre cargas de color crece la energía almacenada en el campo. Antes de aislar un quark se crean pares adicionales y aparecen chorros de hadrones. La neutralidad final no borra la estructura interna coloreada.',
+  'Libertad asintótica': 'La auto-interacción de los gluones produce un comportamiento distinto del electromagnetismo. A distancias muy cortas QCD permite cálculos perturbativos más controlados; a la escala hadrónica aparecen confinamiento, resonancias y estados ligados no perturbativos.',
   Gluones: 'Existen ocho combinaciones de color independientes. Permanecen confinados dentro de hadrones y pueden contribuir a estados exóticos, chorros y una parte esencial del momento y la masa del protón.',
   Fotón: 'Transporta energía y momento aunque su masa en reposo sea cero. El fotón real de la radiación y el lenguaje de intercambio en diagramas perturbativos no deben interpretarse siempre como pequeñas bolas viajando entre cargas.',
   'Bosones W y Z': 'W± cambia la carga eléctrica de los participantes; Z media corrientes neutras. Sus descubrimientos en 1983 confirmaron de manera decisiva la estructura electrodébil.',

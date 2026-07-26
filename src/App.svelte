@@ -64,7 +64,7 @@
   const filtering = $derived(Boolean(query.trim()) || family !== 'all' || interaction !== 'all');
   const matches = $derived(new Set(activeNodes.filter((particle) => {
     const normalized = query.trim().toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
-    const haystack = [particle.name, particle.englishName, particle.symbol, particle.antiparticleName, particle.antiparticle, particle.summary, particle.composition, particle.role, particle.decays, particle.discovered, particle.spin, particle.mass, particle.charge, particle.formula, particle.theory, particle.confidence, ...particle.sources.map((source) => source.label)]
+    const haystack = [particle.name, particle.englishName, particle.symbol, particle.antiparticleName, particle.antiparticle, particle.summary, particle.composition, particle.role, particle.decays, particle.discovered, particle.spin, particle.mass, particle.charge, particle.formula, particle.theory, particle.confidence, particle.colorState, particle.colorDetail, particle.colorFormula, particle.valenceFormula, particle.constituentSummary, ...(particle.constituentDetails?.flatMap((item) => [item.count, item.symbol, item.label, item.role]) ?? []), ...particle.sources.map((source) => source.label)]
       .join(' ').toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
     return (!normalized || haystack.includes(normalized))
       && (family === 'all' || particle.family === family)
@@ -74,7 +74,7 @@
     const needle = query.trim().toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
     if (!needle) return [] as Array<{ particle: Particle; mirror: boolean; name: string; symbol: string }>;
     return catalogNodes.flatMap((particle) => {
-      const matterText = [particle.name, particle.englishName, particle.symbol, particle.summary, particle.composition, particle.role, particle.decays, particle.mass, particle.charge, particle.spin, particle.discovered, particle.formula, particle.theory, particle.confidence].join(' ').toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
+      const matterText = [particle.name, particle.englishName, particle.symbol, particle.summary, particle.composition, particle.role, particle.decays, particle.mass, particle.charge, particle.spin, particle.discovered, particle.formula, particle.theory, particle.confidence, particle.colorState, particle.colorDetail, particle.colorFormula, particle.valenceFormula, particle.constituentSummary, ...(particle.constituentDetails?.flatMap((item) => [item.count, item.symbol, item.label, item.role]) ?? [])].join(' ').toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
       const antiText = `${particle.antiparticleName} ${particle.antiparticle} antimateria anti ${particle.summary}`.toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
       const results: Array<{ particle: Particle; mirror: boolean; name: string; symbol: string }> = [];
       if (matterText.includes(needle)) results.push({ particle, mirror: false, name: particle.name, symbol: particle.symbol });
@@ -211,7 +211,7 @@
     <div class:open={hudPanel === 'search'} class="hud-search-inline">
       <button class:active={hudPanel === 'search'} type="button" data-tooltip="Buscar" aria-label="Buscar" onclick={toggleSearch}><Search size={17}/></button>
       {#if hudPanel === 'search'}
-        <label><input bind:this={searchInput} value={query} oninput={(event) => query = event.currentTarget.value} placeholder="Buscar partícula, masa, fecha…" aria-label="Buscar en el atlas"/>{#if query}<button type="button" aria-label="Limpiar búsqueda" onclick={() => query = ''}><X size={14}/></button>{/if}</label>
+        <label><input bind:this={searchInput} value={query} oninput={(event) => query = event.currentTarget.value} placeholder="Buscar partícula, color, uud, fórmula…" aria-label="Buscar en el atlas"/>{#if query}<button type="button" aria-label="Limpiar búsqueda" onclick={() => query = ''}><X size={14}/></button>{/if}</label>
         {#if query}
           <div class="hud-search-results" aria-label="Resultados de búsqueda">
             <header><span>{searchResults.length} coincidencias directas</span><small>incluye capas ocultas y antimateria</small></header>

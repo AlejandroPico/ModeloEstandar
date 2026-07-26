@@ -66,11 +66,35 @@ function historyReport(particle: Particle): string {
 }
 
 function compositionReport(particle: Particle): string {
+  const quantitative = particle.constituentDetails?.length
+    ? `\n\nDesglose explícito: ${particle.constituentDetails.map((item) => `${item.count} × ${item.label} (${item.symbol})`).join('; ')}. ${particle.valenceFormula ? `La relación de composición usada por la ficha es ${particle.valenceFormula}.` : ''}`
+    : '';
   if (particle.family === 'technology') return `${particle.composition}\n\nSus materiales contienen átomos y electrones ya representados en el atlas; el dispositivo emerge al organizarlos. La capa permanece separada para evitar mezclar un objeto fabricado con constituyentes fundamentales.`;
-  if (particle.constituents?.length) return `${particle.composition}\n\nEl atlas resume la relación como “${particle.constituentSummary ?? particle.constituents.join(' + ')}”. Es una notación didáctica: los constituyentes forman un sistema cuántico dinámico con energía de interacción, polarización del vacío y, cuando corresponde, componentes adicionales más allá del contenido de valencia.`;
+  if (particle.constituents?.length) return `${particle.composition}${quantitative}\n\nEl atlas resume la relación como “${particle.constituentSummary ?? particle.constituents.join(' + ')}”. Es una notación didáctica: los constituyentes forman un sistema cuántico dinámico con energía de interacción, polarización del vacío y, cuando corresponde, componentes adicionales más allá del contenido de valencia. En un hadrón, contar quarks de valencia no equivale a contar un número fijo de gluones o pares del mar.`;
   if (particle.family === 'force') return `${particle.composition}\n\nUna interacción no debe imaginarse como materia compuesta. Se representa mediante campos, simetrías, cargas y mediadores. La ficha enlaza estos elementos para mostrar la relación entre el concepto de fuerza y los cuantos observables del campo.`;
   if (particle.family === 'string') return `${particle.composition}\n\nEl objeto es extendido por construcción matemática. Su dimensionalidad, tensión, modos permitidos y espacio de fondo determinan el espectro efectivo; ninguna visualización del atlas constituye una observación microscópica.`;
   return `${particle.composition}\n\nHasta la resolución experimental disponible no se ha encontrado subestructura interna. “Elemental” significa precisamente esa ausencia de estructura resuelta, no que se haya medido un radio absolutamente nulo.`;
+}
+
+function colorReport(particle: Particle, mirror: boolean): string {
+  const baseState = particle.colorState ?? (particle.colorCharge ? 'representation-dependent' : 'none');
+  const state = mirror && baseState === 'triplet' ? 'antitriplet' : mirror && baseState === 'antitriplet' ? 'triplet' : baseState;
+  const labels = {
+    triplet: 'triplete fundamental 3, con los estados convencionales rojo, verde y azul',
+    antitriplet: 'antitriplete conjugado 3̄, con antirrojo, antiverde y antiazul',
+    octet: 'octete adjunto 8 de SU(3)C',
+    singlet: 'singlete 1, con carga de color neta nula',
+    'representation-dependent': 'representación de SU(3)C dependiente del campo',
+    none: 'estado que no porta carga de color'
+  } as const;
+  const explanation = particle.colorDetail ?? 'La carga de color no se aplica directamente a esta entidad como número cuántico libre.';
+  const hadron = state === 'singlet'
+    ? '\n\nEn los bariones, tres colores se combinan en una función de onda globalmente neutra; en los mesones se combina color con anticolor. “Neutro de color” no significa que no haya dinámica fuerte en el interior.'
+    : '';
+  const gluon = state === 'octet'
+    ? '\n\nEl producto color × anticolor contiene nueve combinaciones algebraicas, pero se descompone como 3 ⊗ 3̄ = 8 ⊕ 1. Los gluones de QCD corresponden a las ocho direcciones independientes del octete y por ello se auto-interaccionan.'
+    : '';
+  return `La ficha transforma como ${labels[state]}. Rojo, verde y azul son nombres de base para una carga cuántica; no describen luz, pigmento ni una tonalidad observable.\n\n${explanation}${hadron}${gluon}${particle.colorFormula ? `\n\nRepresentación compacta: ${particle.colorFormula}.` : ''}`;
 }
 
 function antimatterReport(particle: Particle, mirror: boolean): string {
@@ -100,18 +124,19 @@ function sectionsFor(particle: Particle, mirror: boolean): ManualSection[] {
     { eyebrow: 'INFORME · 01', title: `Definición de ${name}`, text: `${particle.summary}\n\n${name} se representa mediante ${symbol} y se clasifica como ${mirror ? `estado de antimateria de ${familyName[particle.family]}` : familyName[particle.family]}. ${particle.role}`, key: `Clasificación: ${familyName[particle.family]}. Evidencia: ${particle.evidence === 'observed' ? 'observada o establecida' : 'hipotética'}.` },
     { eyebrow: 'INFORME · 02', title: 'Propiedades físicas y números cuánticos', text: `Masa o parámetro característico: ${particle.mass}. Carga eléctrica: ${mirror && !particle.selfConjugate ? 'opuesta a la indicada para la partícula cuando la carga es aditiva' : particle.charge}. Spin: ${particle.spin}. ${particle.generation ? `Pertenece a la generación ${particle.generation}.` : 'La clasificación por generaciones no se aplica.'}\n\nCarga de color: ${particle.colorCharge ? 'sí; participa en la dinámica de color' : 'no indicada'}. Vida media, estabilidad o alcance: ${particle.lifetime}. El spin es una propiedad cuántica intrínseca y no una rotación clásica de una esfera.` },
     { eyebrow: 'INFORME · 03', title: 'Campo, composición y estructura interna', text: compositionReport(particle) },
-    { eyebrow: 'INFORME · 04', title: 'Interacciones fundamentales', text: interactionReport(particle), key: `Interacciones señaladas: ${particle.interactions.map((item) => interactionLabels[item]).join(', ')}.` },
-    { eyebrow: 'INFORME · 05', title: 'Antimateria y conjugación', text: antimatterReport(particle, mirror) },
-    { eyebrow: 'INFORME · 06', title: 'Estabilidad, procesos y decaimientos', text: `${particle.decays}\n\nLa descripción de un decaimiento debe incluir productos finales, leyes de conservación, probabilidad o anchura y condiciones cinemáticas. Una vida media finita expresa una distribución estadística exponencial para una población, no un reloj interno que determine el instante individual.` },
-    { eyebrow: 'INFORME · 07', title: 'Escala física y representación', text: `Escala orientativa: ${particle.scale ?? 'no se asigna un tamaño geométrico propio'}. La posición vertical del atlas expresa un orden de magnitud o un régimen físico, no un diámetro exacto dibujado a escala.\n\nEn partículas elementales, una cota experimental de estructura no equivale a demostrar un radio matemáticamente cero. En sistemas compuestos, radio de carga, radio de masa y extensión del estado pueden ser conceptos diferentes.` },
-    { eyebrow: 'INFORME · 08', title: 'Historia del descubrimiento o de la propuesta', text: historyReport(particle) },
-    { eyebrow: 'INFORME · 09', title: 'Cómo se detecta y qué se mide', text: detectionReport(particle) },
-    { eyebrow: 'INFORME · 10', title: 'Descripción matemática', text: formulaReport(particle), key: particle.formula },
-    { eyebrow: 'INFORME · 11', title: 'Papel dentro de la física', text: `${particle.role}\n\nSu importancia se entiende conectando la ficha con las entidades iluminadas en el lienzo. Esas conexiones expresan composición, mediación o participación en una interacción; no representan trayectorias espaciales literales.` },
-    { eyebrow: 'INFORME · 12', title: 'Estado de la evidencia', text: `${particle.evidence === 'observed' ? 'La entidad o interacción cuenta con evidencia experimental aceptada.' : 'La entidad no ha sido observada y se presenta como hipótesis, candidato o construcción teórica.'} ${particle.confidence ?? ''}\n\nLa etiqueta epistemológica tiene prioridad sobre la estética: ninguna animación, fórmula o simetría visual convierte una predicción en observación.` },
-    { eyebrow: 'INFORME · 13', title: 'Preguntas abiertas y medidas futuras', text: openQuestions(particle) },
-    { eyebrow: 'INFORME · 14', title: 'Cómo leer esta ficha en el atlas', text: `${particle.note ?? 'El símbolo y la ilustración son convenciones didácticas; no constituyen una fotografía ni fijan una forma clásica.'}\n\nAl aumentar el zoom aparecen propiedades y marcadores de interacción. Al seleccionar la ficha se resaltan constituyentes, estructuras que la contienen o mediadores relacionados. El modo espejo añade ${particle.selfConjugate ? 'la misma especie autoconjugada' : particle.antiparticleName}.` },
-    { eyebrow: 'INFORME · 15', title: 'Fuentes, precisión y trazabilidad', text: `La ficha enlaza ${particle.sources.length} fuente${particle.sources.length === 1 ? '' : 's'} de referencia. Los valores se muestran de forma divulgativa y pueden estar redondeados.\n\nPara trabajo técnico deben consultarse la definición del observable, la incertidumbre, el esquema de renormalización cuando proceda, la fecha de la revisión y las tablas originales de la colaboración o del Particle Data Group.` }
+    { eyebrow: 'INFORME · 04', title: 'Carga de color y neutralidad observable', text: colorReport(particle, mirror), key: 'El color de QCD es una carga cuántica, no un color visible.' },
+    { eyebrow: 'INFORME · 05', title: 'Interacciones fundamentales', text: interactionReport(particle), key: `Interacciones señaladas: ${particle.interactions.map((item) => interactionLabels[item]).join(', ')}.` },
+    { eyebrow: 'INFORME · 06', title: 'Antimateria y conjugación', text: antimatterReport(particle, mirror) },
+    { eyebrow: 'INFORME · 07', title: 'Estabilidad, procesos y decaimientos', text: `${particle.decays}\n\nLa descripción de un decaimiento debe incluir productos finales, leyes de conservación, probabilidad o anchura y condiciones cinemáticas. Una vida media finita expresa una distribución estadística exponencial para una población, no un reloj interno que determine el instante individual.` },
+    { eyebrow: 'INFORME · 08', title: 'Escala física y representación', text: `Escala orientativa: ${particle.scale ?? 'no se asigna un tamaño geométrico propio'}. La posición vertical del atlas expresa un orden de magnitud o un régimen físico, no un diámetro exacto dibujado a escala.\n\nEn partículas elementales, una cota experimental de estructura no equivale a demostrar un radio matemáticamente cero. En sistemas compuestos, radio de carga, radio de masa y extensión del estado pueden ser conceptos diferentes.` },
+    { eyebrow: 'INFORME · 09', title: 'Historia del descubrimiento o de la propuesta', text: historyReport(particle) },
+    { eyebrow: 'INFORME · 10', title: 'Cómo se detecta y qué se mide', text: detectionReport(particle) },
+    { eyebrow: 'INFORME · 11', title: 'Descripción matemática', text: formulaReport(particle), key: particle.formula },
+    { eyebrow: 'INFORME · 12', title: 'Papel dentro de la física', text: `${particle.role}\n\nSu importancia se entiende conectando la ficha con las entidades iluminadas en el lienzo. Esas conexiones expresan composición, mediación o participación en una interacción; no representan trayectorias espaciales literales.` },
+    { eyebrow: 'INFORME · 13', title: 'Estado de la evidencia', text: `${particle.evidence === 'observed' ? 'La entidad o interacción cuenta con evidencia experimental aceptada.' : 'La entidad no ha sido observada y se presenta como hipótesis, candidato o construcción teórica.'} ${particle.confidence ?? ''}\n\nLa etiqueta epistemológica tiene prioridad sobre la estética: ninguna animación, fórmula o simetría visual convierte una predicción en observación.` },
+    { eyebrow: 'INFORME · 14', title: 'Preguntas abiertas y medidas futuras', text: openQuestions(particle) },
+    { eyebrow: 'INFORME · 15', title: 'Cómo leer esta ficha en el atlas', text: `${particle.note ?? 'El símbolo y la ilustración son convenciones didácticas; no constituyen una fotografía ni fijan una forma clásica.'}\n\nAl aumentar el zoom aparecen propiedades y marcadores de interacción. Al seleccionar la ficha se resaltan constituyentes, estructuras que la contienen o mediadores relacionados. El modo espejo añade ${particle.selfConjugate ? 'la misma especie autoconjugada' : particle.antiparticleName}.` },
+    { eyebrow: 'INFORME · 16', title: 'Fuentes, precisión y trazabilidad', text: `La ficha enlaza ${particle.sources.length} fuente${particle.sources.length === 1 ? '' : 's'} de referencia. Los valores se muestran de forma divulgativa y pueden estar redondeados.\n\nPara trabajo técnico deben consultarse la definición del observable, la incertidumbre, el esquema de renormalización cuando proceda, la fecha de la revisión y las tablas originales de la colaboración o del Particle Data Group.` }
   ];
 }
 

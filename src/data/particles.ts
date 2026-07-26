@@ -16,10 +16,21 @@ const CERN_MOEDAL: SourceLink = { label: 'CERN · MoEDAL-MAPP exotic-particle pr
 const NATURE_ATOMIC_TRANSISTOR: SourceLink = { label: 'Nature Communications · Atomic transistors', url: 'https://www.nature.com/articles/s41467-022-32582-9' };
 
 const common = { evidence: 'observed' as const, sources: [PDG, CERN_SM] };
+const quarkColor = {
+  colorCharge: true,
+  colorState: 'triplet' as const,
+  colorFormula: 'q\\in\\mathbf{3}\\;\\text{de}\\;SU(3)_C',
+  colorDetail: 'Un quark puede ocupar cualquiera de tres estados de color convencionales: rojo, verde o azul. No son colores ópticos. Un antiquark ocupa la representación conjugada y se etiqueta antirrojo, antiverde o antiazul.'
+};
+const colorSinglet = {
+  colorState: 'singlet' as const,
+  colorFormula: '\\mathbf{1}\\;\\text{de}\\;SU(3)_C',
+  colorDetail: 'El estado observable completo es un singlete de color: su carga de color neta es nula, aunque su interior contenga quarks, antiquarks y gluones coloreados.'
+};
 
 export const particles: Particle[] = [
   {
-    ...common, id: 'up', symbol: 'u', name: 'quark arriba', englishName: 'up quark', family: 'quark', generation: 1, row: 1, column: 1,
+    ...common, ...quarkColor, id: 'up', symbol: 'u', name: 'quark arriba', englishName: 'up quark', family: 'quark', generation: 1, row: 1, column: 1,
     mass: '2,16 MeV/c²', massEv: 2.16e6, charge: '+⅔ e', spin: '½', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'],
     discovered: '1968 · evidencia partónica', lifetime: 'Confinado; no se observa libre', antiparticle: 'ū', antiparticleName: 'antiquark arriba', colorCharge: true,
     summary: 'El quark ligero de carga positiva que, junto con el quark abajo, construye protones y neutrones.',
@@ -27,35 +38,35 @@ export const particles: Particle[] = [
     decays: 'No posee un decaimiento libre medible: la interacción fuerte lo mantiene confinado en hadrones.', formula: 'Q_u=+\\frac{2}{3}e'
   },
   {
-    ...common, id: 'charm', symbol: 'c', name: 'quark encanto', englishName: 'charm quark', family: 'quark', generation: 2, row: 1, column: 2,
+    ...common, ...quarkColor, id: 'charm', symbol: 'c', name: 'quark encanto', englishName: 'charm quark', family: 'quark', generation: 2, row: 1, column: 2,
     mass: '1,273 GeV/c²', massEv: 1.273e9, charge: '+⅔ e', spin: '½', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'],
     discovered: '1974 · revolución de noviembre', lifetime: 'Confinado; hadrones ~10⁻¹³ s', antiparticle: 'c̄', antiparticleName: 'antiquark encanto', colorCharge: true,
     summary: 'Quark de segunda generación cuya observación confirmó una estructura más rica de la materia.', composition: 'Elemental; aparece ligado en mesones D, charmonio y bariones encantados.',
     role: 'Pruebas de cromodinámica cuántica y física del sabor.', decays: 'Decae por interacción débil dentro de hadrones, normalmente hacia quarks extraños.', formula: 'Q_c=+\\frac{2}{3}e'
   },
   {
-    ...common, id: 'top', symbol: 't', name: 'quark cima', englishName: 'top quark', family: 'quark', generation: 3, row: 1, column: 3,
+    ...common, ...quarkColor, id: 'top', symbol: 't', name: 'quark cima', englishName: 'top quark', family: 'quark', generation: 3, row: 1, column: 3,
     mass: '≈172,57 GeV/c²', massEv: 172.57e9, charge: '+⅔ e', spin: '½', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'],
     discovered: '1995 · CDF y DØ', lifetime: '≈5 × 10⁻²⁵ s', antiparticle: 't̄', antiparticleName: 'antiquark cima', colorCharge: true,
     summary: 'La partícula elemental más masiva conocida; decae antes de poder formar un hadrón.', composition: 'Elemental. Su vida extremadamente breve permite estudiar un quark casi desnudo.',
     role: 'Sonda privilegiada del Higgs y de nueva física a escalas altas.', decays: 'Casi siempre t → Wb.', formula: 't\\rightarrow W^+b'
   },
   {
-    ...common, id: 'down', symbol: 'd', name: 'quark abajo', englishName: 'down quark', family: 'quark', generation: 1, row: 2, column: 1,
+    ...common, ...quarkColor, id: 'down', symbol: 'd', name: 'quark abajo', englishName: 'down quark', family: 'quark', generation: 1, row: 2, column: 1,
     mass: '4,67 MeV/c²', massEv: 4.67e6, charge: '−⅓ e', spin: '½', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'],
     discovered: '1968 · evidencia partónica', lifetime: 'Confinado; no se observa libre', antiparticle: 'd̄', antiparticleName: 'antiquark abajo', colorCharge: true,
     summary: 'El compañero del quark arriba en la primera generación y una pieza esencial de protones y neutrones.', composition: 'Elemental. Un neutrón contiene dos quarks abajo de valencia y uno arriba.',
     role: 'Materia ordinaria, estabilidad nuclear y desintegración beta.', decays: 'En la desintegración beta, un d puede convertirse en u mediante un W⁻ virtual.', formula: 'd\\rightarrow u+W^-'
   },
   {
-    ...common, id: 'strange', symbol: 's', name: 'quark extraño', englishName: 'strange quark', family: 'quark', generation: 2, row: 2, column: 2,
+    ...common, ...quarkColor, id: 'strange', symbol: 's', name: 'quark extraño', englishName: 'strange quark', family: 'quark', generation: 2, row: 2, column: 2,
     mass: '≈93,4 MeV/c²', massEv: 93.4e6, charge: '−⅓ e', spin: '½', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'],
     discovered: '1947–1968 · extrañeza y quarks', lifetime: 'Confinado; hadrones ~10⁻¹⁰ s', antiparticle: 's̄', antiparticleName: 'antiquark extraño', colorCharge: true,
     summary: 'Quark de segunda generación asociado históricamente a las partículas “extrañas”.', composition: 'Elemental; forma kaones, hiperones y otros hadrones extraños.',
     role: 'Física del sabor, plasmas de quarks y gluones y materia densa.', decays: 'Decae por interacción débil hacia quarks arriba.', formula: 'S(s)=-1'
   },
   {
-    ...common, id: 'bottom', symbol: 'b', name: 'quark fondo', englishName: 'bottom quark', family: 'quark', generation: 3, row: 2, column: 3,
+    ...common, ...quarkColor, id: 'bottom', symbol: 'b', name: 'quark fondo', englishName: 'bottom quark', family: 'quark', generation: 3, row: 2, column: 3,
     mass: '≈4,183 GeV/c²', massEv: 4.183e9, charge: '−⅓ e', spin: '½', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'],
     discovered: '1977 · Fermilab', lifetime: 'Confinado; hadrones ~10⁻¹² s', antiparticle: 'b̄', antiparticleName: 'antiquark fondo', colorCharge: true,
     summary: 'Quark pesado de tercera generación, central para estudiar la asimetría materia–antimateria.', composition: 'Elemental; forma mesones B y bariones con belleza.',
@@ -107,7 +118,9 @@ export const particles: Particle[] = [
   {
     ...common, id: 'gluon', symbol: 'g', name: 'gluón', englishName: 'gluon', family: 'gauge', row: 1, column: 4,
     mass: '0', massEv: 0, charge: '0', spin: '1', interactions: ['strong'], discovered: '1979 · PETRA', lifetime: 'Estable, pero confinado',
-    antiparticle: 'g', antiparticleName: 'gluón', selfConjugate: true, colorCharge: true,
+    antiparticle: 'g', antiparticleName: 'gluón', selfConjugate: true, colorCharge: true, colorState: 'octet',
+    colorFormula: '\\mathbf{3}\\otimes\\bar{\\mathbf{3}}=\\mathbf{8}\\oplus\\mathbf{1}',
+    colorDetail: 'El campo gluónico tiene ocho estados independientes. Se describen mediante combinaciones de color y anticolor que forman el octeto de SU(3)C; no son nueve pares independientes porque la combinación singlete se separa del octeto.',
     summary: 'Portador de la interacción fuerte. Hay ocho estados de color de gluón y también interactúan entre sí.', composition: 'Bosón gauge elemental de SU(3)₍C₎.',
     role: 'Mantiene unidos los quarks y domina gran parte de la masa de protones y neutrones.', decays: 'No se observa libre; produce chorros y hadroniza.', formula: 'SU(3)_C\\Rightarrow 8\\;g'
   },
@@ -301,80 +314,115 @@ export const theoryParticles: TheoryParticle[] = [
 
 export const compositeParticles: Particle[] = [
   {
-    id: 'atom', symbol: 'A', name: 'átomo', englishName: 'atom', family: 'composite', zone: 'atom', layer: 'composites', row: 1, column: 3,
+    ...colorSinglet, id: 'atom', symbol: 'A', name: 'átomo', englishName: 'atom', family: 'composite', zone: 'atom', layer: 'composites', row: 1, column: 3,
     mass: 'Depende del elemento y del isótopo', charge: '0 en un átomo neutro', spin: 'Depende del estado', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1803–1932 · de Dalton al neutrón', lifetime: 'Estable o radiactivo según el núcleo',
     antiparticle: 'Ā', antiparticleName: 'antiátomo', visual: 'atom', scale: '≈10⁻¹⁰ m', constituents: ['proton', 'neutron', 'electron'],
+    constituentDetails: [
+      { id: 'proton', symbol: 'p', label: 'protones', count: 'Z', role: 'Determinan el elemento y aportan carga +Ze al núcleo.' },
+      { id: 'neutron', symbol: 'n', label: 'neutrones', count: 'N', role: 'Determinan el isótopo; pueden ser cero en el protio.' },
+      { id: 'electron', symbol: 'e⁻', label: 'electrones', count: 'Z', role: 'En el átomo neutro compensan la carga nuclear.' }
+    ],
+    valenceFormula: '{}^A_ZX:\\quad A=Z+N,\\quad N=A-Z',
     constituentSummary: 'Z protones + N neutrones + Z electrones en el estado neutro', summary: 'Ficha didáctica general que representa un átomo con núcleo y nube electrónica, sin limitarse a un elemento concreto.',
     composition: 'El núcleo contiene protones y neutrones; los electrones ocupan estados cuánticos ligados por electromagnetismo. El número de neutrones varía entre isótopos y algunos núcleos no contienen ninguno.',
     role: 'Punto de partida para recorrer desde la materia química hasta nucleones, quarks, leptones y campos.', decays: 'El átomo puede ser estable, ionizarse o sufrir transformaciones nucleares según el isótopo.',
     formula: 'A=Z+N,\\qquad {}^A_ZX', note: 'No representa un elemento real concreto: reúne deliberadamente protón, neutrón y electrón para mostrar el árbol completo de composición.', sources: [PDG, CERN_SM]
   },
   {
-    id: 'proton', symbol: 'p', name: 'protón', englishName: 'proton', family: 'composite', zone: 'composite', layer: 'composites', row: 1, column: 2,
+    ...colorSinglet, id: 'proton', symbol: 'p', name: 'protón', englishName: 'proton', family: 'composite', zone: 'composite', layer: 'composites', row: 1, column: 2,
     mass: '938,272 MeV/c²', charge: '+1 e', spin: '½', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1917–1919 · Rutherford', lifetime: 'Estable en las medidas actuales',
     antiparticle: 'p̄', antiparticleName: 'antiprotón', visual: 'proton', scale: '≈0,84 fm', constituents: ['up', 'up', 'down', 'gluon'],
+    constituentDetails: [
+      { id: 'up', symbol: 'u', label: 'quark arriba', count: '2', role: 'Contenido de valencia; cada uno aporta carga +⅔ e.' },
+      { id: 'down', symbol: 'd', label: 'quark abajo', count: '1', role: 'Contenido de valencia; aporta carga −⅓ e.' },
+      { id: 'gluon', symbol: 'g', label: 'gluones', count: 'dinámico', role: 'Campo de enlace; su número no es fijo en un estado cuántico.' },
+      { id: 'sea', symbol: 'q q̄', label: 'mar de quarks', count: 'fluctuante', role: 'Pares quark–antiquark y excitaciones de QCD.' }
+    ],
+    valenceFormula: 'p:\\quad uud,\\qquad 2\\!\\left(+\\frac23e\\right)-\\frac13e=+e',
     constituentSummary: 'uud de valencia + mar de quarks y gluones', summary: 'Barión estable que forma los núcleos atómicos y posee estructura interna dinámica.', composition: 'Dos quarks arriba y uno abajo de valencia, inmersos en gluones y pares quark–antiquark.',
     role: 'Junto con el neutrón construye los núcleos; su número define el elemento químico.', decays: 'No se ha observado su decaimiento.', formula: '|p\\rangle=|uud+g+q\\bar q\\rangle',
     note: 'La imagen de tres bolitas es didáctica: el protón real es un sistema cuántico dinámico.', sources: [PDG, CERN_SM]
   },
   {
-    id: 'neutron', symbol: 'n', name: 'neutrón', englishName: 'neutron', family: 'composite', zone: 'composite', layer: 'composites', row: 1, column: 3,
+    ...colorSinglet, id: 'neutron', symbol: 'n', name: 'neutrón', englishName: 'neutron', family: 'composite', zone: 'composite', layer: 'composites', row: 1, column: 3,
     mass: '939,565 MeV/c²', charge: '0', spin: '½', interactions: ['strong', 'weak', 'higgs'], evidence: 'observed', discovered: '1932 · Chadwick', lifetime: '≈879,4 s cuando está libre',
     antiparticle: 'n̄', antiparticleName: 'antineutrón', visual: 'neutron', scale: '≈0,8 fm', constituents: ['up', 'down', 'down', 'gluon'],
+    constituentDetails: [
+      { id: 'up', symbol: 'u', label: 'quark arriba', count: '1', role: 'Contenido de valencia; aporta carga +⅔ e.' },
+      { id: 'down', symbol: 'd', label: 'quark abajo', count: '2', role: 'Contenido de valencia; cada uno aporta carga −⅓ e.' },
+      { id: 'gluon', symbol: 'g', label: 'gluones', count: 'dinámico', role: 'Campo de enlace; su número no es fijo en un estado cuántico.' },
+      { id: 'sea', symbol: 'q q̄', label: 'mar de quarks', count: 'fluctuante', role: 'Pares quark–antiquark y excitaciones de QCD.' }
+    ],
+    valenceFormula: 'n:\\quad udd,\\qquad \\frac23e-2\\!\\left(\\frac13e\\right)=0',
     constituentSummary: 'udd de valencia + mar de quarks y gluones', summary: 'Barión neutro que estabiliza muchos núcleos y decae cuando permanece libre.', composition: 'Un quark arriba y dos abajo de valencia, además de gluones y pares virtuales.',
     role: 'Estructura nuclear, radiactividad beta y nucleosíntesis.', decays: 'n → p + e⁻ + ν̄ₑ.', formula: 'n\\rightarrow p+e^-+\\bar\\nu_e', sources: [PDG, CERN_SM]
   },
   {
-    id: 'pion-plus', symbol: 'π⁺', name: 'pión positivo', englishName: 'positive pion', family: 'composite', zone: 'composite', layer: 'composites', row: 1, column: 4,
+    ...colorSinglet, id: 'pion-plus', symbol: 'π⁺', name: 'pión positivo', englishName: 'positive pion', family: 'composite', zone: 'composite', layer: 'composites', row: 1, column: 4,
     mass: '139,570 MeV/c²', charge: '+1 e', spin: '0', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1947 · rayos cósmicos', lifetime: '≈2,60 × 10⁻⁸ s',
     antiparticle: 'π⁻', antiparticleName: 'pión negativo', visual: 'field', scale: '<1 fm', constituents: ['up', 'down'],
+    constituentDetails: [
+      { id: 'up', symbol: 'u', label: 'quark arriba', count: '1', role: 'Quark de valencia con carga +⅔ e.' },
+      { id: 'down', symbol: 'd̄', label: 'antiquark abajo', count: '1', role: 'Antiquark de valencia con carga +⅓ e.', antimatter: true }
+    ],
+    valenceFormula: '\\pi^+=u\\bar d:\\quad \\frac23e+\\frac13e=+e',
     constituentSummary: 'u + d̄', summary: 'Partícula subatómica compuesta: es el mesón cargado más ligero y ayuda a describir la fuerza nuclear residual entre nucleones.', composition: 'Un quark arriba y un antiquark abajo en un estado ligado. No forma parte de las 17 partículas elementales porque tiene estructura interna.',
     role: 'Interacción nuclear residual, rayos cósmicos y cascadas de partículas.', decays: 'π⁺ → μ⁺ + νμ.', formula: '\\pi^+=u\\bar d', note: '“Mesón” significa un hadrón formado, en su descripción de valencia, por un quark y un antiquark.', sources: [PDG]
   },
   {
-    id: 'deuteron', symbol: 'd', name: 'deuterón', englishName: 'deuteron', family: 'composite', zone: 'composite', layer: 'composites', row: 2, column: 2,
+    ...colorSinglet, id: 'deuteron', symbol: 'd', name: 'deuterón', englishName: 'deuteron', family: 'composite', zone: 'composite', layer: 'composites', row: 2, column: 2,
     mass: '1875,613 MeV/c²', charge: '+1 e', spin: '1', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1931–1932 · deuterio', lifetime: 'Estable',
     antiparticle: 'd̄', antiparticleName: 'antideuterón', visual: 'field', scale: '≈2 fm', constituents: ['proton', 'neutron'], constituentSummary: '1 protón + 1 neutrón',
+    constituentDetails: [
+      { id: 'proton', symbol: 'p', label: 'protón', count: '1', role: 'Nucleón cargado del estado ligado.' },
+      { id: 'neutron', symbol: 'n', label: 'neutrón', count: '1', role: 'Nucleón neutro del estado ligado.' }
+    ],
+    valenceFormula: 'd=p+n,\\qquad E_B\\simeq2{,}224\\;\\mathrm{MeV}',
     summary: 'Núcleo del deuterio: el sistema nuclear ligado más sencillo.', composition: 'Un protón y un neutrón ligados por la interacción nuclear residual.', role: 'Fusión, nucleosíntesis y pruebas de fuerzas nucleares.',
     decays: 'Estable.', formula: 'd=p+n-2{,}224\\;\\mathrm{MeV}', sources: [PDG]
   },
   {
-    id: 'alpha-particle', symbol: 'α', name: 'partícula alfa', englishName: 'alpha particle', family: 'composite', zone: 'composite', layer: 'composites', row: 2, column: 3,
+    ...colorSinglet, id: 'alpha-particle', symbol: 'α', name: 'partícula alfa', englishName: 'alpha particle', family: 'composite', zone: 'composite', layer: 'composites', row: 2, column: 3,
     mass: '3727,38 MeV/c²', charge: '+2 e', spin: '0', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1899–1908 · Rutherford', lifetime: 'Estable',
     antiparticle: 'ᾱ', antiparticleName: 'antipartícula alfa', visual: 'field', scale: '≈1,7 fm', constituents: ['proton', 'neutron'], constituentSummary: '2 protones + 2 neutrones',
+    constituentDetails: [
+      { id: 'proton', symbol: 'p', label: 'protones', count: '2', role: 'Aportan la carga total +2 e.' },
+      { id: 'neutron', symbol: 'n', label: 'neutrones', count: '2', role: 'Completan el núcleo de helio-4.' }
+    ],
+    valenceFormula: '\\alpha={}^4_2\\mathrm{He}^{2+}=2p+2n',
     summary: 'Núcleo de helio-4 emitido en ciertas desintegraciones radiactivas.', composition: 'Dos protones y dos neutrones fuertemente ligados.', role: 'Radiactividad alfa, nucleosíntesis y estructura nuclear.',
     decays: 'Estable como núcleo aislado.', formula: '\\alpha={}^4_2\\mathrm{He}^{2+}', sources: [PDG]
   },
   {
-    id: 'pion-zero', symbol: 'π⁰', name: 'pión neutro', englishName: 'neutral pion', family: 'composite', zone: 'composite', layer: 'composites', row: 2, column: 4,
+    ...colorSinglet, id: 'pion-zero', symbol: 'π⁰', name: 'pión neutro', englishName: 'neutral pion', family: 'composite', zone: 'composite', layer: 'composites', row: 2, column: 4,
     mass: '134,977 MeV/c²', charge: '0', spin: '0', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1950 · aceleradores', lifetime: '≈8,4 × 10⁻¹⁷ s',
     antiparticle: 'π⁰', antiparticleName: 'pión neutro', selfConjugate: true, visual: 'field', scale: '<1 fm', constituents: ['up', 'down'], constituentSummary: 'superposición uū y dd̄',
     summary: 'Mesón neutro muy breve relacionado con la interacción nuclear residual.', composition: 'Superposición cuántica de pares quark–antiquark ligeros.', role: 'Física hadrónica y producción de fotones.',
     decays: 'Casi siempre π⁰ → γγ.', formula: '|\\pi^0\\rangle\\simeq\\frac{|u\\bar u\\rangle-|d\\bar d\\rangle}{\\sqrt2}', sources: [PDG]
   },
   {
-    id: 'kaon-plus', symbol: 'K⁺', name: 'kaón positivo', englishName: 'positive kaon', family: 'composite', zone: 'composite', layer: 'composites', row: 2, column: 5,
+    ...colorSinglet, id: 'kaon-plus', symbol: 'K⁺', name: 'kaón positivo', englishName: 'positive kaon', family: 'composite', zone: 'composite', layer: 'composites', row: 2, column: 5,
     mass: '493,677 MeV/c²', charge: '+1 e', spin: '0', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '1947 · rayos cósmicos', lifetime: '≈1,24 × 10⁻⁸ s',
     antiparticle: 'K⁻', antiparticleName: 'kaón negativo', visual: 'field', scale: '<1 fm', constituents: ['up', 'strange'], constituentSummary: 'u + s̄',
     summary: 'Mesón extraño que reveló nuevas reglas de conservación y ayudó a construir el modelo de quarks.', composition: 'Un quark arriba y un antiquark extraño.', role: 'Física del sabor, violación CP y estudios de interacción débil.',
     decays: 'Posee varios canales débiles, entre ellos K⁺ → μ⁺νμ.', formula: 'K^+=u\\bar s', sources: [PDG]
   },
   {
-    id: 'tetraquark', symbol: 'T₄q', name: 'tetraquarks', englishName: 'tetraquarks', family: 'composite', zone: 'composite', layer: 'composites', row: 3, column: 2,
+    ...colorSinglet, id: 'tetraquark', symbol: 'T₄q', name: 'tetraquarks', englishName: 'tetraquarks', family: 'composite', zone: 'composite', layer: 'composites', row: 3, column: 2,
     mass: 'Depende del estado; varios GeV en estados con encanto', charge: 'Variable', spin: 'Variable', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '2003–2022 · familia exótica establecida', lifetime: 'Muy breve',
     antiparticle: 'T̄₄q', antiparticleName: 'antitetraquarks', visual: 'field', scale: '≈10⁻¹⁵ m', constituents: ['charm', 'up', 'down', 'strange'], constituentSummary: 'Dos quarks + dos antiquarks; contenido variable',
     summary: 'Familia de hadrones exóticos con cuatro constituyentes de valencia, observada en múltiples estados.', composition: 'Puede organizarse como estado compacto de cuatro quarks o como molécula de dos mesones; la estructura precisa de varios candidatos continúa en debate.',
     role: 'Amplía la clasificación tradicional de bariones y mesones y somete QCD no perturbativa a nuevas pruebas.', decays: 'Cada estado posee canales y anchuras propios.', formula: 'T\\sim qq\\bar q\\bar q', note: '“Observado” se refiere a resonancias experimentales; su geometría interna puede seguir siendo discutida.', sources: [CERN_EXOTIC_HADRONS, PDG]
   },
   {
-    id: 'pentaquark', symbol: 'P₅q', name: 'pentaquarks', englishName: 'pentaquarks', family: 'composite', zone: 'composite', layer: 'composites', row: 3, column: 3,
+    ...colorSinglet, id: 'pentaquark', symbol: 'P₅q', name: 'pentaquarks', englishName: 'pentaquarks', family: 'composite', zone: 'composite', layer: 'composites', row: 3, column: 3,
     mass: 'Depende del estado; varios GeV en estados con encanto', charge: 'Variable', spin: 'Variable', interactions: ['strong', 'electromagnetic', 'weak', 'higgs'], evidence: 'observed', discovered: '2015–2022 · LHCb', lifetime: 'Muy breve',
     antiparticle: 'P̄₅q', antiparticleName: 'antipentaquarks', visual: 'field', scale: '≈10⁻¹⁵ m', constituents: ['charm', 'up', 'down'], constituentSummary: 'Cuatro quarks + un antiquark; contenido variable',
     summary: 'Familia de hadrones exóticos de cinco constituyentes de valencia observada por LHCb.', composition: 'Las señales pueden corresponder a configuraciones compactas o a moléculas hadrónicas; distintos estados pueden tener estructuras diferentes.',
     role: 'Demuestra que QCD permite agregados más allá de los mesones y bariones convencionales.', decays: 'Se reconstruyen mediante cadenas de decaimiento de hadrones pesados.', formula: 'P\\sim qqqq\\bar q', note: 'No existe un único pentaquark universal: la ficha representa una familia de resonancias.', sources: [CERN_EXOTIC_HADRONS, PDG]
   },
   {
-    id: 'glueball', symbol: 'Gᵦ?', name: 'bola de gluones', englishName: 'glueball', family: 'composite', zone: 'composite', layer: 'composites', row: 3, column: 4,
+    ...colorSinglet, id: 'glueball', symbol: 'Gᵦ?', name: 'bola de gluones', englishName: 'glueball', family: 'composite', zone: 'composite', layer: 'composites', row: 3, column: 4,
     mass: 'Predicha en el régimen GeV', charge: '0', spin: 'Estados 0, 2…', interactions: ['strong', 'higgs'], evidence: 'hypothetical', discovered: 'Predicha por QCD; candidatos sin identificación inequívoca', lifetime: 'Inestable',
     antiparticle: 'Gᵦ?', antiparticleName: 'bola de gluones', selfConjugate: true, visual: 'field', scale: '≈10⁻¹⁵ m', constituents: ['gluon'], constituentSummary: 'Estado ligado dominado por gluones',
     summary: 'Hadrón exótico predicho por la auto-interacción de los gluones, todavía sin identificación experimental inequívoca.', composition: 'Estado globalmente sin color construido principalmente a partir de campos gluónicos, con posible mezcla con mesones ordinarios.',
