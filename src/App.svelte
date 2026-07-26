@@ -29,14 +29,16 @@
   let axisTimer = 0;
   let axisPositions = $state<number[]>([]);
   let axisBreakY = $state(0);
-  let layers = $state<Record<LayerId, boolean>>({ composites: true, forces: true, antimatter: false, susy: false, 'dark-sector': false, 'collider-candidates': false, 'quantum-gravity': false, strings: false, technology: false });
+  let layers = $state<Record<LayerId, boolean>>({ composites: false, forces: false, antimatter: false, susy: false, 'dark-sector': false, 'collider-candidates': false, 'quantum-gravity': false, strings: false, technology: false });
   let showFormula = $state(false);
   let hudPanel = $state<'search' | 'legend' | 'data' | 'filter' | 'layers' | null>(null);
   let showEncyclopedia = $state(false);
+  let encyclopediaChapter = $state<string | undefined>(undefined);
   let searchInput = $state<HTMLInputElement | null>(null);
   let themeMode = $state<ThemeMode>('auto');
   let resolvedTheme = $state<ResolvedTheme>('dark');
   let solarSource = $state<'solar' | 'system'>('system');
+  let solarPosition = $state<{ latitude: number; longitude: number } | null>(null);
   let themeTimer = 0;
   let displayedCount = $state(21);
   let uniqueCount = $state(21);
@@ -62,6 +64,7 @@
   const hypotheticalCount = $derived(activeNodes.filter((particle) => particle.evidence === 'hypothetical').length);
   const selectedKey = $derived(selected ? `${selectedMirror ? 'anti:' : ''}${selected.id}` : '');
   const filtering = $derived(Boolean(query.trim()) || family !== 'all' || interaction !== 'all');
+  const hasActiveLayer = $derived(Object.values(layers).some(Boolean));
   const matches = $derived(new Set(activeNodes.filter((particle) => {
     const normalized = query.trim().toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
     const haystack = [particle.name, particle.englishName, particle.symbol, particle.antiparticleName, particle.antiparticle, particle.summary, particle.composition, particle.role, particle.decays, particle.discovered, particle.spin, particle.mass, particle.charge, particle.formula, particle.theory, particle.confidence, particle.colorState, particle.colorDetail, particle.colorFormula, particle.valenceFormula, particle.constituentSummary, ...(particle.constituentDetails?.flatMap((item) => [item.count, item.symbol, item.label, item.role]) ?? []), ...particle.sources.map((source) => source.label)]
@@ -112,7 +115,7 @@
 
   function applyTheme(): void {
     if (themeMode === 'auto') {
-      const result = resolveSolarTheme(new Date(), 41.3874, 2.1686);
+      const result = resolveSolarTheme(new Date(), solarPosition?.latitude, solarPosition?.longitude);
       resolvedTheme = result.dark ? 'dark' : 'light';
       solarSource = result.source;
     } else {
@@ -120,6 +123,12 @@
     }
     document.documentElement.dataset.theme = resolvedTheme;
     document.documentElement.dataset.themeMode = themeMode;
+  }
+
+  function openEncyclopedia(chapter?: string): void {
+    encyclopediaChapter = chapter;
+    hudPanel = null;
+    showEncyclopedia = true;
   }
 
   function cycleTheme(): void {
@@ -170,6 +179,19 @@
     if (saved === 'auto' || saved === 'light' || saved === 'dark') themeMode = saved;
     themeTimer = window.setInterval(() => { if (themeMode === 'auto') applyTheme(); }, 60_000);
     applyTheme();
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          solarPosition = { latitude: coords.latitude, longitude: coords.longitude };
+          if (themeMode === 'auto') applyTheme();
+        },
+        () => {
+          solarPosition = null;
+          if (themeMode === 'auto') applyTheme();
+        },
+        { maximumAge: 3_600_000, timeout: 8_000 }
+      );
+    }
     return () => {
       window.clearInterval(themeTimer);
       window.clearTimeout(axisTimer);
@@ -227,12 +249,13 @@
       {/if}
     </div>
     <button class:active={hudPanel === 'filter'} type="button" data-tooltip="Filtros" aria-label="Abrir filtros" onclick={() => hudPanel = hudPanel === 'filter' ? null : 'filter'}><Filter size={17}/></button>
-    <button type="button" data-tooltip="Información general" aria-label="Abrir manual general" onclick={() => { hudPanel = null; showEncyclopedia = true; }}><Info size={18}/></button>
+    <button type="button" data-tooltip="Información general" aria-label="Abrir manual general" onclick={() => openEncyclopedia()}><Info size={18}/></button>
     <button class:active={hudPanel === 'legend'} type="button" data-tooltip="Leyenda" aria-label="Abrir leyenda" onclick={() => hudPanel = hudPanel === 'legend' ? null : 'legend'}><Tags size={17}/></button>
     <button class:active={hudPanel === 'data'} type="button" data-tooltip="Datos del lienzo" aria-label="Abrir datos del lienzo" onclick={() => hudPanel = hudPanel === 'data' ? null : 'data'}><Database size={17}/></button>
     <button type="button" data-tooltip="Fórmulas" aria-label="Abrir capa matemática" onclick={() => showFormula = true}><Braces size={18}/></button>
-    <button class:active={hudPanel === 'layers'} type="button" data-tooltip="Capas" aria-label="Abrir capas" onclick={() => hudPanel = hudPanel === 'layers' ? null : 'layers'}><Layers3 size={18}/></button>
-    <button class:active={themeMode === 'auto'} type="button" data-tooltip={themeMode === 'auto' ? 'Tema automático · ciclo solar de Barcelona' : `Tema ${themeMode}`} aria-label="Cambiar tema: automático, claro u oscuro" onclick={cycleTheme}>{#if themeMode === 'auto'}<SunMoon size={17}/>{:else if themeMode === 'dark'}<Moon size={17}/>{:else}<Sun size={17}/>{/if}</button>
+    {#if !hasActiveLayer && hudPanel !== 'layers'}<span class="layers-coachmark">Activa capas para descubrir compuestos, fuerzas, antimateria y nuevas hipótesis.</span>{/if}
+    <button class:active={hudPanel === 'layers'} class="layers-button" type="button" data-tooltip="Capas" aria-label="Abrir capas" onclick={() => hudPanel = hudPanel === 'layers' ? null : 'layers'}><Layers3 size={18}/></button>
+    <button class:active={themeMode === 'auto'} type="button" data-tooltip={themeMode === 'auto' ? 'Tema automático' : `Tema ${themeMode}`} aria-label="Cambiar tema: automático, claro u oscuro" onclick={cycleTheme}>{#if themeMode === 'auto'}<SunMoon size={17}/>{:else if themeMode === 'dark'}<Moon size={17}/>{:else}<Sun size={17}/>{/if}</button>
     <button class="zoom-readout" type="button" data-tooltip="Restablecer vista" aria-label={`Zoom ${zoomPercent}%. Restablecer vista`} onclick={() => viewport?.resetView?.()}><b>{zoomPercent}%</b></button>
   </nav>
 
@@ -252,8 +275,8 @@
   {#if hudPanel === 'layers'}<LayersPanel {layers} ontoggle={toggleLayer} onclose={() => hudPanel = null}/>{/if}
 
   {#if selected}
-    <ParticleDetail particle={selected} antimatter={selectedMirror} onclose={() => selected = null}/>
+    <ParticleDetail particle={selected} antimatter={selectedMirror} onclose={() => selected = null} onopenencyclopedia={(chapter) => openEncyclopedia(chapter)}/>
   {/if}
   {#if showFormula}<FormulaAtlas onclose={() => showFormula = false}/>{/if}
-  {#if showEncyclopedia}<EncyclopediaModal onclose={() => showEncyclopedia = false}/>{/if}
+  {#if showEncyclopedia}<EncyclopediaModal initialId={encyclopediaChapter} onclose={() => showEncyclopedia = false}/>{/if}
 </main>

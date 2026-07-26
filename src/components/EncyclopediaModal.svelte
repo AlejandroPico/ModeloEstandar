@@ -3,9 +3,12 @@
   import { informationChapters, informationStats } from '../data/information';
   import FormulaBlock from './FormulaBlock.svelte';
 
-  let { onclose }: { onclose: () => void } = $props();
+  let { onclose, initialId }: { onclose: () => void; initialId?: string } = $props();
   let activeId = $state(informationChapters[0].id);
   let query = $state('');
+  $effect(() => {
+    if (initialId && informationChapters.some((chapter) => chapter.id === initialId)) activeId = initialId;
+  });
   const active = $derived(informationChapters.find((chapter) => chapter.id === activeId) ?? informationChapters[0]);
   const navigation = $derived(informationChapters.filter((chapter) => {
     const needle = query.trim().toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
@@ -82,4 +85,3 @@
     </div>
   </div>
 </div>
-
