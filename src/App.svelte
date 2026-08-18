@@ -116,6 +116,7 @@
     selected = particle;
     selectedMirror = result.mirror;
     hudPanel = null;
+    mobileMenuOpen = false;
     window.setTimeout(() => viewport?.focusZone?.(particle.zone ?? (particle.family === 'theory' ? 'beyond' : particle.family === 'string' ? 'planck' : 'standard')), 60);
   }
 
@@ -354,7 +355,7 @@
   {#if !mobileLayout && hudPanel === 'layers'}<LayersPanel {layers} ontoggle={toggleLayer} onclose={() => hudPanel = null}/>{/if}
 
   {#if selected}
-    <ParticleDetail particle={selected} antimatter={selectedMirror} onclose={() => selected = null} onopenencyclopedia={(chapter) => openEncyclopedia(chapter)}/>
+    <ParticleDetail particle={selected} antimatter={selectedMirror} onclose={() => selected = null} onopenformula={() => showFormula = true} onopenencyclopedia={(chapter) => openEncyclopedia(chapter)}/>
   {/if}
   {#if showFormula}<FormulaAtlas onclose={() => showFormula = false}/>{/if}
   {#if showEncyclopedia}<EncyclopediaModal initialId={encyclopediaChapter} onclose={() => showEncyclopedia = false}/>{/if}

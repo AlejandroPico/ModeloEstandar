@@ -5,27 +5,27 @@
   let { layers, ontoggle, onclose }: { layers: Record<LayerId, boolean>; ontoggle: (layer: LayerId) => void; onclose: () => void } = $props();
   const groups = [
     { title: 'Estructura observada', items: [
-      { id: 'composites' as const, label: 'Átomo y hadrones', detail: 'Átomo general, nucleones, mesones y hadrones exóticos', icon: Atom },
+      { id: 'composites' as const, label: 'Átomo y hadrones', detail: 'Átomo, nucleones, mesones y exóticos', icon: Atom },
       { id: 'forces' as const, label: 'Cuatro interacciones', detail: 'Fuerte, electromagnética, débil y gravedad', icon: CircleGauge },
-      { id: 'antimatter' as const, label: 'Antimateria', detail: 'Muestra antipartículas y estados conjugados conocidos', icon: Split }
+      { id: 'antimatter' as const, label: 'Antimateria', detail: 'Antipartículas y estados conjugados', icon: Split }
     ]},
     { title: 'Más allá · no observado', items: [
       { id: 'susy' as const, label: 'Supersimetría', detail: 'Neutralinos, charginos, gluinos y sfermiones', icon: Sparkles },
       { id: 'dark-sector' as const, label: 'Sectores oscuros', detail: 'Axión, fotón, Higgs y mesones oscuros', icon: MoonStar },
       { id: 'collider-candidates' as const, label: 'Candidatos de colisionador', detail: 'Leptoquarks, HNL, Z′/W′, VLQ, dyones y Q-balls', icon: Radar },
-      { id: 'quantum-gravity' as const, label: 'Gravedad y dimensiones extra', detail: 'Gravitón, KK, radion, monopolos y microagujeros negros', icon: Orbit },
+      { id: 'quantum-gravity' as const, label: 'Gravedad y dimensiones extra', detail: 'Gravitón, KK, radion, monopolos y microagujeros', icon: Orbit },
       { id: 'strings' as const, label: 'Cuerdas y branas', detail: 'Cuerdas, D-branas, M2, M5 y defectos', icon: Waves }
     ]},
     { title: 'Referencias de escala', items: [
-      { id: 'technology' as const, label: 'Nanoelectrónica experimental', detail: 'Comparador opcional; no añade partículas al modelo', icon: Cpu },
-      { id: 'biology' as const, label: 'Referencias biológicas', detail: 'ADN, proteínas, ribosomas, virus, cromosomas y células', icon: Dna }
+      { id: 'technology' as const, label: 'Nanoelectrónica experimental', detail: 'Comparador tecnológico de escala', icon: Cpu },
+      { id: 'biology' as const, label: 'Referencias biológicas', detail: 'ADN, proteínas, virus y células', icon: Dna }
     ]}
   ];
 </script>
 
 <aside class="hud-panel layers-panel" aria-label="Capas científicas">
-  <header><div><span class="eyebrow">CAPAS</span><h2>Contenido del lienzo</h2></div><button class="icon-button" type="button" aria-label="Cerrar capas" onclick={onclose}><X size={18}/></button></header>
-  <p class="panel-intro">Las 17 partículas elementales permanecen como base. El resto se añade o se repliega sin sustituirlas.</p>
+  <header><div><span class="eyebrow">CAPAS</span><h2>Capas del lienzo</h2></div><button class="icon-button layers-close-button" type="button" aria-label="Cerrar capas" title="Cerrar" onclick={onclose}><X size={17}/></button></header>
+  <p class="panel-intro">Activa estructuras, hipótesis y referencias sin alterar la base del Modelo Estándar.</p>
   {#each groups as group}
     <section class="layer-group">
       <h3>{group.title}</h3>
@@ -38,5 +38,5 @@
       {/each}
     </section>
   {/each}
-  <footer><Boxes size={15}/><span>El borde discontinuo identifica hipótesis. Tecnología y biología son comparadores de escala, nunca partículas del modelo.</span></footer>
+  <footer><Boxes size={15}/><span>Borde discontinuo: hipótesis. Tecnología y biología: referencias de escala.</span></footer>
 </aside>

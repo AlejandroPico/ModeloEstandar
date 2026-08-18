@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { BookOpen, CalendarDays, ExternalLink, FlaskConical, Layers3, Network, Scale, X } from '@lucide/svelte';
+  import { BookOpen, Braces, CalendarDays, ExternalLink, FlaskConical, Layers3, Network, Scale, X } from '@lucide/svelte';
   import type { ColorState, ConstituentDetail, Interaction, Particle } from '../data/types';
   import { interactionLabels } from '../data/particles';
   import FormulaBlock from './FormulaBlock.svelte';
 
-  let { particle, antimatter = false, onclose, onopenencyclopedia }: { particle: Particle; antimatter?: boolean; onclose: () => void; onopenencyclopedia: (chapter: string) => void } = $props();
+  let { particle, antimatter = false, onclose, onopenformula, onopenencyclopedia }: { particle: Particle; antimatter?: boolean; onclose: () => void; onopenformula: () => void; onopenencyclopedia: (chapter: string) => void } = $props();
   let tab = $state<'summary' | 'properties' | 'structure' | 'interactions' | 'history' | 'formula' | 'sources'>('summary');
   const visibleSymbol = $derived(antimatter && !particle.selfConjugate ? particle.antiparticle : particle.symbol);
   const visibleName = $derived(antimatter && !particle.selfConjugate ? particle.antiparticleName : particle.name);
@@ -167,8 +167,9 @@
       <div><span class="eyebrow">{particle.evidence === 'observed' ? (antimatter ? 'ESTADO DE ANTIMATERIA' : 'ESTRUCTURA OBSERVADA') : 'HIPÓTESIS · NO OBSERVADA'}</span><h2>{visibleName}</h2><p>{particle.englishName}</p></div>
     </div>
     <div class="detail-header-actions">
-      <button class="icon-button detail-info-button" type="button" aria-label={`Abrir informe completo de ${visibleName}`} title="Abrir informe completo" onclick={() => onopenencyclopedia(`${antimatter && !particle.selfConjugate ? 'anti-' : 'entidad-'}${particle.id}`)}><BookOpen size={18}/></button>
-      <button class="icon-button" type="button" aria-label="Cerrar ficha" title="Cerrar" onclick={onclose}><X size={19}/></button>
+      <button class="detail-action-button detail-formula-button" type="button" aria-label={`Abrir Atlas Matemático desde la ficha de ${visibleName}`} title="Abrir Atlas Matemático" onclick={onopenformula}><Braces size={18}/></button>
+      <button class="detail-action-button detail-info-button" type="button" aria-label={`Abrir informe completo de ${visibleName}`} title="Abrir informe completo" onclick={() => onopenencyclopedia(`${antimatter && !particle.selfConjugate ? 'anti-' : 'entidad-'}${particle.id}`)}><BookOpen size={18}/></button>
+      <button class="detail-action-button" type="button" aria-label="Cerrar ficha" title="Cerrar" onclick={onclose}><X size={19}/></button>
     </div>
   </header>
 

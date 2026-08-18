@@ -1355,3 +1355,166 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
   .manual-reader,
   .formula-library-reader { padding: 12px 13px calc(18px + env(safe-area-inset-bottom)); }
 }
+
+/* v1.0.1 · capas compactas y fichas técnicas rectilíneas */
+.detail-panel,
+.detail-panel .detail-symbol,
+.detail-panel .hero-metrics > div,
+.detail-panel .science-note,
+.detail-panel .interaction-detail-grid article,
+.detail-panel .decay-card,
+.detail-panel .notation-card,
+.detail-panel .source-list a,
+.detail-panel .formula-block,
+.detail-panel .constituent-chips span { border-radius: 0; }
+
+.detail-tabs { justify-content: center; }
+.detail-header-actions { flex: 0 0 auto; align-items: center; gap: 2px; }
+.detail-action-button {
+  display: grid;
+  place-items: center;
+  width: 31px;
+  height: 31px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  transition: color 140ms ease, background 140ms ease;
+}
+.detail-action-button:hover,
+.detail-action-button:focus-visible {
+  color: var(--text);
+  background: color-mix(in srgb, var(--text), transparent 93%);
+}
+.detail-formula-button,
+.detail-info-button { color: var(--composite); }
+
+@media (min-width: 901px) {
+  .layers-panel {
+    width: min(372px, calc(100vw - 36px));
+    max-height: calc(100dvh - 82px);
+    padding: 12px 13px;
+    overflow: hidden;
+  }
+  .layers-panel header { align-items: center; }
+  .layers-panel h2 { margin-top: 2px; font-size: .91rem; }
+  .layers-panel .layers-close-button {
+    width: 25px;
+    height: 25px;
+    border: 0;
+    border-radius: 0;
+  }
+  .layers-panel .panel-intro {
+    margin: 7px 0 8px;
+    font-size: .55rem;
+    line-height: 1.35;
+  }
+  .layers-panel .layer-group { margin-top: 7px; }
+  .layers-panel .layer-group h3 { margin-bottom: 3px; font-size: .44rem; }
+  .layers-panel .layer-group button {
+    grid-template-columns: 29px minmax(0, 1fr) 14px;
+    gap: 7px;
+    min-height: 42px;
+    margin-top: 2px;
+    padding: 4px 6px;
+    border-radius: 0;
+  }
+  .layers-panel .layer-icon {
+    width: 29px;
+    height: 29px;
+    border-radius: 0;
+  }
+  .layers-panel .layer-group button b,
+  .layers-panel .layer-group button small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .layers-panel .layer-group button b { font-size: .58rem; }
+  .layers-panel .layer-group button small { margin-top: 1px; font-size: .45rem; line-height: 1.2; }
+  .layers-panel footer {
+    align-items: center;
+    margin-top: 8px;
+    padding: 6px 7px;
+    border-radius: 0;
+    font-size: .48rem;
+    line-height: 1.3;
+  }
+}
+
+@media (max-width: 900px) {
+  .detail-panel {
+    position: fixed;
+    z-index: 28;
+    inset: 0;
+    width: 100dvw;
+    min-width: 100dvw;
+    max-width: none;
+    height: 100dvh;
+    min-height: 100dvh;
+    border: 0;
+    box-shadow: none;
+    animation: detailMobileIn 180ms ease-out;
+  }
+  .detail-header {
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 9px;
+    padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) 10px max(10px, env(safe-area-inset-left));
+    border-bottom: 1px solid var(--line);
+  }
+  .detail-identity { gap: 10px; min-width: 0; }
+  .detail-identity > div { min-width: 0; }
+  .detail-symbol {
+    flex-basis: 52px;
+    width: 52px;
+    height: 52px;
+    font-size: 1.55rem;
+  }
+  .detail-header h2 {
+    overflow: hidden;
+    margin-top: 2px;
+    font-size: clamp(.92rem, 4.2vw, 1.18rem);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .detail-header p {
+    overflow: hidden;
+    font-size: .54rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .detail-header .eyebrow {
+    overflow: hidden;
+    font-size: .41rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .detail-action-button { width: 30px; height: 34px; }
+  .detail-tabs {
+    flex: 0 0 auto;
+    justify-content: center;
+    padding: 0 max(4px, env(safe-area-inset-left));
+    scrollbar-width: none;
+  }
+  .detail-tabs::-webkit-scrollbar { display: none; }
+  .detail-tabs button { justify-content: center; min-width: 42px; padding: 0 7px; }
+  .detail-content {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .detail-section { padding: 18px 15px calc(28px + env(safe-area-inset-bottom)); }
+}
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 600px) {
+  .detail-header { padding-top: 6px; padding-bottom: 6px; }
+  .detail-symbol { flex-basis: 42px; width: 42px; height: 42px; font-size: 1.25rem; }
+  .detail-tabs button { height: 32px; }
+  .detail-section { padding-top: 13px; }
+}
+
+@keyframes detailMobileIn {
+  from { opacity: 0; transform: translateY(12px); }
+}

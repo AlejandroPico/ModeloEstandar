@@ -2,7 +2,7 @@
 
 Atlas científico interactivo para explorar las partículas elementales, las interacciones fundamentales, la antimateria, la materia compuesta y algunas de las principales propuestas situadas más allá de la teoría confirmada.
 
-> **Versión estable:** `1.0.0`
+> **Versión estable:** `1.0.1`
 >
 > **Tecnologías:** Svelte 5 · TypeScript · Vite · KaTeX
 >
@@ -25,13 +25,14 @@ vida y biomoléculas → tecnología subnanométrica → átomo → núcleo → 
 
 ## Versión 1.0
 
-La versión `1.0.0` consolida el proyecto como un atlas completo y utilizable en escritorio, tableta y móvil:
+La versión `1.0.1` consolida el proyecto como un atlas completo y utilizable en escritorio, tableta y móvil:
 
 - lienzo científico continuo con zoom, arrastre y niveles de detalle progresivos;
 - eje vertical permanente sincronizado con la cámara;
 - 17 partículas elementales del Modelo Estándar como base siempre disponible;
 - capas opcionales para materia compuesta, fuerzas, antimateria, teorías y referencias de escala;
 - fichas documentales extensas con propiedades, fórmulas y fuentes;
+- fichas técnicas rectilíneas, con accesos directos a Fórmulas y Enciclopedia, y presentación a pantalla completa en móvil;
 - Enciclopedia técnica y Atlas Matemático independientes;
 - navegación móvil inspirada en el patrón de Nucleidos/Nuclei 2;
 - «Acerca del proyecto» con autoría, portfolio y repositorio;
@@ -143,6 +144,7 @@ Buscar · Filtros · Enciclopedia · Leyenda · Fórmulas · Capas
 - cabecera del menú con favicon e identidad del proyecto;
 - cierre mediante el botón, pulsación fuera o deslizamiento hacia la izquierda;
 - Filtros, Leyenda y Capas integrados dentro del propio menú;
+- fichas técnicas a `100dvw × 100dvh`, sin márgenes exteriores;
 - Enciclopedia y Fórmulas a `100dvw × 100dvh`, sin márgenes exteriores;
 - «Acerca del proyecto» sin scroll interno y con enlaces anclados en la zona inferior;
 - diseño específico para orientación horizontal y alturas reducidas;
