@@ -1154,3 +1154,204 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
   .about-links a { min-height: 46px; }
   .about-modal > footer { padding-top: 5px; padding-bottom: max(5px, env(safe-area-inset-bottom)); }
 }
+
+/* v1.0 · Gran Enciclopedia y Atlas Matemático con navegación móvil horizontal */
+.manual-mobile-groups,
+.manual-mobile-chapters,
+.formula-mobile-groups,
+.formula-mobile-chapters,
+.mobile-index-copy { display: none; }
+.formula-index-label {
+  padding: 0 15px 8px;
+  color: var(--muted);
+  font-size: .43rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+
+@media (max-width: 900px) {
+  .manual-layout,
+  .formula-library-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-width: 0;
+  }
+  .manual-index,
+  .formula-library-index {
+    display: grid;
+    grid-template-rows: auto auto auto auto;
+    min-width: 0;
+    min-height: 0;
+    max-height: none;
+    border-right: 0;
+    border-bottom: 1px solid var(--line-strong);
+    overflow: hidden;
+  }
+  .manual-index > label,
+  .formula-library-index > label {
+    width: auto;
+    min-width: 0;
+    margin: 8px 10px 6px;
+  }
+  .manual-index-label,
+  .formula-index-label {
+    display: block;
+    padding: 6px 11px 5px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: .39rem;
+    line-height: 1.25;
+    letter-spacing: .1em;
+  }
+  .desktop-index-copy { display: none; }
+  .mobile-index-copy { display: inline; }
+  .manual-index > .manual-desktop-navigation,
+  .formula-library-index > .formula-desktop-navigation,
+  .manual-index > footer,
+  .formula-library-index > footer { display: none; }
+
+  .manual-index > .manual-mobile-groups,
+  .formula-library-index > .formula-mobile-groups {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0;
+    min-width: 0;
+    padding: 0 10px;
+    border: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scroll-snap-type: x proximity;
+  }
+  .manual-index > .manual-mobile-groups button,
+  .formula-library-index > .formula-mobile-groups button {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    width: auto;
+    min-height: 34px;
+    padding: 6px 10px;
+    border: 0;
+    border-right: 1px solid var(--line);
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    color: var(--muted);
+    background: transparent;
+    white-space: nowrap;
+    scroll-snap-align: start;
+  }
+  .manual-index > .manual-mobile-groups button:first-child,
+  .formula-library-index > .formula-mobile-groups button:first-child { border-left: 1px solid var(--line); }
+  .manual-index > .manual-mobile-groups button.active,
+  .formula-library-index > .formula-mobile-groups button.active {
+    color: var(--text);
+    border-bottom-color: var(--composite);
+    box-shadow: none;
+    background: color-mix(in srgb, var(--composite), transparent 93%);
+  }
+  .manual-mobile-groups button b,
+  .formula-mobile-groups button b { font-size: .52rem; }
+  .manual-mobile-groups button small,
+  .formula-mobile-groups button small { color: var(--composite); font-size: .43rem; }
+
+  .manual-index > .manual-mobile-chapters,
+  .formula-library-index > .formula-mobile-chapters {
+    display: flex;
+    gap: 5px;
+    min-width: 0;
+    padding: 0 10px 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scroll-snap-type: x mandatory;
+  }
+  .manual-mobile-chapters > button,
+  .formula-mobile-chapters > button {
+    flex: 0 0 min(220px, 72vw);
+    min-width: 0;
+    min-height: 54px;
+    padding: 7px 9px;
+    border: 1px solid var(--line);
+    border-radius: 0;
+    color: var(--muted);
+    background: var(--panel-solid);
+    text-align: left;
+    cursor: pointer;
+    scroll-snap-align: start;
+  }
+  .manual-mobile-chapters > button {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) 12px;
+    align-items: center;
+    gap: 7px;
+  }
+  .formula-mobile-chapters > button {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 12px;
+    align-items: center;
+    gap: 7px;
+  }
+  .manual-mobile-chapters > button > span:first-child {
+    overflow: hidden;
+    color: var(--composite);
+    font-family: Georgia, serif;
+    font-size: .66rem;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .manual-mobile-chapters > button > span:nth-child(2),
+  .formula-mobile-chapters > button > span { display: grid; min-width: 0; gap: 2px; }
+  .manual-mobile-chapters b,
+  .formula-mobile-chapters b { overflow: hidden; color: var(--text); font-size: .56rem; text-overflow: ellipsis; white-space: nowrap; }
+  .manual-mobile-chapters small,
+  .formula-mobile-chapters small { overflow: hidden; font-size: .45rem; text-overflow: ellipsis; white-space: nowrap; }
+  .manual-mobile-chapters > button.active,
+  .formula-mobile-chapters > button.active {
+    color: var(--text);
+    border-color: color-mix(in srgb, var(--composite), transparent 35%);
+    box-shadow: inset 3px 0 0 var(--composite);
+    background: color-mix(in srgb, var(--composite), transparent 93%);
+  }
+
+  .manual-reader,
+  .formula-library-reader {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    padding: 20px 16px calc(30px + env(safe-area-inset-bottom));
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  .manual-chapter-number { font-size: 3rem; }
+  .manual-reader > header h2 { padding-right: 34px; }
+  .manual-intro { font-size: .68rem; }
+  .formula-report-grid { grid-template-columns: 1fr; }
+  .formula-report-grid section,
+  .formula-report-grid section:last-child { grid-column: auto; min-height: 0; }
+  .formula-references > div,
+  .manual-references > div { grid-template-columns: 1fr; }
+  .formula-render { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+}
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 600px) {
+  .manual-header,
+  .formula-library-header { min-height: 48px; padding: 6px 9px !important; }
+  .manual-title p,
+  .formula-library-header p { display: none; }
+  .manual-index > label,
+  .formula-library-index > label { margin: 4px 8px; }
+  .manual-index input,
+  .formula-library-index input { height: 31px; }
+  .manual-index > .manual-mobile-groups button,
+  .formula-library-index > .formula-mobile-groups button { min-height: 28px; padding-top: 3px; padding-bottom: 3px; }
+  .manual-index-label,
+  .formula-index-label { padding-top: 3px; padding-bottom: 3px; }
+  .manual-mobile-chapters > button,
+  .formula-mobile-chapters > button { min-height: 44px; padding-top: 4px; padding-bottom: 4px; }
+  .manual-reader,
+  .formula-library-reader { padding: 12px 13px calc(18px + env(safe-area-inset-bottom)); }
+}

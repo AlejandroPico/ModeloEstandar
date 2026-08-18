@@ -1,119 +1,184 @@
 # Modelo Estándar
 
-Atlas científico e interactivo para explorar las partículas elementales, las interacciones fundamentales descritas por el Modelo Estándar, la antimateria y algunas propuestas más allá de la teoría confirmada.
+Atlas científico interactivo para explorar las partículas elementales, las interacciones fundamentales, la antimateria, la materia compuesta y algunas de las principales propuestas situadas más allá de la teoría confirmada.
 
-> **Estado:** enciclopedia visual · `0.7.0`
-> **Tecnologías:** Svelte 5 · TypeScript · Vite · KaTeX  
-> **Despliegue:** GitHub Pages mediante GitHub Actions  
-> **Arquitectura:** aplicación estática, sin backend
+> **Versión estable:** `1.0.0`
+>
+> **Tecnologías:** Svelte 5 · TypeScript · Vite · KaTeX
+>
+> **Arquitectura:** aplicación estática, sin backend ni consultas externas durante la navegación
+>
+> **Despliegue:** GitHub Pages mediante GitHub Actions
 
-## Objetivo
+**Aplicación:** https://alejandropico.github.io/ModeloEstandar/
 
-La mayoría de las personas reconoce un átomo, pero la imagen escolar del núcleo rodeado por electrones no muestra dónde termina la materia compuesta y dónde comienza la física de partículas elementales.
+## Propósito
 
-Este proyecto presenta el Modelo Estándar como un lienzo ampliable. La vista general conserva la claridad de una tabla; al acercarse aparecen masa, carga, spin e interacciones; al abrir una ficha se accede a explicaciones, propiedades, decaimientos, fórmulas y fuentes.
+La representación escolar del átomo no muestra con claridad dónde termina la materia compuesta y dónde comienza la física de partículas elementales. Este proyecto convierte esa transición en un lienzo continuo, ampliable y documentado.
 
-La ruta de escala integrada conecta seis niveles y diferencia explícitamente evidencia y especulación:
+La exploración conecta referencias biológicas y tecnológicas con el átomo, el núcleo, los hadrones, las partículas elementales, las hipótesis contemporáneas y la frontera de Planck. Lo observado, lo hipotético y lo meramente comparativo se distinguen expresamente.
 
 ```text
-átomo → núcleo → nucleón → partículas elementales → nuevas hipótesis → frontera de Planck
+vida y biomoléculas → tecnología subnanométrica → átomo → núcleo → hadrones
+→ partículas elementales → hipótesis no observadas → cuerdas y escala de Planck
 ```
 
-## Funcionalidades
+## Versión 1.0
 
-### Lienzo científico
+La versión `1.0.0` consolida el proyecto como un atlas completo y utilizable en escritorio, tableta y móvil:
 
-- 12 fermiones de materia organizados en tres generaciones.
+- lienzo científico continuo con zoom, arrastre y niveles de detalle progresivos;
+- eje vertical permanente sincronizado con la cámara;
+- 17 partículas elementales del Modelo Estándar como base siempre disponible;
+- capas opcionales para materia compuesta, fuerzas, antimateria, teorías y referencias de escala;
+- fichas documentales extensas con propiedades, fórmulas y fuentes;
+- Enciclopedia técnica y Atlas Matemático independientes;
+- navegación móvil inspirada en el patrón de Nucleidos/Nuclei 2;
+- «Acerca del proyecto» con autoría, portfolio y repositorio;
+- favicon SVG disponible en la raíz del repositorio.
+
+## Lienzo científico
+
+### Modelo Estándar
+
+- 6 quarks y 6 leptones organizados en tres generaciones.
 - 4 bosones gauge: gluón, fotón, Z y W.
-- Bosón de Higgs diferenciado como bosón escalar.
-- Un átomo didáctico general, núcleos, nucleones, mesones y familias de hadrones exóticos.
-- Las cuatro interacciones fundamentales como fichas: fuerte, electromagnetismo, débil y gravedad.
-- Zoom alrededor del cursor.
-- Desplazamiento por arrastre.
-- Eje vertical permanente de `10⁻⁹` a `10⁻¹⁹ m`, más la discontinuidad hasta Planck.
-- El eje ocupa el borde de la pantalla como en una gráfica: su línea queda fija y sus valores se desplazan y escalan con la cámara.
-- Recintos calculados desde su contenido: crecen automáticamente al añadir filas y nunca recortan las fichas.
-- Niveles de información progresivos según la ampliación.
-- Conexiones visuales animadas entre una estructura y sus constituyentes o mediadores.
+- Bosón de Higgs identificado como sector escalar.
+- Masa, carga, spin, generación, estabilidad e interacciones visibles de forma progresiva.
+- Relaciones animadas entre estructuras, constituyentes y mediadores.
 
-### Fichas documentales
+### Materia compuesta e interacciones
 
-Cada partícula incluye:
-
-- resumen divulgativo;
-- masa, carga y spin;
-- generación y familia;
-- vida media o estado experimental;
-- antipartícula;
-- interacciones en las que participa;
-- comportamiento o decaimientos característicos;
-- estructura cuantitativa con recuentos de constituyentes de valencia;
-- carga de color, representación de SU(3)C y neutralidad observable;
-- fórmula renderizada con KaTeX;
-- enlaces a fuentes científicas.
+- átomo didáctico general, núcleo, protones y neutrones;
+- mesones y otras familias de hadrones;
+- interacción fuerte, electromagnetismo, interacción débil y gravedad;
+- composición de valencia de protones y neutrones;
+- explicación de carga de color, representaciones de `SU(3)C` y neutralidad observable.
 
 ### Antimateria
 
-El modo **Antimateria** despliega una segunda estructura completa a la derecha, en lugar de sustituir las fichas existentes. El universo espejo replica dinámicamente todas las capas que estén activas. Los estados autoconjugados se conservan y quedan identificados como tales.
+La capa **Antimateria** representa antipartículas y estados conjugados conocidos. Se despliega como una estructura paralela y conserva los estados autoconjugados debidamente identificados.
 
-### HUD, capas y enciclopedia técnica
-
-- barra rectangular superior derecha con búsqueda desplegable en línea, filtros, información, leyenda, datos, fórmulas, capas, tema y zoom restablecible;
-- capas independientes para compuestos, cuatro fuerzas, antimateria, supersimetría, sector oscuro, candidatos de colisionador, gravedad cuántica, cuerdas y tecnología comparativa;
-- buscador de catálogo por nombre, símbolo, antimateria, propiedades, teoría, fecha, interacción, composición y fuentes;
-- enciclopedia con capítulos generales, un informe de dieciséis apartados para cada entidad científica y capítulos propios para las antipartículas no autoconjugadas;
-- eje gráfico permanente a la izquierda, único para materia y antimateria y sincronizado con zoom y desplazamiento;
-- fichas sin listados numéricos artificiales: los datos se integran en resumen, propiedades, interacciones, historia, fórmula y fuentes;
-- historia, evidencia, interpretación matemática y propiedades físicas desarrolladas por separado.
+La antimateria observada no debe confundirse con un hipotético universo o sector espejo completo. El atlas mantiene esa distinción en sus fichas y capítulos científicos.
 
 ### Más allá del Modelo Estándar
 
-Dos zonas separadas y discontinuas presentan ejemplos no observados:
+Las entidades no observadas aparecen en recintos discontinuos y con su estado experimental explícito:
 
-- gravitón;
-- candidatos supersimétricos: neutralino, chargino, gluino, sfermiones y gravitino;
-- axión, neutrino estéril, fotón oscuro y monopolo magnético;
-- leptoquarks, leptones neutros pesados, Z′/W′, quarks vectoriales, Q-balls y dyones;
-- Higgs y mesones oscuros, excitaciones de Kaluza–Klein, radion y microagujeros negros;
-- cuerda abierta, cuerda cerrada, D-brana, M2-brana, M5-brana y cuerda cósmica.
+- supersimetría: neutralino, chargino, gluino, sfermiones y gravitino;
+- sectores oscuros: axión, neutrino estéril, fotón oscuro, Higgs oscuro y mesones oscuros;
+- candidatos de colisionador: leptoquarks, leptones neutros pesados, Z′/W′, quarks vectoriales, Q-balls y dyones;
+- gravedad cuántica y dimensiones extra: gravitón, excitaciones de Kaluza–Klein, radion, monopolos y microagujeros negros;
+- cuerdas abiertas y cerradas, D-branas, M2, M5 y cuerdas cósmicas.
 
-Estas fichas utilizan la etiqueta **hipótesis / no observada** y declaran su marco teórico. No se mezclan con las partículas confirmadas ni se presentan las cuerdas como partículas ya descubiertas.
+### Referencias de escala
 
-La capa tecnológica añade, apagada por defecto, una referencia de transistor experimental subnanométrico. La dimensión indicada corresponde a una parte funcional del prototipo, no al dispositivo entero ni a un nodo comercial.
+Estas capas son comparadores y no forman parte del inventario de partículas:
 
-### Atlas matemático
+- **Nanoelectrónica experimental:** referencias funcionales subnanométricas.
+- **Biología:** ADN, proteínas, ribosomas, virus, cromosomas y células.
 
-El lector matemático reúne 51 fórmulas agrupadas y buscables. Cada entrada desarrolla significado, notación, uso, procedencia, límites, relaciones y fuentes. Incluye, entre otros bloques:
+La bacteria se presenta como organismo vivo; ADN, proteínas y ribosomas no se etiquetan como seres vivos, y el caso de los virus se describe con la cautela correspondiente.
 
-- la descomposición por sectores de la lagrangiana;
-- el grupo gauge `SU(3)C × SU(2)L × U(1)Y`;
-- el potencial de Higgs;
-- el acoplamiento de Yukawa y las masas fermiónicas;
-- QED, QCD, teoría electrodébil, estructura hadrónica y mezcla de sabores;
-- tripletes de quark, octete gluónico, singlete bariónico y cargas de protón y neutrón;
-- cinemática relativista, decaimientos, resonancias y magnitudes de colisionadores;
+## Fichas documentales
+
+Cada entidad puede incluir:
+
+- resumen divulgativo y función física;
+- masa, carga, spin, generación y familia;
+- estabilidad, vida media o situación experimental;
+- antipartícula y carácter autoconjugado;
+- interacciones y decaimientos característicos;
+- estructura cuantitativa de constituyentes;
+- color de quark entendido como carga cuántica, no como color óptico;
+- fórmula renderizada con KaTeX;
+- historia, métodos de detección, límites interpretativos y preguntas abiertas;
+- enlaces a fuentes científicas primarias o institucionales.
+
+## Enciclopedia técnica
+
+La Enciclopedia reúne fundamentos, partículas elementales, interacciones, materia compuesta, hipótesis, cuerdas, referencias de escala y antimateria.
+
+En escritorio utiliza un índice documental lateral. En móvil adopta la navegación de la Gran Enciclopedia de Nuclei 2:
+
+1. buscador transversal;
+2. banda horizontal de áreas;
+3. banda horizontal de capítulos con indicación explícita de deslizamiento;
+4. artículo a toda la anchura restante;
+5. desplazamiento vertical reservado al contenido.
+
+La misma organización se mantiene al girar el teléfono, evitando que un índice vertical desperdicie la mitad del viewport.
+
+## Atlas Matemático
+
+El lector matemático reúne 51 fórmulas agrupadas y buscables. Cada entrada explica significado, notación, aplicación, procedencia, límites, conexiones y fuentes.
+
+Incluye, entre otros bloques:
+
+- lagrangiana del Modelo Estándar y separación por sectores;
+- grupo gauge `SU(3)C × SU(2)L × U(1)Y`;
+- potencial de Higgs y acoplamientos de Yukawa;
+- QED, QCD y teoría electrodébil;
+- estructura hadrónica y mezcla de sabores;
+- cinemática relativista, decaimientos y resonancias;
+- magnitudes de colisionadores;
 - gravedad clásica, longitud de Planck y acciones de cuerdas.
 
-### Exploración y accesibilidad
+En móvil utiliza el mismo patrón horizontal de áreas y fórmulas que la Enciclopedia, dejando el informe matemático a anchura completa.
 
-- búsqueda ampliada por nombres de materia y antimateria, símbolos, resumen, masa, carga, spin, fecha, fórmula, teoría, composición, interacciones y fuentes;
-- filtros por familia e interacción;
-- tema claro, oscuro y automático según el ciclo solar estacional de Barcelona;
-- controles con nombre accesible y ayuda contextual;
-- navegación de fichas por pestañas;
-- adaptación a escritorio, tableta y móvil;
-- reducción de animaciones según las preferencias del sistema.
+## Interfaz y navegación
+
+### Escritorio
+
+La barra superior mantiene una secuencia compacta y sin separadores verticales entre iconos:
+
+```text
+Buscar · Filtros · Enciclopedia · Leyenda · Fórmulas · Capas
+· Acerca del proyecto · Tema · Restablecer vista/zoom
+```
+
+### Móvil y tableta
+
+- botón hamburguesa en la esquina superior izquierda;
+- cabecera del menú con favicon e identidad del proyecto;
+- cierre mediante el botón, pulsación fuera o deslizamiento hacia la izquierda;
+- Filtros, Leyenda y Capas integrados dentro del propio menú;
+- Enciclopedia y Fórmulas a `100dvw × 100dvh`, sin márgenes exteriores;
+- «Acerca del proyecto» sin scroll interno y con enlaces anclados en la zona inferior;
+- diseño específico para orientación horizontal y alturas reducidas;
+- eje vertical más estrecho para conservar el ancho útil del lienzo.
+
+## Búsqueda, filtros y capas
+
+El buscador consulta nombres, símbolos, antimateria, propiedades, fechas, interacciones, composición, fórmulas, teorías y fuentes, incluidas entidades pertenecientes a capas ocultas.
+
+Los filtros permiten limitar por familia e interacción. Las capas se dividen en:
+
+- estructura observada;
+- propuestas no observadas;
+- referencias tecnológicas y biológicas de escala.
+
+## Tema y accesibilidad
+
+- modos claro, oscuro y automático;
+- en modo automático se utiliza el ciclo solar local cuando el navegador permite obtener la posición;
+- respaldo basado en la preferencia del sistema si no hay geolocalización;
+- nombres accesibles para controles e iconos;
+- navegación mediante botones semánticos;
+- foco visible;
+- reducción de animaciones cuando el sistema lo solicita.
 
 ## Principios científicos
 
-- **Elemental no significa “la bolita más pequeña”**: significa que no se ha observado estructura interna hasta la resolución experimental disponible.
+- **Elemental** significa que no se ha observado estructura interna hasta la resolución experimental disponible.
 - Los quarks no se observan aislados debido al confinamiento de color.
-- Rojo, verde y azul son etiquetas de una carga cuántica de QCD, no colores ópticos; los hadrones observables son singletes de color.
+- Rojo, verde y azul son etiquetas de QCD, no colores ópticos.
 - `uud` y `udd` describen el contenido de valencia de protón y neutrón, no un inventario estático de todos los gluones y pares quark–antiquark.
-- Los neutrinos de sabor son combinaciones de estados de masa; por ello no se les asigna una masa simple en el tablero.
-- El campo de Higgs participa en el origen de las masas elementales, pero la mayor parte de la masa de protones y neutrones procede de la dinámica de la interacción fuerte.
+- Los neutrinos de sabor son combinaciones de estados de masa.
+- La mayor parte de la masa de protones y neutrones procede de la dinámica de la interacción fuerte.
 - La gravedad no forma parte del Modelo Estándar.
-- Las masas de quarks dependen del esquema y de la escala de renormalización. Los valores mostrados son referencias divulgativas redondeadas.
+- Las masas de quarks dependen del esquema y de la escala de renormalización.
+- Las ilustraciones del atlas son didácticas y no deben interpretarse como representaciones clásicas literales de campos cuánticos.
 
 ## Fuentes principales
 
@@ -123,44 +188,50 @@ El lector matemático reúne 51 fórmulas agrupadas y buscables. Cada entrada de
 - [CERN · Antimatter](https://home.cern/science/physics/antimatter/)
 - [CERN · Supersymmetry](https://home.cern/science/physics/supersymmetry/)
 - [CERN · Bestiary of exotic hadrons](https://home.cern/bestiary-exotic-hadrons/)
-- [CERN · Extra dimensions](https://home.cern/science/physics/extra-dimensions-gravitons-and-tiny-black-holes/)
+- [CERN · Extra dimensions, gravitons and tiny black holes](https://home.cern/science/physics/extra-dimensions-gravitons-and-tiny-black-holes/)
 - [ATLAS · Leptoquark searches](https://atlas.cern/Tags/leptoquarks)
 - [CMS · Heavy neutral lepton search](https://arxiv.org/abs/2403.00100)
 - [Nature Communications · Atomic transistor](https://www.nature.com/articles/s41467-022-32582-9)
 - [NIST · Planck length](https://physics.nist.gov/cgi-bin/cuu/Value?plkl=)
 
-Los valores científicos se versionan en `src/data/particles.ts`. No se consultan APIs externas durante la navegación.
+Los datos se versionan localmente en `src/data/`; no se consultan APIs externas durante la navegación.
 
 ## Arquitectura
 
 ```text
-src/
-├─ components/
-│  ├─ ParticleViewport.svelte   # cámara, zoom, arrastre y conexiones
-│  ├─ ParticleCard.svelte       # ficha progresiva del lienzo
-│  ├─ NodeVisual.svelte         # átomo, hadrones, cuerdas y branas en SVG
-│  ├─ ParticleDetail.svelte     # documentación de cada partícula
-│  ├─ FilterPanel.svelte        # filtros científicos
-│  ├─ FormulaAtlas.svelte       # capa matemática
-│  ├─ ScaleAxis.svelte          # eje fijo sincronizado con la cámara
-│  ├─ LayersPanel.svelte        # capas observadas e hipotéticas
-│  ├─ LegendPanel.svelte        # código visual del atlas
-│  ├─ DataPanel.svelte          # métricas del lienzo
-│  └─ EncyclopediaModal.svelte  # manual con índice y capítulos
-├─ data/
-│  ├─ particles.ts              # dataset científico local
-│  ├─ forces.ts                 # cuatro interacciones fundamentales
-│  ├─ science.ts                # escalas y capítulos fundamentales
-│  ├─ information.ts            # informes de entidades y antimateria
-│  ├─ formulae.ts               # atlas de 51 fórmulas documentadas
-│  └─ types.ts
-├─ lib/
-│  ├─ format.ts                 # KaTeX y utilidades
-│  └─ solarTheme.ts             # tema solar local y respaldo del sistema
-├─ styles/
-│  └─ global.css
-├─ App.svelte
-└─ main.ts
+ModeloEstandar/
+├─ favicon.svg                       # identidad SVG en la raíz
+├─ public/favicon.svg                # copia servida por Vite
+├─ src/
+│  ├─ components/
+│  │  ├─ ParticleViewport.svelte     # cámara, zoom, arrastre y conexiones
+│  │  ├─ ParticleCard.svelte         # ficha progresiva del lienzo
+│  │  ├─ NodeVisual.svelte           # representaciones SVG
+│  │  ├─ ParticleDetail.svelte       # informe de cada entidad
+│  │  ├─ ScaleAxis.svelte            # eje fijo sincronizado
+│  │  ├─ FilterPanel.svelte          # filtros científicos
+│  │  ├─ LayersPanel.svelte          # capas observadas, teóricas y comparativas
+│  │  ├─ LegendPanel.svelte          # código visual
+│  │  ├─ EncyclopediaModal.svelte    # Enciclopedia técnica
+│  │  ├─ FormulaAtlas.svelte         # Atlas Matemático
+│  │  ├─ FormulaBlock.svelte         # renderizado KaTeX
+│  │  └─ AboutModal.svelte           # ficha y enlaces del proyecto
+│  ├─ data/
+│  │  ├─ particles.ts                # catálogo científico y referencias de escala
+│  │  ├─ forces.ts                   # cuatro interacciones fundamentales
+│  │  ├─ science.ts                  # escalas y fundamentos
+│  │  ├─ information.ts              # capítulos de la Enciclopedia
+│  │  ├─ formulae.ts                 # 51 informes matemáticos
+│  │  └─ types.ts                    # contratos de datos
+│  ├─ lib/
+│  │  ├─ format.ts                   # KaTeX y utilidades
+│  │  └─ solarTheme.ts               # resolución del tema automático
+│  ├─ styles/global.css
+│  ├─ App.svelte
+│  └─ main.ts
+├─ index.html
+├─ package.json
+└─ vite.config.ts
 ```
 
 ## Desarrollo local
@@ -172,7 +243,7 @@ npm install
 npm run dev
 ```
 
-Validación y producción:
+Comprobación y compilación:
 
 ```bash
 npm run check
@@ -182,30 +253,21 @@ npm run preview
 
 ## GitHub Pages
 
-El workflow `.github/workflows/deploy.yml` valida el proyecto, genera `dist/` y lo publica al hacer `push` a `main`.
+El workflow `.github/workflows/deploy.yml` comprueba el proyecto, genera `dist/` y lo publica tras cada actualización de `main`.
 
-En GitHub debe estar seleccionada la fuente:
+La fuente de Pages debe ser:
 
 ```text
 Settings → Pages → Build and deployment → GitHub Actions
 ```
 
-La dirección prevista es:
+## Autoría
 
-**https://alejandropico.github.io/ModeloEstandar/**
+Proyecto personal, educativo y no comercial de **Alejandro Pico**.
 
-## Próximos niveles
-
-La arquitectura deja preparados varios desarrollos posteriores:
-
-1. recorrido continuo de potencias de diez;
-2. más átomos, hadrones y estados ligados;
-3. diagramas de Feynman interactivos;
-4. mezclas CKM y PMNS;
-5. historia experimental y detectores;
-6. comparación de masas en escala logarítmica;
-7. desarrollo completo de la lagrangiana del Modelo Estándar.
+- [Portfolio](https://alejandropico.github.io/Portfolio/)
+- [Repositorio](https://github.com/AlejandroPico/ModeloEstandar)
 
 ## Licencia
 
-El repositorio no incluye todavía una licencia explícita. Hasta que se añada, no debe asumirse una licencia abierta concreta para el código o el contenido.
+El repositorio no incluye actualmente una licencia explícita. No debe asumirse una licencia abierta concreta para el código o el contenido.

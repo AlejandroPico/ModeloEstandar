@@ -6,8 +6,13 @@
   let { onclose, initialId }: { onclose: () => void; initialId?: string } = $props();
   let activeId = $state(informationChapters[0].id);
   let query = $state('');
+  let selectedGroup = $state(informationChapters[0].group);
   $effect(() => {
-    if (initialId && informationChapters.some((chapter) => chapter.id === initialId)) activeId = initialId;
+    const initial = informationChapters.find((chapter) => chapter.id === initialId);
+    if (initial) {
+      activeId = initial.id;
+      selectedGroup = initial.group;
+    }
   });
   const active = $derived(informationChapters.find((chapter) => chapter.id === activeId) ?? informationChapters[0]);
   const navigation = $derived(informationChapters.filter((chapter) => {
@@ -17,11 +22,20 @@
   }));
   const groupOrder = ['Fundamentos', 'Partículas elementales', 'Interacciones', 'Materia compuesta', 'Hipótesis y candidatos', 'Cuerdas y branas', 'Referencias de escala', 'Antimateria'];
   const groupedNavigation = $derived(groupOrder.map((group) => ({ group, chapters: navigation.filter((chapter) => chapter.group === group) })).filter((entry) => entry.chapters.length));
+  const mobileGroup = $derived(groupedNavigation.some((entry) => entry.group === selectedGroup) ? selectedGroup : (groupedNavigation[0]?.group ?? groupOrder[0]));
+  const mobileChapters = $derived(navigation.filter((chapter) => chapter.group === mobileGroup));
   const activeNumber = $derived(informationChapters.findIndex((chapter) => chapter.id === active.id) + 1);
 
   function openChapter(id: string): void {
     activeId = id;
+    selectedGroup = informationChapters.find((chapter) => chapter.id === id)?.group ?? selectedGroup;
     document.querySelector('.manual-reader')?.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function openGroup(group: string): void {
+    selectedGroup = group;
+    const first = navigation.find((chapter) => chapter.group === group);
+    if (first) openChapter(first.id);
   }
 
   function nextChapter(): void {
@@ -40,8 +54,22 @@
     <div class="manual-layout">
       <aside class="manual-index" aria-label="Índice de la enciclopedia">
         <label><Search size={15}/><input bind:value={query} placeholder="Buscar protón, QCD, positrón, fórmula…"/></label>
-        <small class="manual-index-label">{navigation.length} CAPÍTULOS EN EL ÍNDICE</small>
-        <nav>
+        <nav class="manual-mobile-groups" aria-label="Áreas de la enciclopedia">
+          {#each groupedNavigation as entry}
+            <button class:active={mobileGroup === entry.group} type="button" onclick={() => openGroup(entry.group)}><b>{entry.group}</b><small>{entry.chapters.length}</small></button>
+          {/each}
+        </nav>
+        <small class="manual-index-label"><span class="desktop-index-copy">{navigation.length} CAPÍTULOS EN EL ÍNDICE</span><span class="mobile-index-copy">{navigation.length} CAPÍTULOS · DESLIZA HORIZONTALMENTE</span></small>
+        <div class="manual-mobile-chapters" aria-label={`Capítulos de ${mobileGroup}`}>
+          {#each mobileChapters as chapter}
+            <button class:active={active.id === chapter.id} type="button" aria-current={active.id === chapter.id ? 'page' : undefined} onclick={() => openChapter(chapter.id)}>
+              <span>{chapter.symbol ?? String(informationChapters.findIndex((item) => item.id === chapter.id) + 1).padStart(2, '0')}</span>
+              <span><b>{chapter.title}</b><small>{chapter.subtitle}</small></span>
+              <ChevronRight size={14}/>
+            </button>
+          {/each}
+        </div>
+        <nav class="manual-desktop-navigation">
           {#each groupedNavigation as entry}
             <span class="manual-group-label">{entry.group}</span>
             {#each entry.chapters as chapter}
