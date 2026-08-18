@@ -913,3 +913,244 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
   .about-modal > footer { padding: 11px 17px; }
   .about-modal > footer span:last-child { display: none; }
 }
+
+/* v0.9 · navegación móvil integrada siguiendo el patrón de Nuclei 2 */
+.toolbar-action-grid { display: contents; }
+.mobile-inline-sections { display: none; }
+.toolbar-action-grid > button,
+.toolbar-action-grid > .layers-anchor > button {
+  height: 42px;
+  min-width: 42px;
+  padding: 0 11px;
+  border: 0;
+  border-left: 0;
+  border-radius: 0;
+}
+.about-mark img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.about-links { flex: 0 0 auto; padding: 0 clamp(24px, 5vw, 62px) 34px; }
+
+@media (max-width: 900px) {
+  html, body, #app, .app-shell {
+    width: 100dvw;
+    height: 100dvh;
+    min-width: 100dvw;
+    min-height: 100dvh;
+  }
+
+  .mobile-menu-toggle {
+    top: max(9px, env(safe-area-inset-top));
+    right: auto;
+    left: max(9px, env(safe-area-inset-left));
+    z-index: 29;
+    border-radius: 0;
+  }
+  .mobile-menu-scrim { z-index: 25; backdrop-filter: none; }
+
+  .hud-toolbar {
+    width: min(360px, 88vw);
+    height: 100dvh;
+    min-height: 0;
+    padding: 0;
+    border-right: 1px solid var(--line-strong);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+  }
+  .mobile-menu-header {
+    position: sticky;
+    z-index: 3;
+    top: 0;
+    display: flex;
+    align-items: center;
+    min-height: 68px;
+    gap: 11px;
+    padding: 11px 14px 11px 66px;
+    background: var(--panel-solid);
+  }
+  .mobile-menu-header > img {
+    display: block;
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    padding: 3px;
+    border: 1px solid var(--line);
+    object-fit: contain;
+  }
+  .mobile-menu-header > span { display: grid; min-width: 0; gap: 3px; }
+  .mobile-menu-header b { overflow: hidden; font-size: .72rem; text-overflow: ellipsis; white-space: nowrap; }
+  .mobile-menu-header em { color: var(--muted); font-size: .44rem; font-style: normal; }
+
+  .toolbar-action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    border-left: 1px solid var(--line);
+  }
+  .toolbar-action-grid > button,
+  .toolbar-action-grid .hud-search-inline > button,
+  .toolbar-action-grid .layers-anchor > button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    min-width: 0;
+    height: 70px;
+    padding: 8px;
+    border: 0;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
+  }
+  .toolbar-action-grid > button:hover,
+  .toolbar-action-grid > button:focus-visible,
+  .toolbar-action-grid > button.active,
+  .toolbar-action-grid .hud-search-inline > button.active,
+  .toolbar-action-grid .layers-anchor > button.active {
+    color: var(--composite);
+    background: color-mix(in srgb, var(--composite), transparent 92%);
+  }
+  .mobile-menu-label { font-size: .56rem; text-align: center; }
+  .toolbar-action-grid .hud-search-inline,
+  .toolbar-action-grid .layers-anchor { width: 100%; min-width: 0; }
+  .toolbar-action-grid .hud-search-inline.open { grid-column: 1 / -1; }
+  .toolbar-action-grid .hud-search-inline.open > button { height: 50px; flex-direction: row; }
+  .toolbar-action-grid .hud-search-inline label { min-height: 44px; }
+  .toolbar-action-grid .hud-search-results { max-height: 300px; }
+  .toolbar-action-grid .layers-anchor { display: block; }
+  .toolbar-action-grid .layers-coachmark { display: none; }
+  .toolbar-action-grid > .zoom-readout {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    height: 52px;
+  }
+  .hud-toolbar .zoom-readout { gap: 10px; }
+
+  .mobile-inline-sections { display: block; width: 100%; }
+  .mobile-inline-sections > .filter-panel,
+  .mobile-inline-sections > .hud-panel {
+    position: static;
+    z-index: auto;
+    inset: auto;
+    width: 100%;
+    max-height: none;
+    padding: 15px 13px 18px;
+    border: 0;
+    border-top: 1px solid var(--line-strong);
+    border-radius: 0;
+    background: color-mix(in srgb, var(--bg), transparent 30%);
+    box-shadow: none;
+    backdrop-filter: none;
+    overflow: visible;
+    animation: none;
+  }
+  .mobile-inline-sections .icon-button { display: none; }
+  .mobile-inline-sections .layer-group button,
+  .mobile-inline-sections .choice-grid button,
+  .mobile-inline-sections .reset-filter,
+  .mobile-inline-sections .layer-icon,
+  .mobile-inline-sections .layers-panel footer { border-radius: 0; }
+
+  .full-screen-on-mobile {
+    position: fixed;
+    width: 100dvw;
+    height: 100dvh;
+    padding: 0;
+  }
+  .full-screen-on-mobile > .encyclopedia-modal,
+  .full-screen-on-mobile > .formula-library-modal,
+  .full-screen-on-mobile > .about-modal {
+    width: 100dvw;
+    height: 100dvh;
+    min-width: 100dvw;
+    min-height: 100dvh;
+    max-width: none;
+    max-height: none;
+    border: 0;
+    border-radius: 0;
+  }
+  .manual-header,
+  .formula-library-header { flex: 0 0 auto; }
+
+  .about-header {
+    grid-template-columns: 44px minmax(0, 1fr) 32px;
+    flex: 0 0 auto;
+    gap: 11px;
+    padding: max(11px, env(safe-area-inset-top)) 13px 11px;
+  }
+  .about-mark { display: grid; width: 44px; height: 44px; padding: 3px; }
+  .about-header h2 { margin: 3px 0 4px; font-size: clamp(.92rem, 4vw, 1.25rem); }
+  .about-header p { font-size: .56rem; line-height: 1.4; }
+  .about-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 14px 15px 10px;
+    overflow: hidden;
+  }
+  .about-statement h3 { margin: 5px 0 7px; font-size: .84rem; }
+  .about-statement p { margin-bottom: 6px; font-size: .58rem; line-height: 1.48; }
+  .about-principles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 12px 0 0;
+  }
+  .about-principles article {
+    grid-template-columns: 18px 1fr;
+    gap: 6px;
+    min-height: 70px;
+    padding: 9px 7px;
+  }
+  .about-principles svg { width: 16px; height: 16px; }
+  .about-principles b { font-size: .53rem; }
+  .about-principles small { font-size: .45rem; line-height: 1.35; }
+  .about-links {
+    flex: 0 0 auto;
+    padding: 9px 15px 10px;
+    border-top: 1px solid var(--line);
+    background: var(--panel-solid);
+  }
+  .about-links > span { font-size: .38rem; }
+  .about-links h3 { margin: 4px 0 7px; font-size: .72rem; }
+  .about-links > div { grid-template-columns: 1fr 1fr; margin-top: 0; }
+  .about-links a { min-height: 58px; padding: 8px; grid-template-columns: 30px 1fr 14px; gap: 7px; }
+  .about-link-icon { width: 30px; height: 30px; }
+  .about-links b { font-size: .53rem; }
+  .about-links small { font-size: .43rem; }
+  .about-modal > footer { flex: 0 0 auto; padding: 8px 15px max(8px, env(safe-area-inset-bottom)); font-size: .4rem; }
+}
+
+@media (max-width: 560px) {
+  .about-statement p:nth-of-type(2) { display: none; }
+  .about-principles small { display: none; }
+  .about-principles article { display: flex; align-items: center; min-height: 50px; }
+  .about-links > div { grid-template-columns: 1fr 1fr; }
+  .about-links small { display: none; }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .mobile-menu-header { min-height: 58px; padding-top: 7px; padding-bottom: 7px; }
+  .mobile-menu-header > img { width: 34px; height: 34px; flex-basis: 34px; }
+  .toolbar-action-grid > button,
+  .toolbar-action-grid .hud-search-inline > button,
+  .toolbar-action-grid .layers-anchor > button { height: 58px; }
+
+  .manual-layout,
+  .formula-library-layout { grid-template-columns: minmax(150px, 28vw) 1fr; }
+  .manual-index,
+  .formula-library-index { max-height: none; border-right: 1px solid var(--line-strong); border-bottom: 0; }
+
+  .about-header { padding-top: 7px; padding-bottom: 7px; }
+  .about-header p,
+  .about-statement p:nth-of-type(2),
+  .about-principles small,
+  .about-links small { display: none; }
+  .about-body { padding-top: 8px; padding-bottom: 6px; }
+  .about-principles { margin-top: 7px; }
+  .about-principles article { display: flex; align-items: center; min-height: 42px; padding: 6px; }
+  .about-links { padding-top: 6px; padding-bottom: 6px; }
+  .about-links h3 { display: none; }
+  .about-links > div { grid-template-columns: 1fr 1fr; }
+  .about-links a { min-height: 46px; }
+  .about-modal > footer { padding-top: 5px; padding-bottom: max(5px, env(safe-area-inset-bottom)); }
+}

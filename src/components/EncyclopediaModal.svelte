@@ -30,7 +30,7 @@
   }
 </script>
 
-<div class="modal-backdrop" role="presentation" onclick={(event) => event.target === event.currentTarget && onclose()}>
+<div class="modal-backdrop full-screen-on-mobile" role="presentation" onclick={(event) => event.target === event.currentTarget && onclose()}>
   <div class="encyclopedia-modal manual-modal" role="dialog" aria-modal="true" aria-label="Enciclopedia técnica del atlas de partículas">
     <header class="manual-header">
       <div class="manual-title"><BookOpenText size={22}/><div><span class="eyebrow">ENCICLOPEDIA TÉCNICA</span><h2>Biblioteca de partículas, materia e interacciones</h2><p>{informationStats.total} capítulos · {informationStats.entities} entidades · {informationStats.antimatter} informes específicos de antimateria</p></div></div>

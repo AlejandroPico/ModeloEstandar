@@ -35,6 +35,7 @@
   let showEncyclopedia = $state(false);
   let showAbout = $state(false);
   let mobileMenuOpen = $state(false);
+  let mobileLayout = $state(false);
   let encyclopediaChapter = $state<string | undefined>(undefined);
   let searchInput = $state<HTMLInputElement | null>(null);
   let themeMode = $state<ThemeMode>('auto');
@@ -145,12 +146,22 @@
 
   function toggleHudPanel(panel: 'legend' | 'filter' | 'layers'): void {
     hudPanel = hudPanel === panel ? null : panel;
-    mobileMenuOpen = false;
+    if (mobileLayout) {
+      mobileMenuOpen = true;
+      if (hudPanel) window.setTimeout(() => document.querySelector('.mobile-inline-sections > aside')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 40);
+    } else {
+      mobileMenuOpen = false;
+    }
   }
 
   function toggleMobileMenu(): void {
     mobileMenuOpen = !mobileMenuOpen;
-    if (!mobileMenuOpen && hudPanel === 'search') hudPanel = null;
+    if (!mobileMenuOpen) hudPanel = null;
+  }
+
+  function closeMobileMenu(): void {
+    mobileMenuOpen = false;
+    hudPanel = null;
   }
 
   function beginMenuSwipe(event: TouchEvent): void {
@@ -163,8 +174,7 @@
     const dx = touch.clientX - menuTouchStart.x;
     const dy = touch.clientY - menuTouchStart.y;
     if (dx < -55 && Math.abs(dx) > Math.abs(dy) * 1.15) {
-      mobileMenuOpen = false;
-      if (hudPanel === 'search') hudPanel = null;
+      closeMobileMenu();
     }
   }
 
@@ -215,6 +225,13 @@
   }
 
   onMount(() => {
+    const mobileMedia = window.matchMedia('(max-width: 900px)');
+    const syncMobileLayout = () => {
+      mobileLayout = mobileMedia.matches;
+      if (!mobileLayout) mobileMenuOpen = false;
+    };
+    syncMobileLayout();
+    mobileMedia.addEventListener('change', syncMobileLayout);
     const saved = localStorage.getItem('modelo-estandar-theme');
     if (saved === 'auto' || saved === 'light' || saved === 'dark') themeMode = saved;
     themeTimer = window.setInterval(() => { if (themeMode === 'auto') applyTheme(); }, 60_000);
@@ -233,6 +250,7 @@
       );
     }
     return () => {
+      mobileMedia.removeEventListener('change', syncMobileLayout);
       window.clearInterval(themeTimer);
       window.clearTimeout(axisTimer);
     };
@@ -273,42 +291,55 @@
   <button class:active={mobileMenuOpen} class="mobile-menu-toggle" type="button" aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={mobileMenuOpen} onclick={toggleMobileMenu}>
     {#if mobileMenuOpen}<X size={21}/>{:else}<Menu size={21}/>{/if}
   </button>
-  {#if mobileMenuOpen}<button class="mobile-menu-scrim" type="button" aria-label="Cerrar menú" onclick={() => mobileMenuOpen = false}></button>{/if}
+  {#if mobileMenuOpen}<button class="mobile-menu-scrim" type="button" aria-label="Cerrar menú" onclick={closeMobileMenu}></button>{/if}
 
   <nav class:mobile-open={mobileMenuOpen} class="hud-toolbar" aria-label="Herramientas científicas" ontouchstart={beginMenuSwipe} ontouchend={endMenuSwipe}>
-    <header class="mobile-menu-header"><span class="eyebrow">NAVEGACIÓN</span><b>Modelo Estándar</b><small>Desliza a la izquierda para cerrar</small></header>
-    <div class:open={hudPanel === 'search'} class="hud-search-inline">
-      <button class:active={hudPanel === 'search'} type="button" data-tooltip="Buscar" aria-label="Buscar" onclick={toggleSearch}><Search size={17}/><span class="mobile-menu-label">Buscar</span></button>
-      {#if hudPanel === 'search'}
-        <label><input bind:this={searchInput} value={query} oninput={(event) => query = event.currentTarget.value} placeholder="Buscar partícula, color, uud, fórmula…" aria-label="Buscar en el atlas"/>{#if query}<button type="button" aria-label="Limpiar búsqueda" onclick={() => query = ''}><X size={14}/></button>{/if}</label>
-        {#if query}
-          <div class="hud-search-results" aria-label="Resultados de búsqueda">
-            <header><span>{searchResults.length} coincidencias directas</span><small>incluye capas ocultas y antimateria</small></header>
-            {#each searchResults as result}
-              <button type="button" onclick={() => revealSearchResult(result)}>
-                <span>{result.symbol}</span><span><b>{result.name}</b><small>{result.mirror ? 'antimateria' : result.particle.family} · {result.particle.evidence === 'observed' ? 'observada' : 'hipótesis'}</small></span>
-              </button>
-            {:else}
-              <p>No hay coincidencias. Prueba con un símbolo, una masa, una fecha, una interacción o un término teórico.</p>
-            {/each}
-          </div>
+    <header class="mobile-menu-header"><img src="./favicon.svg" alt=""/><span><small class="eyebrow">MODELO ESTÁNDAR</small><b>Herramientas del atlas</b><em>Desliza a la izquierda para cerrar</em></span></header>
+    <div class="toolbar-action-grid">
+      <div class:open={hudPanel === 'search'} class="hud-search-inline">
+        <button class:active={hudPanel === 'search'} type="button" data-tooltip="Buscar" aria-label="Buscar" onclick={toggleSearch}><Search size={17}/><span class="mobile-menu-label">Buscar</span></button>
+        {#if hudPanel === 'search'}
+          <label><input bind:this={searchInput} value={query} oninput={(event) => query = event.currentTarget.value} placeholder="Buscar partícula, color, uud, fórmula…" aria-label="Buscar en el atlas"/>{#if query}<button type="button" aria-label="Limpiar búsqueda" onclick={() => query = ''}><X size={14}/></button>{/if}</label>
+          {#if query}
+            <div class="hud-search-results" aria-label="Resultados de búsqueda">
+              <header><span>{searchResults.length} coincidencias directas</span><small>incluye capas ocultas y antimateria</small></header>
+              {#each searchResults as result}
+                <button type="button" onclick={() => revealSearchResult(result)}>
+                  <span>{result.symbol}</span><span><b>{result.name}</b><small>{result.mirror ? 'antimateria' : result.particle.family} · {result.particle.evidence === 'observed' ? 'observada' : 'hipótesis'}</small></span>
+                </button>
+              {:else}
+                <p>No hay coincidencias. Prueba con un símbolo, una masa, una fecha, una interacción o un término teórico.</p>
+              {/each}
+            </div>
+          {/if}
         {/if}
-      {/if}
+      </div>
+      <button class:active={hudPanel === 'filter'} aria-expanded={hudPanel === 'filter'} type="button" data-tooltip="Filtros" aria-label="Abrir filtros" onclick={() => toggleHudPanel('filter')}><Filter size={17}/><span class="mobile-menu-label">Filtros</span></button>
+      <button type="button" data-tooltip="Enciclopedia" aria-label="Abrir enciclopedia" onclick={() => openEncyclopedia()}><BookOpen size={18}/><span class="mobile-menu-label">Enciclopedia</span></button>
+      <button class:active={hudPanel === 'legend'} aria-expanded={hudPanel === 'legend'} type="button" data-tooltip="Leyenda" aria-label="Abrir leyenda" onclick={() => toggleHudPanel('legend')}><Tags size={17}/><span class="mobile-menu-label">Leyenda</span></button>
+      <button type="button" data-tooltip="Fórmulas" aria-label="Abrir atlas matemático" onclick={() => { showFormula = true; closeMobileMenu(); }}><Braces size={18}/><span class="mobile-menu-label">Fórmulas</span></button>
+      <span class="layers-anchor">
+        {#if !hasActiveLayer && hudPanel !== 'layers'}<span class="layers-coachmark">Activa capas para descubrir compuestos, fuerzas, antimateria y nuevas hipótesis.</span>{/if}
+        <button class:active={hudPanel === 'layers'} aria-expanded={hudPanel === 'layers'} class="layers-button" type="button" data-tooltip="Capas" aria-label="Abrir capas" onclick={() => toggleHudPanel('layers')}><Layers3 size={18}/><span class="mobile-menu-label">Capas</span></button>
+      </span>
+      <button type="button" data-tooltip="Acerca del proyecto" aria-label="Abrir acerca del proyecto" onclick={openAbout}><Info size={18}/><span class="mobile-menu-label">Acerca del proyecto</span></button>
+      <button class:active={themeMode === 'auto'} type="button" data-tooltip={themeMode === 'auto' ? 'Tema automático' : `Tema ${themeMode}`} aria-label="Cambiar tema: automático, claro u oscuro" onclick={cycleTheme}>{#if themeMode === 'auto'}<SunMoon size={17}/>{:else if themeMode === 'dark'}<Moon size={17}/>{:else}<Sun size={17}/>{/if}<span class="mobile-menu-label">Tema</span></button>
+      <button class="zoom-readout" type="button" data-tooltip="Restablecer vista" aria-label={`Zoom ${zoomPercent}%. Restablecer vista`} onclick={() => { viewport?.resetView?.(); closeMobileMenu(); }}><b>{zoomPercent}%</b><span class="mobile-menu-label">Restablecer vista</span></button>
     </div>
-    <button class:active={hudPanel === 'filter'} type="button" data-tooltip="Filtros" aria-label="Abrir filtros" onclick={() => toggleHudPanel('filter')}><Filter size={17}/><span class="mobile-menu-label">Filtros</span></button>
-    <button type="button" data-tooltip="Enciclopedia" aria-label="Abrir enciclopedia" onclick={() => openEncyclopedia()}><BookOpen size={18}/><span class="mobile-menu-label">Enciclopedia</span></button>
-    <button class:active={hudPanel === 'legend'} type="button" data-tooltip="Leyenda" aria-label="Abrir leyenda" onclick={() => toggleHudPanel('legend')}><Tags size={17}/><span class="mobile-menu-label">Leyenda</span></button>
-    <button type="button" data-tooltip="Fórmulas" aria-label="Abrir atlas matemático" onclick={() => { showFormula = true; mobileMenuOpen = false; }}><Braces size={18}/><span class="mobile-menu-label">Fórmulas</span></button>
-    <span class="layers-anchor">
-      {#if !hasActiveLayer && hudPanel !== 'layers'}<span class="layers-coachmark">Activa capas para descubrir compuestos, fuerzas, antimateria y nuevas hipótesis.</span>{/if}
-      <button class:active={hudPanel === 'layers'} class="layers-button" type="button" data-tooltip="Capas" aria-label="Abrir capas" onclick={() => toggleHudPanel('layers')}><Layers3 size={18}/><span class="mobile-menu-label">Capas</span></button>
-    </span>
-    <button class:active={themeMode === 'auto'} type="button" data-tooltip={themeMode === 'auto' ? 'Tema automático' : `Tema ${themeMode}`} aria-label="Cambiar tema: automático, claro u oscuro" onclick={cycleTheme}>{#if themeMode === 'auto'}<SunMoon size={17}/>{:else if themeMode === 'dark'}<Moon size={17}/>{:else}<Sun size={17}/>{/if}<span class="mobile-menu-label">Tema</span></button>
-    <button class="zoom-readout" type="button" data-tooltip="Restablecer vista" aria-label={`Zoom ${zoomPercent}%. Restablecer vista`} onclick={() => { viewport?.resetView?.(); mobileMenuOpen = false; }}><b>{zoomPercent}%</b><span class="mobile-menu-label">Restablecer vista</span></button>
-    <button type="button" data-tooltip="Acerca del proyecto" aria-label="Abrir acerca del proyecto" onclick={openAbout}><Info size={18}/><span class="mobile-menu-label">Acerca del proyecto</span></button>
+    {#if mobileLayout && (hudPanel === 'filter' || hudPanel === 'legend' || hudPanel === 'layers')}
+      <div class="mobile-inline-sections">
+        {#if hudPanel === 'filter'}
+          <FilterPanel {query} {family} {interaction} mode="filter" onquery={(value) => query = value} onfamily={(value) => family = value} oninteraction={(value) => interaction = value} onreset={resetFilters} onclose={() => hudPanel = null}/>
+        {:else if hudPanel === 'legend'}
+          <LegendPanel onclose={() => hudPanel = null}/>
+        {:else if hudPanel === 'layers'}
+          <LayersPanel {layers} ontoggle={toggleLayer} onclose={() => hudPanel = null}/>
+        {/if}
+      </div>
+    {/if}
   </nav>
 
-  {#if hudPanel === 'filter'}
+  {#if !mobileLayout && hudPanel === 'filter'}
     <FilterPanel
       {query} {family} {interaction}
       mode="filter"
@@ -319,8 +350,8 @@
       onclose={() => hudPanel = null}
     />
   {/if}
-  {#if hudPanel === 'legend'}<LegendPanel onclose={() => hudPanel = null}/>{/if}
-  {#if hudPanel === 'layers'}<LayersPanel {layers} ontoggle={toggleLayer} onclose={() => hudPanel = null}/>{/if}
+  {#if !mobileLayout && hudPanel === 'legend'}<LegendPanel onclose={() => hudPanel = null}/>{/if}
+  {#if !mobileLayout && hudPanel === 'layers'}<LayersPanel {layers} ontoggle={toggleLayer} onclose={() => hudPanel = null}/>{/if}
 
   {#if selected}
     <ParticleDetail particle={selected} antimatter={selectedMirror} onclose={() => selected = null} onopenencyclopedia={(chapter) => openEncyclopedia(chapter)}/>

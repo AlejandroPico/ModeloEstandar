@@ -14,7 +14,7 @@
   const groups = $derived(formulaGroups.map((group) => ({ group, chapters: visible.filter((chapter) => chapter.group === group) })).filter((item) => item.chapters.length));
 </script>
 
-<div class="modal-backdrop" role="presentation" onclick={(event) => event.target === event.currentTarget && onclose()}>
+<div class="modal-backdrop full-screen-on-mobile" role="presentation" onclick={(event) => event.target === event.currentTarget && onclose()}>
   <div class="formula-library-modal" role="dialog" aria-modal="true" aria-label="Atlas matemático del Modelo Estándar">
     <header class="formula-library-header"><div><Braces size={22}/><span><small>ATLAS MATEMÁTICO</small><h2>Fórmulas de partículas, campos e interacciones</h2><p>{formulaChapters.length} capítulos, desde cinemática relativista hasta gravedad y cuerdas.</p></span></div><button class="icon-button" type="button" aria-label="Cerrar fórmulas" onclick={onclose}><X size={20}/></button></header>
     <div class="formula-library-layout">
@@ -35,4 +35,3 @@
     </div>
   </div>
 </div>
-
