@@ -1,9 +1,9 @@
-export type ParticleFamily = 'quark' | 'lepton' | 'gauge' | 'scalar' | 'composite' | 'force' | 'theory' | 'string' | 'technology';
+export type ParticleFamily = 'quark' | 'lepton' | 'gauge' | 'scalar' | 'composite' | 'force' | 'theory' | 'string' | 'technology' | 'biology';
 export type Interaction = 'strong' | 'electromagnetic' | 'weak' | 'higgs' | 'gravity';
 export type Evidence = 'observed' | 'hypothetical';
-export type ParticleZone = 'technology' | 'atom' | 'composite' | 'forces' | 'standard' | 'beyond' | 'planck';
-export type ParticleVisual = 'atom' | 'proton' | 'neutron' | 'open-string' | 'closed-string' | 'brane' | 'cosmic-string' | 'field';
-export type LayerId = 'composites' | 'forces' | 'antimatter' | 'susy' | 'dark-sector' | 'collider-candidates' | 'quantum-gravity' | 'strings' | 'technology';
+export type ParticleZone = 'biology' | 'technology' | 'atom' | 'composite' | 'forces' | 'standard' | 'beyond' | 'planck';
+export type ParticleVisual = 'atom' | 'proton' | 'neutron' | 'open-string' | 'closed-string' | 'brane' | 'cosmic-string' | 'dna' | 'protein' | 'ribosome' | 'virus' | 'chromosome' | 'bacterium' | 'field';
+export type LayerId = 'composites' | 'forces' | 'antimatter' | 'susy' | 'dark-sector' | 'collider-candidates' | 'quantum-gravity' | 'strings' | 'technology' | 'biology';
 export type ColorState = 'triplet' | 'antitriplet' | 'octet' | 'singlet' | 'representation-dependent' | 'none';
 
 export interface SourceLink {

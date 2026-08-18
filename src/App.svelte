@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import {
-    Braces, Database, Filter, Info, Layers3, Moon, Search,
+    BookOpen, Braces, Filter, Info, Layers3, Menu, Moon, Search,
     Sun, SunMoon, Tags, X
   } from '@lucide/svelte';
   import ParticleViewport from './components/ParticleViewport.svelte';
@@ -11,9 +11,9 @@
   import FilterPanel from './components/FilterPanel.svelte';
   import LayersPanel from './components/LayersPanel.svelte';
   import LegendPanel from './components/LegendPanel.svelte';
-  import DataPanel from './components/DataPanel.svelte';
   import EncyclopediaModal from './components/EncyclopediaModal.svelte';
-  import { compositeParticles, frontierObjects, particles, technologyObjects, theoryParticles } from './data/particles';
+  import AboutModal from './components/AboutModal.svelte';
+  import { biologyObjects, compositeParticles, frontierObjects, particles, technologyObjects, theoryParticles } from './data/particles';
   import { forceEntities } from './data/forces';
   import type { Interaction, LayerId, Particle, ParticleFamily } from './data/types';
   import { resolveSolarTheme } from './lib/solarTheme';
@@ -29,10 +29,12 @@
   let axisTimer = 0;
   let axisPositions = $state<number[]>([]);
   let axisBreakY = $state(0);
-  let layers = $state<Record<LayerId, boolean>>({ composites: false, forces: false, antimatter: false, susy: false, 'dark-sector': false, 'collider-candidates': false, 'quantum-gravity': false, strings: false, technology: false });
+  let layers = $state<Record<LayerId, boolean>>({ composites: false, forces: false, antimatter: false, susy: false, 'dark-sector': false, 'collider-candidates': false, 'quantum-gravity': false, strings: false, technology: false, biology: false });
   let showFormula = $state(false);
-  let hudPanel = $state<'search' | 'legend' | 'data' | 'filter' | 'layers' | null>(null);
+  let hudPanel = $state<'search' | 'legend' | 'filter' | 'layers' | null>(null);
   let showEncyclopedia = $state(false);
+  let showAbout = $state(false);
+  let mobileMenuOpen = $state(false);
   let encyclopediaChapter = $state<string | undefined>(undefined);
   let searchInput = $state<HTMLInputElement | null>(null);
   let themeMode = $state<ThemeMode>('auto');
@@ -45,10 +47,12 @@
   let query = $state('');
   let family = $state<ParticleFamily | 'all'>('all');
   let interaction = $state<Interaction | 'all'>('all');
+  let menuTouchStart = { x: 0, y: 0 };
 
   const visibleComposites = $derived(layers.composites ? compositeParticles : []);
   const visibleForces = $derived(layers.forces ? forceEntities : []);
   const visibleTechnology = $derived(layers.technology ? technologyObjects : []);
+  const visibleBiology = $derived(layers.biology ? biologyObjects : []);
   const visibleTheory = $derived(theoryParticles.filter((particle) => {
     if (['neutralino', 'gluino', 'sfermions', 'chargino'].includes(particle.id)) return layers.susy;
     if (['axion', 'sterile-neutrino', 'dark-photon', 'dark-higgs', 'dark-meson'].includes(particle.id)) return layers['dark-sector'];
@@ -58,8 +62,8 @@
   const visibleFrontier = $derived(layers.strings ? frontierObjects : []);
   const showTheory = $derived(visibleTheory.length > 0 || visibleFrontier.length > 0);
   const antimatter = $derived(layers.antimatter);
-  const activeNodes = $derived([...visibleTechnology, ...visibleComposites, ...visibleForces, ...particles, ...visibleTheory, ...visibleFrontier]);
-  const catalogNodes = [...technologyObjects, ...compositeParticles, ...forceEntities, ...particles, ...theoryParticles, ...frontierObjects];
+  const activeNodes = $derived([...visibleBiology, ...visibleTechnology, ...visibleComposites, ...visibleForces, ...particles, ...visibleTheory, ...visibleFrontier]);
+  const catalogNodes = [...biologyObjects, ...technologyObjects, ...compositeParticles, ...forceEntities, ...particles, ...theoryParticles, ...frontierObjects];
   const observedCount = $derived(activeNodes.filter((particle) => particle.evidence === 'observed').length);
   const hypotheticalCount = $derived(activeNodes.filter((particle) => particle.evidence === 'hypothetical').length);
   const selectedKey = $derived(selected ? `${selectedMirror ? 'anti:' : ''}${selected.id}` : '');
@@ -101,6 +105,7 @@
     if (particle.family === 'composite') layers.composites = true;
     if (particle.family === 'force') layers.forces = true;
     if (particle.family === 'technology') layers.technology = true;
+    if (particle.family === 'biology') layers.biology = true;
     if (['neutralino', 'gluino', 'sfermions', 'chargino'].includes(particle.id)) layers.susy = true;
     if (['axion', 'sterile-neutrino', 'dark-photon', 'dark-higgs', 'dark-meson'].includes(particle.id)) layers['dark-sector'] = true;
     if (['leptoquark', 'heavy-neutral-lepton', 'z-prime', 'w-prime', 'vector-like-quark', 'q-ball', 'dyon'].includes(particle.id)) layers['collider-candidates'] = true;
@@ -129,6 +134,38 @@
     encyclopediaChapter = chapter;
     hudPanel = null;
     showEncyclopedia = true;
+    mobileMenuOpen = false;
+  }
+
+  function openAbout(): void {
+    hudPanel = null;
+    mobileMenuOpen = false;
+    showAbout = true;
+  }
+
+  function toggleHudPanel(panel: 'legend' | 'filter' | 'layers'): void {
+    hudPanel = hudPanel === panel ? null : panel;
+    mobileMenuOpen = false;
+  }
+
+  function toggleMobileMenu(): void {
+    mobileMenuOpen = !mobileMenuOpen;
+    if (!mobileMenuOpen && hudPanel === 'search') hudPanel = null;
+  }
+
+  function beginMenuSwipe(event: TouchEvent): void {
+    const touch = event.changedTouches[0];
+    menuTouchStart = { x: touch.clientX, y: touch.clientY };
+  }
+
+  function endMenuSwipe(event: TouchEvent): void {
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - menuTouchStart.x;
+    const dy = touch.clientY - menuTouchStart.y;
+    if (dx < -55 && Math.abs(dx) > Math.abs(dy) * 1.15) {
+      mobileMenuOpen = false;
+      if (hudPanel === 'search') hudPanel = null;
+    }
   }
 
   function cycleTheme(): void {
@@ -142,6 +179,7 @@
     window.setTimeout(() => {
       if (layer === 'strings' && layers[layer]) viewport?.focusZone?.('planck');
       else if (layer === 'technology' && layers[layer]) viewport?.focusZone?.('technology');
+      else if (layer === 'biology' && layers[layer]) viewport?.focusZone?.('biology');
       else if (['susy', 'dark-sector', 'collider-candidates', 'quantum-gravity'].includes(layer) && layers[layer]) viewport?.focusZone?.('beyond');
       else if (layer === 'forces' && layers[layer]) viewport?.focusZone?.('forces');
       else viewport?.focusZone?.('standard');
@@ -169,8 +207,10 @@
   function handleKeydown(event: KeyboardEvent): void {
     if (event.key !== 'Escape') return;
     if (showFormula) showFormula = false;
+    else if (showAbout) showAbout = false;
     else if (showEncyclopedia) showEncyclopedia = false;
     else if (hudPanel) hudPanel = null;
+    else if (mobileMenuOpen) mobileMenuOpen = false;
     else if (selected) selected = null;
   }
 
@@ -208,6 +248,7 @@
     {particles}
     compositeParticles={visibleComposites}
     forceEntities={visibleForces}
+    biologyObjects={visibleBiology}
     technologyObjects={visibleTechnology}
     theoryParticles={visibleTheory}
     frontierObjects={visibleFrontier}
@@ -229,9 +270,15 @@
     <div class="results-badge"><Search size={14}/><b>{matches.size}</b> de {activeNodes.length} fichas <button type="button" onclick={resetFilters} aria-label="Quitar filtros"><X size={13}/></button></div>
   {/if}
 
-  <nav class="hud-toolbar" aria-label="Herramientas científicas">
+  <button class:active={mobileMenuOpen} class="mobile-menu-toggle" type="button" aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={mobileMenuOpen} onclick={toggleMobileMenu}>
+    {#if mobileMenuOpen}<X size={21}/>{:else}<Menu size={21}/>{/if}
+  </button>
+  {#if mobileMenuOpen}<button class="mobile-menu-scrim" type="button" aria-label="Cerrar menú" onclick={() => mobileMenuOpen = false}></button>{/if}
+
+  <nav class:mobile-open={mobileMenuOpen} class="hud-toolbar" aria-label="Herramientas científicas" ontouchstart={beginMenuSwipe} ontouchend={endMenuSwipe}>
+    <header class="mobile-menu-header"><span class="eyebrow">NAVEGACIÓN</span><b>Modelo Estándar</b><small>Desliza a la izquierda para cerrar</small></header>
     <div class:open={hudPanel === 'search'} class="hud-search-inline">
-      <button class:active={hudPanel === 'search'} type="button" data-tooltip="Buscar" aria-label="Buscar" onclick={toggleSearch}><Search size={17}/></button>
+      <button class:active={hudPanel === 'search'} type="button" data-tooltip="Buscar" aria-label="Buscar" onclick={toggleSearch}><Search size={17}/><span class="mobile-menu-label">Buscar</span></button>
       {#if hudPanel === 'search'}
         <label><input bind:this={searchInput} value={query} oninput={(event) => query = event.currentTarget.value} placeholder="Buscar partícula, color, uud, fórmula…" aria-label="Buscar en el atlas"/>{#if query}<button type="button" aria-label="Limpiar búsqueda" onclick={() => query = ''}><X size={14}/></button>{/if}</label>
         {#if query}
@@ -248,17 +295,17 @@
         {/if}
       {/if}
     </div>
-    <button class:active={hudPanel === 'filter'} type="button" data-tooltip="Filtros" aria-label="Abrir filtros" onclick={() => hudPanel = hudPanel === 'filter' ? null : 'filter'}><Filter size={17}/></button>
-    <button type="button" data-tooltip="Información general" aria-label="Abrir manual general" onclick={() => openEncyclopedia()}><Info size={18}/></button>
-    <button class:active={hudPanel === 'legend'} type="button" data-tooltip="Leyenda" aria-label="Abrir leyenda" onclick={() => hudPanel = hudPanel === 'legend' ? null : 'legend'}><Tags size={17}/></button>
-    <button class:active={hudPanel === 'data'} type="button" data-tooltip="Datos del lienzo" aria-label="Abrir datos del lienzo" onclick={() => hudPanel = hudPanel === 'data' ? null : 'data'}><Database size={17}/></button>
-    <button type="button" data-tooltip="Fórmulas" aria-label="Abrir capa matemática" onclick={() => showFormula = true}><Braces size={18}/></button>
+    <button class:active={hudPanel === 'filter'} type="button" data-tooltip="Filtros" aria-label="Abrir filtros" onclick={() => toggleHudPanel('filter')}><Filter size={17}/><span class="mobile-menu-label">Filtros</span></button>
+    <button type="button" data-tooltip="Enciclopedia" aria-label="Abrir enciclopedia" onclick={() => openEncyclopedia()}><BookOpen size={18}/><span class="mobile-menu-label">Enciclopedia</span></button>
+    <button class:active={hudPanel === 'legend'} type="button" data-tooltip="Leyenda" aria-label="Abrir leyenda" onclick={() => toggleHudPanel('legend')}><Tags size={17}/><span class="mobile-menu-label">Leyenda</span></button>
+    <button type="button" data-tooltip="Fórmulas" aria-label="Abrir atlas matemático" onclick={() => { showFormula = true; mobileMenuOpen = false; }}><Braces size={18}/><span class="mobile-menu-label">Fórmulas</span></button>
     <span class="layers-anchor">
       {#if !hasActiveLayer && hudPanel !== 'layers'}<span class="layers-coachmark">Activa capas para descubrir compuestos, fuerzas, antimateria y nuevas hipótesis.</span>{/if}
-      <button class:active={hudPanel === 'layers'} class="layers-button" type="button" data-tooltip="Capas" aria-label="Abrir capas" onclick={() => hudPanel = hudPanel === 'layers' ? null : 'layers'}><Layers3 size={18}/></button>
+      <button class:active={hudPanel === 'layers'} class="layers-button" type="button" data-tooltip="Capas" aria-label="Abrir capas" onclick={() => toggleHudPanel('layers')}><Layers3 size={18}/><span class="mobile-menu-label">Capas</span></button>
     </span>
-    <button class:active={themeMode === 'auto'} type="button" data-tooltip={themeMode === 'auto' ? 'Tema automático' : `Tema ${themeMode}`} aria-label="Cambiar tema: automático, claro u oscuro" onclick={cycleTheme}>{#if themeMode === 'auto'}<SunMoon size={17}/>{:else if themeMode === 'dark'}<Moon size={17}/>{:else}<Sun size={17}/>{/if}</button>
-    <button class="zoom-readout" type="button" data-tooltip="Restablecer vista" aria-label={`Zoom ${zoomPercent}%. Restablecer vista`} onclick={() => viewport?.resetView?.()}><b>{zoomPercent}%</b></button>
+    <button class:active={themeMode === 'auto'} type="button" data-tooltip={themeMode === 'auto' ? 'Tema automático' : `Tema ${themeMode}`} aria-label="Cambiar tema: automático, claro u oscuro" onclick={cycleTheme}>{#if themeMode === 'auto'}<SunMoon size={17}/>{:else if themeMode === 'dark'}<Moon size={17}/>{:else}<Sun size={17}/>{/if}<span class="mobile-menu-label">Tema</span></button>
+    <button class="zoom-readout" type="button" data-tooltip="Restablecer vista" aria-label={`Zoom ${zoomPercent}%. Restablecer vista`} onclick={() => { viewport?.resetView?.(); mobileMenuOpen = false; }}><b>{zoomPercent}%</b><span class="mobile-menu-label">Restablecer vista</span></button>
+    <button type="button" data-tooltip="Acerca del proyecto" aria-label="Abrir acerca del proyecto" onclick={openAbout}><Info size={18}/><span class="mobile-menu-label">Acerca del proyecto</span></button>
   </nav>
 
   {#if hudPanel === 'filter'}
@@ -273,7 +320,6 @@
     />
   {/if}
   {#if hudPanel === 'legend'}<LegendPanel onclose={() => hudPanel = null}/>{/if}
-  {#if hudPanel === 'data'}<DataPanel displayed={displayedCount} unique={uniqueCount} observed={observedCount} hypothetical={hypotheticalCount} {antimatter} onclose={() => hudPanel = null}/>{/if}
   {#if hudPanel === 'layers'}<LayersPanel {layers} ontoggle={toggleLayer} onclose={() => hudPanel = null}/>{/if}
 
   {#if selected}
@@ -281,4 +327,5 @@
   {/if}
   {#if showFormula}<FormulaAtlas onclose={() => showFormula = false}/>{/if}
   {#if showEncyclopedia}<EncyclopediaModal initialId={encyclopediaChapter} onclose={() => showEncyclopedia = false}/>{/if}
+  {#if showAbout}<AboutModal onclose={() => showAbout = false}/>{/if}
 </main>

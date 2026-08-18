@@ -8,6 +8,7 @@
     particles,
     compositeParticles = [],
     forceEntities = [],
+    biologyObjects = [],
     technologyObjects = [],
     theoryParticles = [],
     frontierObjects = [],
@@ -25,6 +26,7 @@
     particles: Particle[];
     compositeParticles?: Particle[];
     forceEntities?: Particle[];
+    biologyObjects?: Particle[];
     technologyObjects?: Particle[];
     theoryParticles?: Particle[];
     frontierObjects?: Particle[];
@@ -57,7 +59,7 @@
   const cardTopPadding = 76;
   const standardCardTopPadding = 150;
   const zoneBottomPadding = 54;
-  const technologyTop = 50;
+  const biologyTop = 50;
   const zoneHeight = (rows: number, topPadding = cardTopPadding): number => topPadding + (Math.max(1, rows) - 1) * rowGap + cardHeight + zoneBottomPadding;
   const maxRow = (items: Particle[]): number => Math.max(1, ...items.map((item) => item.row));
   const worldWidth = $derived(antimatter ? sideWidth * 2 + mirrorGap : sideWidth);
@@ -66,6 +68,9 @@
   const hasComposites = $derived(compositeParticles.length > 0);
   const hasForces = $derived(forceEntities.length > 0);
   const hasTechnology = $derived(technologyObjects.length > 0);
+  const hasBiology = $derived(biologyObjects.length > 0);
+  const biologyHeight = $derived(hasBiology ? zoneHeight(maxRow(biologyObjects)) : 0);
+  const technologyTop = $derived(hasBiology ? biologyTop + biologyHeight + zoneGap : 50);
   const technologyHeight = $derived(hasTechnology ? zoneHeight(maxRow(technologyObjects)) : 0);
   const atomItems = $derived(compositeParticles.filter((particle) => particle.zone === 'atom'));
   const compositeItems = $derived(compositeParticles.filter((particle) => particle.zone === 'composite'));
@@ -75,7 +80,7 @@
   const standardHeight = zoneHeight(4, standardCardTopPadding);
   const beyondHeight = $derived(hasBeyond ? zoneHeight(maxRow(theoryParticles)) : 0);
   const planckHeight = $derived(hasStrings ? zoneHeight(maxRow(frontierObjects)) : 0);
-  const atomTop = $derived(hasTechnology ? technologyTop + technologyHeight + zoneGap : 70);
+  const atomTop = $derived(hasTechnology ? technologyTop + technologyHeight + zoneGap : hasBiology ? biologyTop + biologyHeight + zoneGap : 70);
   const compositeTop = $derived(atomTop + (atomHeight ? atomHeight + zoneGap : 0));
   const forcesTop = $derived(compositeTop + (compositeHeight ? compositeHeight + zoneGap : 0));
   const standardTop = $derived(forcesTop + (forcesHeight ? forcesHeight + zoneGap : 0));
@@ -83,13 +88,14 @@
   const planckTop = $derived(beyondTop + (hasBeyond ? beyondHeight + zoneGap : 0));
   const worldHeight = $derived(hasStrings ? planckTop + planckHeight + 40 : hasBeyond ? beyondTop + beyondHeight + 40 : standardTop + standardHeight + 40);
   const visibleNodes = $derived([
+    ...biologyObjects,
     ...technologyObjects,
     ...compositeParticles,
     ...forceEntities,
     ...particles,
     ...(showTheory ? [...theoryParticles, ...frontierObjects] : [])
   ]);
-  const mirrorNodes = $derived(visibleNodes.filter((particle) => particle.family !== 'technology'));
+  const mirrorNodes = $derived(visibleNodes.filter((particle) => !['technology', 'biology'].includes(particle.family)));
   const selectedMirror = $derived(selectedKey.startsWith('anti:'));
   const selectedId = $derived(selectedKey.replace(/^anti:/, ''));
   const selected = $derived(visibleNodes.find((item) => item.id === selectedId));
@@ -103,7 +109,11 @@
     const hadronBase = hasComposites ? compositeTop + 90 : standardTop - 330;
     const elementalBase = standardTop + standardCardTopPadding + 30;
     const planckBase = hasStrings ? planckTop + 110 : worldHeight + 420;
+    const biologyBase = hasBiology ? biologyTop + 105 : hasTechnology ? technologyTop - 360 : atomicBase - 420;
     const positions = [
+      biologyBase,
+      biologyBase + 182,
+      biologyBase + 364,
       hasTechnology ? technologyTop + technologyHeight / 2 : atomicBase - 120,
       atomicBase,
       atomicBase + 62,
@@ -127,6 +137,7 @@
   function positionFor(particle: Particle, mirror = false): { x: number; y: number } {
     const offset = mirror ? sideWidth + mirrorGap : 0;
     const x = offset + xStart + (particle.column - 1) * columnGap;
+    if (particle.zone === 'biology') return { x, y: biologyTop + cardTopPadding + (particle.row - 1) * rowGap };
     if (particle.zone === 'technology') return { x, y: technologyTop + cardTopPadding + (particle.row - 1) * rowGap };
     if (particle.zone === 'atom') return { x, y: atomTop + cardTopPadding + (particle.row - 1) * rowGap };
     if (particle.zone === 'composite') return { x, y: compositeTop + cardTopPadding + (particle.row - 1) * rowGap };
@@ -137,6 +148,7 @@
   }
 
   function boundsFor(zone: ParticleZone | 'all'): { y: number; height: number } {
+    if (zone === 'biology') return { y: biologyTop, height: biologyHeight || 250 };
     if (zone === 'technology') return { y: technologyTop, height: technologyHeight || 250 };
     if (zone === 'atom') return { y: atomTop, height: atomHeight };
     if (zone === 'composite') return { y: compositeTop, height: compositeHeight };
@@ -151,11 +163,11 @@
     if (!viewport) return;
     const bounds = boundsFor(zone);
     const rect = viewport.getBoundingClientRect();
-    const rulerWidth = rect.width > 780 ? 96 : 74;
+    const rulerWidth = rect.width > 900 ? 96 : rect.width > 560 ? 62 : 50;
     const availableWidth = Math.max(160, rect.width - rulerWidth - 34);
     const availableHeight = rect.height - 118;
     const targetHeight = zone === 'all' ? worldHeight : Math.min(bounds.height, worldHeight - bounds.y);
-    const scale = clamp(Math.min(availableWidth / worldWidth, availableHeight / targetHeight), 0.28, 1.45);
+    const scale = clamp(Math.min(availableWidth / worldWidth, availableHeight / targetHeight), rect.width <= 780 ? 0.18 : 0.28, 1.45);
     camera = {
       scale,
       x: rulerWidth + (availableWidth - worldWidth * scale) / 2,
@@ -176,7 +188,7 @@
     const rect = viewport.getBoundingClientRect();
     const px = clientX - rect.left;
     const py = clientY - rect.top;
-    const next = clamp(camera.scale * factor, 0.25, 2.8);
+    const next = clamp(camera.scale * factor, viewport.clientWidth <= 780 ? 0.18 : 0.25, 2.8);
     const worldX = (px - camera.x) / camera.scale;
     const worldY = (py - camera.y) / camera.scale;
     camera = { scale: next, x: px - worldX * next, y: py - worldY * next };
@@ -275,8 +287,9 @@
     {#each antimatter ? [false, true] : [false] as mirror}
       {@const offset = mirror ? sideWidth + mirrorGap : 0}
       <section class:mirror class="matter-universe" style={`left:${offset}px;width:${sideWidth}px;height:${worldHeight}px;`} aria-label={mirror ? 'Antimateria' : 'Materia'}>
-        <header class="universe-heading" style="top:12px;"><span>{mirror ? 'UNIVERSO ESPEJO' : 'ESTRUCTURA DE LA MATERIA'}</span><strong>{mirror ? 'antimateria y equivalentes autoconjugados' : 'de lo compuesto a lo elemental'}</strong></header>
+        <header class="universe-heading" style="top:12px;"><span>{mirror ? 'ANTIMATERIA' : 'ESTRUCTURA DE LA MATERIA'}</span><strong>{mirror ? 'antipartículas y equivalentes autoconjugados' : 'de lo compuesto a lo elemental'}</strong></header>
 
+        {#if hasBiology && !mirror}<div class="zone-panel biology-zone" style={`top:${biologyTop}px;height:${biologyHeight}px;`}><span class="zone-scale">≈10⁻⁶–10⁻⁹ m</span><b>REFERENCIAS BIOLÓGICAS</b><small>células, virus y biomoléculas para comparar escalas; no son partículas del modelo</small></div>{/if}
         {#if hasTechnology && !mirror}<div class="zone-panel technology-zone" style={`top:${technologyTop}px;height:${technologyHeight}px;`}><span class="zone-scale">≈10⁻⁹–10⁻¹⁰ m</span><b>REFERENCIAS TECNOLÓGICAS</b><small>dispositivos experimentales para comparar escalas; no son partículas</small></div>{/if}
         {#if hasComposites}<div class="zone-panel atom-zone" style={`top:${atomTop}px;height:${atomHeight}px;`}><span class="zone-scale">≈10⁻¹⁰ m</span><b>ÁTOMO</b><small>estructura didáctica general: protones, neutrones y electrones</small></div>{/if}
         {#if hasComposites}<div class="zone-panel composite-zone" style={`top:${compositeTop}px;height:${compositeHeight}px;`}><span class="zone-scale">≈10⁻¹⁴–10⁻¹⁵ m</span><b>NÚCLEOS, NUCLEONES Y HADRONES</b><small>bariones, mesones y familias exóticas ligadas por la interacción fuerte</small></div>{/if}
@@ -313,7 +326,7 @@
           {@const to = positionFor(target, selectedMirror)}
           <path class:composition-link={Boolean(selected.constituents?.length)} d={`M ${from.x + cardWidth / 2} ${from.y + cardHeight / 2} C ${(from.x + to.x) / 2 + cardWidth / 2} ${from.y + cardHeight / 2}, ${(from.x + to.x) / 2 + cardWidth / 2} ${to.y + cardHeight / 2}, ${to.x + cardWidth / 2} ${to.y + cardHeight / 2}`} />
         {/each}
-        {#if antimatter && selected.family !== 'technology'}
+        {#if antimatter && !['technology', 'biology'].includes(selected.family)}
           {@const origin = positionFor(selected, selectedMirror)}
           {@const counterpart = positionFor(selected, !selectedMirror)}
           <path class="mirror-link" d={`M ${origin.x + cardWidth / 2} ${origin.y + cardHeight / 2} C ${sideWidth + mirrorGap / 2} ${origin.y - 70}, ${sideWidth + mirrorGap / 2} ${counterpart.y - 70}, ${counterpart.x + cardWidth / 2} ${counterpart.y + cardHeight / 2}`} />

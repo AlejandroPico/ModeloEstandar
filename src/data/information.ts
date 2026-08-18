@@ -1,10 +1,11 @@
-import { compositeParticles, frontierObjects, interactionLabels, particles, technologyObjects, theoryParticles } from './particles';
+import { biologyObjects, compositeParticles, frontierObjects, interactionLabels, particles, technologyObjects, theoryParticles } from './particles';
 import { forceEntities } from './forces';
 import { encyclopediaChapters, type ManualChapter, type ManualSection } from './science';
 import type { Interaction, Particle } from './types';
 
 export const catalogParticles: Particle[] = [
   ...particles,
+  ...biologyObjects,
   ...technologyObjects,
   ...forceEntities,
   ...compositeParticles,
@@ -21,7 +22,8 @@ const familyName: Record<Particle['family'], string> = {
   force: 'interacción fundamental',
   theory: 'entidad hipotética',
   string: 'objeto extendido teórico',
-  technology: 'referencia tecnológica'
+  technology: 'referencia tecnológica',
+  biology: 'referencia biológica'
 };
 
 const groupName: Record<Particle['family'], string> = {
@@ -33,7 +35,8 @@ const groupName: Record<Particle['family'], string> = {
   force: 'Interacciones',
   theory: 'Hipótesis y candidatos',
   string: 'Cuerdas y branas',
-  technology: 'Referencias de escala'
+  technology: 'Referencias de escala',
+  biology: 'Referencias de escala'
 };
 
 const interactionExplanation: Record<Interaction, string> = {
@@ -51,6 +54,7 @@ function interactionReport(particle: Particle): string {
 }
 
 function detectionReport(particle: Particle): string {
+  if (particle.family === 'biology') return 'La escala procede de microscopía, difracción, criomicroscopía electrónica y modelos estructurales contrastados. No se trata de detectar una partícula nueva, sino de medir la extensión de un sistema molecular o celular definido.\n\nEl intervalo mostrado es orientativo: la forma, el estado de compactación, el organismo y el método de medida pueden cambiar la dimensión relevante.';
   if (particle.family === 'technology') return `La ficha compara una dimensión funcional publicada —por ejemplo, longitud de puerta o transferencia— con escalas atómicas. Esa cifra no describe el tamaño completo del dispositivo ni equivale al nombre comercial de un nodo de fabricación.\n\nSe trata de una demostración experimental de ingeniería, no de una partícula ni de una capa adicional de materia.`;
   if (particle.evidence === 'hypothetical') return `No se ha reconstruido una señal aceptada para ${particle.name}. Los experimentos buscan productos visibles, energía o momento faltantes, resonancias, desviaciones angulares o alteraciones de tasas compatibles con ${particle.theory ?? 'el modelo que la predice'}. Cuando no aparece una señal, se publican límites sobre masas, vidas medias y acoplamientos.\n\nLa ausencia de detección no demuestra que toda versión de la idea sea imposible: restringe una región concreta de parámetros y depende de la energía, luminosidad, aceptación del detector y supuestos usados en el análisis.`;
   if (particle.family === 'composite') return `Los sistemas compuestos se identifican mediante masa invariante, carga, spin, vida media, productos de reacción y patrones espectroscópicos. La dispersión con sondas de longitud de onda pequeña permite medir factores de forma y resolver distribuciones internas.\n\nLa composición no se obtiene abriendo físicamente el objeto, sino comprobando que un modelo con constituyentes reproduce simultáneamente las secciones eficaces, los cocientes de desintegración y la dependencia con la transferencia de momento.`;
@@ -66,6 +70,7 @@ function historyReport(particle: Particle): string {
 }
 
 function compositionReport(particle: Particle): string {
+  if (particle.family === 'biology') return particle.composition + '\n\nLa capa usa estas estructuras sólo como comparadores de escala. ADN, proteínas, ribosomas, virus, cromosomas y células están hechos de átomos y campos ya descritos por la física; sus propiedades biológicas emergen de su organización colectiva.';
   const quantitative = particle.constituentDetails?.length
     ? `\n\nDesglose explícito: ${particle.constituentDetails.map((item) => `${item.count} × ${item.label} (${item.symbol})`).join('; ')}. ${particle.valenceFormula ? `La relación de composición usada por la ficha es ${particle.valenceFormula}.` : ''}`
     : '';
@@ -98,10 +103,11 @@ function colorReport(particle: Particle, mirror: boolean): string {
 }
 
 function antimatterReport(particle: Particle, mirror: boolean): string {
-  if (particle.family === 'technology') return 'No se genera un “antitransistor” en el universo espejo. La función de esta ficha es únicamente comparar una escala de ingeniería con las escalas físicas del atlas.';
+  if (particle.family === 'biology') return 'La capa de antimateria no fabrica copias biológicas de referencia. Aunque los constituyentes elementales poseen antipartículas, una “antibacteria” o un “anticromosoma” no es una especie biológica observada y no se añade como duplicado didáctico.';
+  if (particle.family === 'technology') return 'No se genera un “antitransistor” en la vista de antimateria. La función de esta ficha es únicamente comparar una escala de ingeniería con las escalas físicas del atlas.';
   if (mirror) return `${particle.antiparticleName} posee la misma masa y el mismo spin que ${particle.name}, mientras se invierten las cargas aditivas pertinentes. Su símbolo en el atlas es ${particle.antiparticle}.\n\nNo es una copia decorativa: corresponde a un estado físico distinto siempre que la partícula no sea autoconjugada. Sus canales deben respetar las mismas leyes de conservación bajo conjugación de carga, con las asimetrías permitidas por violación CP.`;
-  if (particle.selfConjugate) return `${particle.name} se trata en el atlas como estado autoconjugado: su antipartícula no constituye una especie separada. Esto no significa que carezca de todos los números cuánticos, sino que la operación partícula–antipartícula devuelve el mismo tipo de cuanto.\n\nEn el universo espejo se repite para conservar la correspondencia visual, pero no debe contarse como una entidad física adicional.`;
-  return `La antipartícula asociada es ${particle.antiparticleName}, con símbolo ${particle.antiparticle}. Conserva masa y spin, mientras invierte las cargas aditivas apropiadas.\n\nEl atlas puede desplegar este estado en la estructura espejo. Materia y antimateria no significan masa positiva y negativa: ambas transportan energía positiva y responden gravitatoriamente según las pruebas disponibles.`;
+  if (particle.selfConjugate) return `${particle.name} se trata en el atlas como estado autoconjugado: su antipartícula no constituye una especie separada. Esto no significa que carezca de todos los números cuánticos, sino que la operación partícula–antipartícula devuelve el mismo tipo de cuanto.\n\nEn la vista comparativa de antimateria se repite para conservar la correspondencia visual, pero no debe contarse como una entidad física adicional.`;
+  return `La antipartícula asociada es ${particle.antiparticleName}, con símbolo ${particle.antiparticle}. Conserva masa y spin, mientras invierte las cargas aditivas apropiadas.\n\nEl atlas puede desplegar este estado en la vista comparativa de antimateria. Materia y antimateria no significan masa positiva y negativa: ambas transportan energía positiva y responden gravitatoriamente según las pruebas disponibles.`;
 }
 
 function formulaReport(particle: Particle): string {
@@ -135,7 +141,7 @@ function sectionsFor(particle: Particle, mirror: boolean): ManualSection[] {
     { eyebrow: 'INFORME · 12', title: 'Papel dentro de la física', text: `${particle.role}\n\nSu importancia se entiende conectando la ficha con las entidades iluminadas en el lienzo. Esas conexiones expresan composición, mediación o participación en una interacción; no representan trayectorias espaciales literales.` },
     { eyebrow: 'INFORME · 13', title: 'Estado de la evidencia', text: `${particle.evidence === 'observed' ? 'La entidad o interacción cuenta con evidencia experimental aceptada.' : 'La entidad no ha sido observada y se presenta como hipótesis, candidato o construcción teórica.'} ${particle.confidence ?? ''}\n\nLa etiqueta epistemológica tiene prioridad sobre la estética: ninguna animación, fórmula o simetría visual convierte una predicción en observación.` },
     { eyebrow: 'INFORME · 14', title: 'Preguntas abiertas y medidas futuras', text: openQuestions(particle) },
-    { eyebrow: 'INFORME · 15', title: 'Cómo leer esta ficha en el atlas', text: `${particle.note ?? 'El símbolo y la ilustración son convenciones didácticas; no constituyen una fotografía ni fijan una forma clásica.'}\n\nAl aumentar el zoom aparecen propiedades y marcadores de interacción. Al seleccionar la ficha se resaltan constituyentes, estructuras que la contienen o mediadores relacionados. El modo espejo añade ${particle.selfConjugate ? 'la misma especie autoconjugada' : particle.antiparticleName}.` },
+    { eyebrow: 'INFORME · 15', title: 'Cómo leer esta ficha en el atlas', text: `${particle.note ?? 'El símbolo y la ilustración son convenciones didácticas; no constituyen una fotografía ni fijan una forma clásica.'}\n\nAl aumentar el zoom aparecen propiedades y marcadores de interacción. Al seleccionar la ficha se resaltan constituyentes, estructuras que la contienen o mediadores relacionados. La vista de antimateria añade ${particle.selfConjugate ? 'la misma especie autoconjugada' : particle.antiparticleName}.` },
     { eyebrow: 'INFORME · 16', title: 'Fuentes, precisión y trazabilidad', text: `La ficha enlaza ${particle.sources.length} fuente${particle.sources.length === 1 ? '' : 's'} de referencia. Los valores se muestran de forma divulgativa y pueden estar redondeados.\n\nPara trabajo técnico deben consultarse la definición del observable, la incertidumbre, el esquema de renormalización cuando proceda, la fecha de la revisión y las tablas originales de la colaboración o del Particle Data Group.` }
   ];
 }

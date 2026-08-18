@@ -6,7 +6,8 @@
     ['quark','Quarks','Fermiones con carga de color'], ['lepton','Leptones','Electrón, muón, tau y neutrinos'],
     ['gauge','Bosones gauge','Mediadores de las interacciones'], ['scalar','Higgs','Sector escalar'],
     ['theory','Hipótesis','Predicciones no observadas'], ['string','Cuerdas y branas','Objetos extendidos teóricos'],
-    ['technology','Referencia tecnológica','Comparación de escala; no es una partícula']
+    ['technology','Referencia tecnológica','Comparación de escala; no es una partícula'],
+    ['biology','Referencia biológica','Biomoléculas, virus y células como escala']
   ];
 </script>
 

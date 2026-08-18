@@ -33,6 +33,8 @@
       ? 'ANTIMATERIA'
       : particle.evidence === 'hypothetical'
         ? 'HIPÓTESIS'
+        : particle.family === 'biology'
+          ? 'BIOLOGÍA · ESCALA'
         : particle.family === 'technology'
           ? 'TECNOLOGÍA'
         : particle.family === 'force'

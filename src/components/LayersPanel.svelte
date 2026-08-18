@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Atom, Boxes, CircleGauge, Copy, Cpu, MoonStar, Orbit, Radar, Sparkles, Waves, X } from '@lucide/svelte';
+  import { Atom, Boxes, CircleGauge, Cpu, Dna, MoonStar, Orbit, Radar, Sparkles, Split, Waves, X } from '@lucide/svelte';
   import type { LayerId } from '../data/types';
 
   let { layers, ontoggle, onclose }: { layers: Record<LayerId, boolean>; ontoggle: (layer: LayerId) => void; onclose: () => void } = $props();
@@ -7,7 +7,7 @@
     { title: 'Estructura observada', items: [
       { id: 'composites' as const, label: 'Átomo y hadrones', detail: 'Átomo general, nucleones, mesones y hadrones exóticos', icon: Atom },
       { id: 'forces' as const, label: 'Cuatro interacciones', detail: 'Fuerte, electromagnética, débil y gravedad', icon: CircleGauge },
-      { id: 'antimatter' as const, label: 'Universo espejo', detail: 'Duplica exactamente las capas visibles', icon: Copy }
+      { id: 'antimatter' as const, label: 'Antimateria', detail: 'Muestra antipartículas y estados conjugados conocidos', icon: Split }
     ]},
     { title: 'Más allá · no observado', items: [
       { id: 'susy' as const, label: 'Supersimetría', detail: 'Neutralinos, charginos, gluinos y sfermiones', icon: Sparkles },
@@ -17,7 +17,8 @@
       { id: 'strings' as const, label: 'Cuerdas y branas', detail: 'Cuerdas, D-branas, M2, M5 y defectos', icon: Waves }
     ]},
     { title: 'Referencias de escala', items: [
-      { id: 'technology' as const, label: 'Nanoelectrónica experimental', detail: 'Comparador opcional; no añade partículas al modelo', icon: Cpu }
+      { id: 'technology' as const, label: 'Nanoelectrónica experimental', detail: 'Comparador opcional; no añade partículas al modelo', icon: Cpu },
+      { id: 'biology' as const, label: 'Referencias biológicas', detail: 'ADN, proteínas, ribosomas, virus, cromosomas y células', icon: Dna }
     ]}
   ];
 </script>
@@ -37,5 +38,5 @@
       {/each}
     </section>
   {/each}
-  <footer><Boxes size={15}/><span>El borde discontinuo identifica hipótesis. La tecnología aparece como comparador, nunca como partícula.</span></footer>
+  <footer><Boxes size={15}/><span>El borde discontinuo identifica hipótesis. Tecnología y biología son comparadores de escala, nunca partículas del modelo.</span></footer>
 </aside>

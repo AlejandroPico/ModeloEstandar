@@ -8,7 +8,7 @@
   let tab = $state<'summary' | 'properties' | 'structure' | 'interactions' | 'history' | 'formula' | 'sources'>('summary');
   const visibleSymbol = $derived(antimatter && !particle.selfConjugate ? particle.antiparticle : particle.symbol);
   const visibleName = $derived(antimatter && !particle.selfConjugate ? particle.antiparticleName : particle.name);
-  const familyLabels = { quark: 'quark elemental', lepton: 'leptón elemental', gauge: 'bosón gauge', scalar: 'bosón escalar', composite: 'partícula compuesta', force: 'interacción fundamental', theory: 'partícula hipotética', string: 'objeto extendido teórico', technology: 'referencia tecnológica' } as const;
+  const familyLabels = { quark: 'quark elemental', lepton: 'leptón elemental', gauge: 'bosón gauge', scalar: 'bosón escalar', composite: 'partícula compuesta', force: 'interacción fundamental', theory: 'partícula hipotética', string: 'objeto extendido teórico', technology: 'referencia tecnológica', biology: 'referencia biológica' } as const;
   const tabs = [
     { id: 'summary', label: 'Resumen', icon: BookOpen },
     { id: 'properties', label: 'Propiedades', icon: Scale },
@@ -120,6 +120,7 @@
   }
 
   function historyContext(): string {
+    if (particle.family === 'biology') return 'Esta referencia procede de microscopía, difracción y biología estructural. Se incorpora como comparador de tamaño, no como una ampliación del inventario de partículas elementales.';
     if (particle.family === 'technology') return 'Esta referencia procede de demostraciones experimentales de dispositivos. Se incluye para comparar órdenes de magnitud, sin convertir una estructura fabricada en una partícula ni en una capa fundamental de materia.';
     if (particle.evidence === 'hypothetical') return `La ficha procede de ${particle.theory ?? 'un marco teórico todavía no confirmado'}. Sus propiedades son predicciones dependientes del modelo y los experimentos buscan firmas compatibles, no una imagen directa del objeto.`;
     if (particle.family === 'composite') return 'Su identificación combina espectros, productos de reacción y medidas de dispersión. La comprensión moderna de su estructura llegó por etapas: primero se reconoció el estado compuesto y después se resolvió su dinámica interna.';
@@ -128,6 +129,7 @@
   }
 
   function measurementText(): string {
+    if (particle.family === 'biology') return 'La cifra representa una dimensión concreta —diámetro, longitud o intervalo típico— y puede variar con la especie, el plegamiento, el estado de compactación y el método experimental.';
     if (particle.family === 'technology') return 'Se distinguen dimensiones funcionales concretas —por ejemplo, longitud de puerta, canal o transferencia— del tamaño total del dispositivo. El dato tampoco equivale automáticamente al nombre comercial de un nodo de fabricación.';
     if (particle.evidence === 'hypothetical') return `No existe detección confirmada. El estado actual se expresa mediante límites experimentales y regiones de parámetros excluidas: ${particle.confidence ?? particle.lifetime}.`;
     if (particle.family === 'composite') return 'Se miden masa, carga, spin, vida media, radios efectivos, factores de forma y canales de desintegración o reacción. La dispersión permite sondear constituyentes y distribuciones internas.';
@@ -136,6 +138,7 @@
   }
 
   function formulaReading(): string {
+    if (particle.family === 'biology') return 'La expresión es una notación de orden de magnitud para comparar escalas. No es una ley biológica ni implica que todas las estructuras de esa clase tengan el mismo tamaño.';
     if (particle.family === 'technology') return 'La relación resume una magnitud de ingeniería del dispositivo. Su escala sirve como comparación visual, pero no describe una partícula elemental ni una nueva ley fundamental.';
     if (particle.family === 'composite') return 'La expresión resume el contenido de valencia o una relación característica. No reemplaza la dinámica completa del estado ligado, que incluye campos, energía de enlace y fluctuaciones cuánticas.';
     if (particle.id === 'strong-force') return 'Es la densidad lagrangiana de QCD. El primer término describe la dinámica y auto-interacción del campo gluónico; la suma describe cada sabor de quark, su masa y su acoplamiento mediante la derivada covariante.';

@@ -14,6 +14,12 @@ const ATLAS_DARK_MESONS: SourceLink = { label: 'ATLAS · Direct search for dark 
 const ATLAS_LHCP2024: SourceLink = { label: 'ATLAS · Exotic new-physics searches at LHCP 2024', url: 'https://atlas.cern/Updates/News/Summary-LHCP-2024' };
 const CERN_MOEDAL: SourceLink = { label: 'CERN · MoEDAL-MAPP exotic-particle programme', url: 'https://home.cern/science/experiments/moedal-mapp/' };
 const NATURE_ATOMIC_TRANSISTOR: SourceLink = { label: 'Nature Communications · Atomic transistors', url: 'https://www.nature.com/articles/s41467-022-32582-9' };
+const NIH_CHROMATIN: SourceLink = { label: 'NIH/NCBI · Cromosomas y empaquetamiento del ADN', url: 'https://www.ncbi.nlm.nih.gov/books/NBK26834/' };
+const NIH_PROTEIN_SIZE: SourceLink = { label: 'NIH/PMC · Tamaño de proteínas a escala nanométrica', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC3055910/' };
+const RCSB_RIBOSOME: SourceLink = { label: 'RCSB PDB · Estructura del ribosoma humano 80S', url: 'https://www.rcsb.org/structure/6QZP' };
+const RCSB_VIRUSES: SourceLink = { label: 'RCSB PDB-101 · Estructuras y tamaños de virus', url: 'https://pdb101.rcsb.org/learn/flyers-posters-and-calendars/flyer/virus-structures' };
+const NHGRI_BACTERIA: SourceLink = { label: 'NHGRI · Bacterias', url: 'https://www.genome.gov/genetics-glossary/Bacteria' };
+const NHGRI_DNA_SCALE: SourceLink = { label: 'NHGRI · Diámetro nanométrico del ADN', url: 'https://www.genome.gov/27550069/2012-release-new-nihnhgri-grants-to-harness-nanoscale-technologies-to-cut-dna-sequencing-costs' };
 
 const common = { evidence: 'observed' as const, sources: [PDG, CERN_SM] };
 const quarkColor = {
@@ -438,6 +444,51 @@ export const technologyObjects: Particle[] = [
     summary: 'Referencia tecnológica experimental para comparar la escala atómica con una puerta de transistor de longitud inferior a un nanómetro.', composition: 'Utiliza materiales bidimensionales y electrodos atómicamente finos. La dimensión subnanométrica corresponde a la puerta o longitud efectiva, no al tamaño completo del transistor ni a un nodo comercial.',
     role: 'Sirve como comparador de escala y muestra cómo la ingeniería se aproxima a dimensiones atómicas.', decays: 'No decae como una partícula; conmuta corriente mediante control electrostático y transporte cuántico.',
     formula: 'L_g<1\\,\\mathrm{nm}', note: 'Los nombres comerciales de nodos no equivalen directamente a una dimensión física. Esta ficha representa resultados de laboratorio, no producción industrial general.', sources: [NATURE_ATOMIC_TRANSISTOR]
+  }
+];
+
+export const biologyObjects: Particle[] = [
+  {
+    id: 'bacterium-scale', symbol: '≈1 µm', name: 'bacteria', englishName: 'bacterium', family: 'biology', zone: 'biology', layer: 'biology', row: 1, column: 1,
+    mass: 'Variable; célula completa', charge: 'Carga neta dependiente del medio', spin: 'No aplica', interactions: ['electromagnetic', 'gravity'], evidence: 'observed', discovered: '1676 · observación microscópica', lifetime: 'Organismo unicelular; variable',
+    antiparticle: '≈1 µm', antiparticleName: 'bacteria', selfConjugate: true, visual: 'bacterium', scale: '≈0,5–5 µm; gran variación entre especies', constituents: ['atom'], constituentSummary: 'Célula procariota formada por biomoléculas, agua e iones',
+    summary: 'Referencia de un organismo unicelular completo, millones de veces mayor que un protón.', composition: 'Membrana, citoplasma, ribosomas, material genético, proteínas, lípidos, agua e iones organizados como una célula capaz de mantener metabolismo y reproducción.',
+    role: 'Marca el salto desde complejos moleculares hasta una unidad inequívocamente viva.', decays: 'No decae como una partícula; crece, se divide y finalmente pierde viabilidad mediante procesos biológicos.', formula: 'L_{\\mathrm{bacteria}}\\sim10^{-6}\\,\\mathrm m', note: 'El intervalo es orientativo: las bacterias abarcan tamaños y formas muy diversos.', sources: [NHGRI_BACTERIA]
+  },
+  {
+    id: 'chromosome-scale', symbol: '1–10 µm', name: 'cromosoma condensado', englishName: 'condensed chromosome', family: 'biology', zone: 'biology', layer: 'biology', row: 1, column: 4,
+    mass: 'Macromolécula empaquetada', charge: 'ADN polianiónico compensado por proteínas e iones', spin: 'No aplica', interactions: ['electromagnetic', 'gravity'], evidence: 'observed', discovered: 'Siglo XIX · microscopía celular', lifetime: 'Estructura dinámica del ciclo celular',
+    antiparticle: '1–10 µm', antiparticleName: 'cromosoma condensado', selfConjugate: true, visual: 'chromosome', scale: 'Orden micrométrico en metafase; depende del cromosoma', constituents: ['atom'], constituentSummary: 'Una molécula de ADN asociada a histonas y otras proteínas',
+    summary: 'Referencia micrométrica del empaquetamiento extremo de una molécula de ADN con proteínas.', composition: 'Cromatina altamente condensada: ADN enrollado y plegado con histonas y proteínas estructurales. No es una partícula elemental ni una molécula de tamaño fijo.',
+    role: 'Muestra cómo una cadena molecular macroscópicamente larga puede compactarse dentro del núcleo celular.', decays: 'Se descondensa y reorganiza durante el ciclo celular; su ADN puede fragmentarse por procesos químicos o enzimáticos.', formula: 'L_{\\mathrm{cromosoma}}\\sim10^{-6}\\text{–}10^{-5}\\,\\mathrm m', note: 'La longitud visible cambia con el grado de condensación y con el cromosoma concreto.', sources: [NIH_CHROMATIN]
+  },
+  {
+    id: 'virus-scale', symbol: '30–500 nm', name: 'virión', englishName: 'virion', family: 'biology', zone: 'biology', layer: 'biology', row: 2, column: 1,
+    mass: 'Variable; ensamblaje macromolecular', charge: 'Dependiente de cápside, envoltura y medio', spin: 'No aplica', interactions: ['electromagnetic', 'gravity'], evidence: 'observed', discovered: 'Finales del siglo XIX · virología', lifetime: 'Persistencia ambiental variable',
+    antiparticle: '30–500 nm', antiparticleName: 'virión', selfConjugate: true, visual: 'virus', scale: '≈30–500 nm en numerosos virus; existen excepciones', constituents: ['atom'], constituentSummary: 'Genoma + cápside y, en algunos virus, envoltura',
+    summary: 'Partícula biológica infecciosa de escala nanométrica, mucho mayor que una proteína pero menor que la mayoría de células.', composition: 'Ácido nucleico protegido por proteínas y, en ciertos casos, una envoltura lipídica. Carece de metabolismo autónomo y sólo se replica usando una célula huésped.',
+    role: 'Sirve como referencia entre máquinas moleculares y células; su consideración como “vivo” depende de la definición biológica adoptada.', decays: 'Se inactiva por degradación del genoma, desnaturalización de proteínas o alteración de la envoltura.', formula: 'D_{\\mathrm{virion}}\\sim10^{-8}\\text{–}10^{-7}\\,\\mathrm m', note: 'El intervalo no cubre toda la diversidad viral; algunos viriones son menores, mayores o filamentosos.', sources: [RCSB_VIRUSES]
+  },
+  {
+    id: 'ribosome-scale', symbol: '≈25 nm', name: 'ribosoma', englishName: 'ribosome', family: 'biology', zone: 'biology', layer: 'biology', row: 2, column: 3,
+    mass: '≈2,5–4,3 MDa según organismo y estado', charge: 'Compleja; rica en ARN aniónico', spin: 'No aplica', interactions: ['electromagnetic', 'gravity'], evidence: 'observed', discovered: 'Década de 1950 · microscopía electrónica', lifetime: 'Complejo molecular reutilizable',
+    antiparticle: '≈25 nm', antiparticleName: 'ribosoma', selfConjugate: true, visual: 'ribosome', scale: '≈20–30 nm', constituents: ['atom'], constituentSummary: 'ARN ribosómico + decenas de proteínas',
+    summary: 'Máquina molecular que traduce ARN mensajero y ensambla proteínas.', composition: 'Dos subunidades formadas por ARN ribosómico y proteínas. Es un complejo molecular funcional, pero no una célula ni un organismo independiente.',
+    role: 'Conecta la escala molecular con una función biológica central: la síntesis de proteínas.', decays: 'Sus componentes se degradan y reciclan mediante rutas celulares; no posee desintegración radiactiva característica.', formula: 'D_{\\mathrm{ribosoma}}\\sim2.5\\times10^{-8}\\,\\mathrm m', note: 'El tamaño y la masa difieren entre ribosomas bacterianos, arqueanos y eucariotas.', sources: [RCSB_RIBOSOME]
+  },
+  {
+    id: 'protein-scale', symbol: '≈4–10 nm', name: 'proteína globular', englishName: 'globular protein', family: 'biology', zone: 'biology', layer: 'biology', row: 2, column: 5,
+    mass: 'Desde kDa hasta complejos de muchos MDa', charge: 'Depende de secuencia, pH y medio', spin: 'No aplica como descriptor colectivo', interactions: ['electromagnetic', 'gravity'], evidence: 'observed', discovered: 'Siglos XIX–XX · bioquímica y estructura', lifetime: 'Desde segundos hasta años según proteína y entorno',
+    antiparticle: '≈4–10 nm', antiparticleName: 'proteína globular', selfConjugate: true, visual: 'protein', scale: '≈4–10 nm como referencia; enorme diversidad', constituents: ['atom'], constituentSummary: 'Cadena de aminoácidos plegada',
+    summary: 'Referencia del tamaño de una proteína compacta corriente, como la hemoglobina de unos 5 nm.', composition: 'Una o varias cadenas de aminoácidos plegadas por interacciones electromagnéticas. Su forma y tamaño dependen de la secuencia y del entorno.',
+    role: 'Hace visible la distancia entre átomos individuales y maquinaria biológica funcional.', decays: 'Puede desnaturalizarse o degradarse por proteasas, oxidación, hidrólisis y otros procesos químicos.', formula: 'D_{\\mathrm{proteina}}\\sim5\\times10^{-9}\\,\\mathrm m', note: 'No existe un tamaño universal de proteína: se usa una molécula globular típica como comparador.', sources: [NIH_PROTEIN_SIZE]
+  },
+  {
+    id: 'dna-scale', symbol: '≈2 nm', name: 'doble hélice de ADN', englishName: 'DNA double helix', family: 'biology', zone: 'biology', layer: 'biology', row: 3, column: 3,
+    mass: 'Depende de la longitud de la cadena', charge: 'Polianión por los grupos fosfato', spin: 'No aplica como objeto colectivo', interactions: ['electromagnetic', 'gravity'], evidence: 'observed', discovered: '1953 · modelo estructural; confirmado por difracción', lifetime: 'Variable; reparada y degradada en células',
+    antiparticle: '≈2 nm', antiparticleName: 'doble hélice de ADN', selfConjugate: true, visual: 'dna', scale: '≈2 nm de diámetro; longitud dependiente del número de bases', constituents: ['atom'], constituentSummary: 'Dos polímeros de nucleótidos complementarios',
+    summary: 'Referencia molecular de una doble hélice de aproximadamente dos nanómetros de diámetro.', composition: 'Dos cadenas de nucleótidos con esqueleto azúcar–fosfato y pares de bases complementarias. La cifra representa el diámetro, no la longitud total del ADN.',
+    role: 'Sitúa una molécula informacional esencial apenas unas decenas de veces por encima del diámetro atómico.', decays: 'Puede romperse, despurinarse, oxidarse o ser degradada por nucleasas; en células existen sistemas de reparación.', formula: 'D_{\\mathrm{ADN}}\\approx2\\times10^{-9}\\,\\mathrm m', note: 'El ADN no está vivo por sí mismo; es una macromolécula utilizada por sistemas vivos.', sources: [NHGRI_DNA_SCALE, NIH_CHROMATIN]
   }
 ];
 

@@ -15,7 +15,7 @@
     const haystack = `${chapter.title} ${chapter.subtitle} ${chapter.group} ${chapter.formula ?? ''} ${chapter.sections.map((section) => `${section.title} ${section.text}`).join(' ')}`.toLocaleLowerCase('es').normalize('NFD').replace(/\p{Diacritic}/gu, '');
     return !needle || haystack.includes(needle);
   }));
-  const groupOrder = ['Fundamentos', 'Partículas elementales', 'Interacciones', 'Materia compuesta', 'Hipótesis y candidatos', 'Cuerdas y branas', 'Antimateria'];
+  const groupOrder = ['Fundamentos', 'Partículas elementales', 'Interacciones', 'Materia compuesta', 'Hipótesis y candidatos', 'Cuerdas y branas', 'Referencias de escala', 'Antimateria'];
   const groupedNavigation = $derived(groupOrder.map((group) => ({ group, chapters: navigation.filter((chapter) => chapter.group === group) })).filter((entry) => entry.chapters.length));
   const activeNumber = $derived(informationChapters.findIndex((chapter) => chapter.id === active.id) + 1);
 

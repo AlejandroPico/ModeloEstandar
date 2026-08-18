@@ -7,6 +7,9 @@ export interface ScalePoint {
 }
 
 export const scalePoints: ScalePoint[] = [
+  { exponent: '10⁻⁶', metres: '1 µm', title: 'Células y cromosomas', description: 'Orden micrométrico de bacterias, núcleos celulares y cromosomas condensados; son referencias biológicas opcionales.', kind: 'object' },
+  { exponent: '10⁻⁷', metres: '100 nm', title: 'Virus y complejos grandes', description: 'Muchos viriones y ensamblajes macromoleculares ocupan decenas o cientos de nanómetros.', kind: 'object' },
+  { exponent: '10⁻⁸', metres: '10 nm', title: 'Máquinas moleculares', description: 'Proteínas grandes, ribosomas y cromatina conectan la escala molecular con la función biológica.', kind: 'object' },
   { exponent: '10⁻⁹', metres: '1 nm', title: 'Nanoelectrónica experimental', description: 'Referencia opcional: longitudes funcionales cercanas al nanómetro; no equivalen al transistor completo ni a un nodo comercial.', kind: 'object' },
   { exponent: '10⁻¹⁰', metres: '0,1 nm', title: 'Escala atómica', description: 'Radio típico de un átomo y extensión de la nube electrónica.', kind: 'object' },
   { exponent: '10⁻¹¹', metres: '10 pm', title: 'Interior electrónico', description: 'Escala de átomos compactos e interiores de nubes electrónicas; no aparece una nueva partícula universal.', kind: 'transition' },
@@ -34,6 +37,7 @@ const topicRows: Array<[string, string, string]> = [
   ['Fermiones', 'Neutrinos', 'Son neutros, interactúan débilmente y oscilan porque los estados de sabor y masa no coinciden.'],
   ['Fermiones', 'Tres generaciones', 'Cada generación repite el patrón de cargas; las generaciones segunda y tercera son más masivas e inestables.'],
   ['Fermiones', 'Antimateria', 'Cada fermión posee una antipartícula con números cuánticos opuestos; algunas partículas neutras son autoconjugadas.'],
+  ['Fermiones', 'Antimateria no es materia espejo', 'Los positrones, antiprotones y antiátomos son estados observados. Una copia espejo completa del Modelo Estándar sería otra hipótesis distinta y no observada; el atlas no confunde ambos conceptos.'],
   ['Interacciones', 'Las cuatro fuerzas fundamentales', 'Son interacción fuerte, electromagnetismo, interacción débil y gravedad. Las tres primeras tienen descripción cuántica dentro del Modelo Estándar.'],
   ['Interacciones', 'Interacción fuerte', 'La cromodinámica cuántica describe quarks y gluones mediante la simetría gauge SU(3)C.'],
   ['Interacciones', 'Fuerza nuclear residual', 'La unión entre nucleones es un efecto residual de QCD; los piones son útiles en su descripción efectiva, pero no son mediadores fundamentales de QCD.'],
@@ -71,6 +75,8 @@ const topicRows: Array<[string, string, string]> = [
   ['Escalas', 'Energía y distancia', 'En dispersión, mayor transferencia de momento permite investigar distancias menores de forma aproximada.'],
   ['Escalas', 'Planck', 'La longitud de Planck combina G, ħ y c; marca una frontera teórica, no una observación de granularidad.'],
   ['Escalas', 'Tecnología como comparador', 'Una dimensión subnanométrica puede describir una longitud activa concreta de un dispositivo experimental, no el transistor completo ni un nuevo nivel de materia.'],
+  ['Escalas', 'Biología como comparador', 'ADN, proteínas, ribosomas, virus, cromosomas y células se añaden como referencias opcionales. Son sistemas hechos de átomos; no amplían el inventario de partículas elementales.'],
+  ['Escalas', 'Qué está vivo', 'Una bacteria es una célula viva. ADN, proteínas y ribosomas son componentes moleculares; un virión carece de metabolismo autónomo y su estatus como ser vivo depende de la definición utilizada.'],
   ['Experimentos', 'Cómo se descubre una partícula', 'Se infiere mediante patrones estadísticos, productos de decaimiento, conservación de cantidades y comparación con modelos.'],
   ['Experimentos', 'Detectores', 'Capas especializadas reconstruyen trayectorias, energía, momento, carga y partículas invisibles mediante balance.'],
   ['Experimentos', 'Colisionadores', 'Concentran energía para producir estados pesados y estudiar interacciones a distancias muy pequeñas.'],
