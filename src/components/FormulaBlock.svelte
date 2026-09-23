@@ -1,7 +1,14 @@
 <script lang="ts">
-  import { renderFormula } from '../lib/format';
   let { formula, label = 'Relación característica' }: { formula: string; label?: string } = $props();
-  const rendered = $derived(renderFormula(formula));
+  let rendered = $state('');
+  $effect(() => {
+    const source = formula;
+    let cancelled = false;
+    import('../lib/format').then(({ renderFormula }) => {
+      if (!cancelled) rendered = renderFormula(source);
+    });
+    return () => { cancelled = true; };
+  });
 </script>
 
 <figure class="formula-block">

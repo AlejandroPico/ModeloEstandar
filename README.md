@@ -2,7 +2,7 @@
 
 Atlas científico interactivo para explorar las partículas elementales, las interacciones fundamentales, la antimateria, la materia compuesta y algunas de las principales propuestas situadas más allá de la teoría confirmada.
 
-> **Versión estable:** `1.0.1`
+> **Versión estable:** `1.0.2`
 >
 > **Tecnologías:** Svelte 5 · TypeScript · Vite · KaTeX
 >
@@ -25,7 +25,7 @@ vida y biomoléculas → tecnología subnanométrica → átomo → núcleo → 
 
 ## Versión 1.0
 
-La versión `1.0.1` consolida el proyecto como un atlas completo y utilizable en escritorio, tableta y móvil:
+La versión `1.0.2` consolida el proyecto como un atlas completo y utilizable en escritorio, tableta y móvil:
 
 - lienzo científico continuo con zoom, arrastre y niveles de detalle progresivos;
 - eje vertical permanente sincronizado con la cámara;
@@ -37,6 +37,12 @@ La versión `1.0.1` consolida el proyecto como un atlas completo y utilizable en
 - navegación móvil inspirada en el patrón de Nucleidos/Nuclei 2;
 - «Acerca del proyecto» con autoría, portfolio y repositorio;
 - favicon SVG disponible en la raíz del repositorio.
+- zoom de mayor nitidez sin filtro luminoso al pasar el cursor; gesto de pellizco y arrastre táctil también sobre las fichas;
+- instalación en Android como aplicación independiente, con recursos compilados disponibles sin conexión.
+
+### Instalación en Android
+
+Abra [Modelo Estándar](https://alejandropico.github.io/ModeloEstandar/) en Chrome y seleccione **Instalar aplicación** en el menú. Al abrirla desde su icono se muestra en una ventana independiente. El manifiesto y el service worker se generan junto con los recursos de producción; la instalación requiere HTTPS o localhost.
 
 ## Lienzo científico
 

@@ -1,12 +1,12 @@
 {
   "name": "modelo-estandar",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "description": "Atlas científico interactivo del Modelo Estándar de la física de partículas.",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
+    "build": "vite build && node scripts/generate-service-worker.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },

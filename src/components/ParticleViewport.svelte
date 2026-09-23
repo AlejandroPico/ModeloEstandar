@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import type { Particle, Interaction, ParticleZone } from '../data/types';
   import ParticleCard from './ParticleCard.svelte';
-  import { clamp } from '../lib/format';
+  const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
 
   let {
     particles,
@@ -45,7 +45,8 @@
   let viewport: HTMLDivElement;
   let camera = $state({ x: 0, y: 0, scale: 1 });
   let dragging = $state(false);
-  let pointer = { x: 0, y: 0 };
+  const pointers = new Map<number, { x: number; y: number }>();
+  let touchStart = { x: 0, y: 0 };
   let resizeObserver: ResizeObserver | undefined;
 
   const sideWidth = 1420;
@@ -184,13 +185,13 @@
   function resetView(): void { focusZone('standard'); }
   function fitAll(): void { focusZone('all'); }
 
-  function zoomAt(clientX: number, clientY: number, factor: number): void {
+  function zoomAt(clientX: number, clientY: number, factor: number, dx = 0, dy = 0): void {
     const rect = viewport.getBoundingClientRect();
     const px = clientX - rect.left;
     const py = clientY - rect.top;
     const next = clamp(camera.scale * factor, viewport.clientWidth <= 780 ? 0.18 : 0.25, 2.8);
-    const worldX = (px - camera.x) / camera.scale;
-    const worldY = (py - camera.y) / camera.scale;
+    const worldX = (px - dx - camera.x) / camera.scale;
+    const worldY = (py - dy - camera.y) / camera.scale;
     camera = { scale: next, x: px - worldX * next, y: py - worldY * next };
     oncamera(camera, false);
     onzoom(Math.round(next * 100));
@@ -202,24 +203,50 @@
   }
 
   function pointerDown(event: PointerEvent): void {
-    if (event.button !== 0) return;
-    if (event.target instanceof Element && event.target.closest('button, a, input, [role="dialog"]')) return;
-    dragging = true;
-    pointer = { x: event.clientX, y: event.clientY };
-    viewport.setPointerCapture(event.pointerId);
+    if (event.pointerType !== 'touch' && event.button !== 0) return;
+    const card = event.target instanceof Element && event.target.closest('.particle-card');
+    if (event.target instanceof Element && event.target.closest('button, a, input, [role="dialog"]') && !(event.pointerType === 'touch' && card)) return;
+    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    touchStart = { x: event.clientX, y: event.clientY };
+    if (pointers.size > 1) {
+      dragging = true;
+      for (const id of pointers.keys()) viewport.setPointerCapture(id);
+    } else if (!card) {
+      dragging = true;
+      viewport.setPointerCapture(event.pointerId);
+    }
   }
 
   function pointerMove(event: PointerEvent): void {
+    const previous = pointers.get(event.pointerId);
+    if (!previous) return;
+    if (pointers.size === 2) {
+      const other = [...pointers].find(([id]) => id !== event.pointerId)?.[1];
+      if (!other) return;
+      const oldDistance = Math.hypot(previous.x - other.x, previous.y - other.y);
+      const newDistance = Math.hypot(event.clientX - other.x, event.clientY - other.y);
+      const dx = (event.clientX - previous.x) / 2;
+      const dy = (event.clientY - previous.y) / 2;
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (oldDistance > 0 && newDistance > 0) {
+        zoomAt((event.clientX + other.x) / 2, (event.clientY + other.y) / 2, newDistance / oldDistance, dx, dy);
+      }
+      return;
+    }
+    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (!dragging && Math.hypot(event.clientX - touchStart.x, event.clientY - touchStart.y) > 7) {
+      dragging = true;
+      viewport.setPointerCapture(event.pointerId);
+    }
     if (!dragging) return;
-    const dx = event.clientX - pointer.x;
-    const dy = event.clientY - pointer.y;
-    camera = { ...camera, x: camera.x + dx, y: camera.y + dy };
+    camera = { ...camera, x: camera.x + event.clientX - previous.x, y: camera.y + event.clientY - previous.y };
     oncamera(camera, false);
-    pointer = { x: event.clientX, y: event.clientY };
   }
 
   function pointerUp(event: PointerEvent): void {
-    dragging = false;
+    pointers.delete(event.pointerId);
+    dragging = pointers.size > 0 && dragging;
+    if (pointers.size === 1) touchStart = [...pointers.values()][0];
     if (viewport.hasPointerCapture(event.pointerId)) viewport.releasePointerCapture(event.pointerId);
   }
 
@@ -261,10 +288,19 @@
   }
 
   onMount(() => {
-    resizeObserver = new ResizeObserver(() => focusZone('standard', false));
+    let previousWidth = viewport.clientWidth;
+    let previousHeight = viewport.clientHeight;
+    resizeObserver = new ResizeObserver(() => {
+      const width = viewport.clientWidth;
+      const height = viewport.clientHeight;
+      const layoutChanged = Math.abs(width - previousWidth) > 24 || Math.abs(height - previousHeight) > 120;
+      previousWidth = width;
+      previousHeight = height;
+      if (layoutChanged) focusZone('standard', false);
+    });
     resizeObserver.observe(viewport);
-    requestAnimationFrame(() => focusZone('standard', false));
-    return () => resizeObserver?.disconnect();
+    const initialFrame = requestAnimationFrame(() => focusZone('standard', false));
+    return () => { cancelAnimationFrame(initialFrame); resizeObserver?.disconnect(); };
   });
 
   export { resetView, fitAll, focusZone, zoomIn, zoomOut };
@@ -281,9 +317,9 @@
   onpointercancel={pointerUp}
   ondblclick={(event) => { if (event.target === viewport) resetView(); }}
   role="application"
-  aria-label="Enciclopedia ampliable de partículas y escalas. Usa la rueda para ampliar y arrastra el fondo para desplazarte."
+  aria-label="Enciclopedia ampliable de partículas y escalas. Usa la rueda o pellizca para ampliar y arrastra el fondo o las fichas para desplazarte."
 >
-  <div class="particle-world" style={`width:${worldWidth}px;height:${worldHeight}px;transform:translate3d(${camera.x}px,${camera.y}px,0) scale(${camera.scale});`}>
+  <div class="particle-world" style={`width:${worldWidth}px;height:${worldHeight}px;transform:translate(${camera.x}px,${camera.y}px) scale(${camera.scale});`}>
     {#each antimatter ? [false, true] : [false] as mirror}
       {@const offset = mirror ? sideWidth + mirrorGap : 0}
       <section class:mirror class="matter-universe" style={`left:${offset}px;width:${sideWidth}px;height:${worldHeight}px;`} aria-label={mirror ? 'Antimateria' : 'Materia'}>
@@ -354,5 +390,5 @@
     {/each}
   </div>
 
-  <div class="viewport-help" aria-hidden="true">rueda para ampliar · arrastra para recorrer · doble clic para volver al Modelo Estándar</div>
+  <div class="viewport-help" aria-hidden="true">rueda o pellizca para ampliar · arrastra para recorrer · doble clic para volver al Modelo Estándar</div>
 </div>

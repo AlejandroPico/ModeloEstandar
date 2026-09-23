@@ -57,6 +57,6 @@
       </div>
     </section>
 
-    <footer><span>Proyecto divulgativo interactivo</span><span>Modelo Estándar · 2026</span></footer>
+    <footer><span>Proyecto divulgativo interactivo</span><span>Modelo Estándar · v1.0.2 · 2026</span></footer>
   </div>
 </div>

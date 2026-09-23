@@ -7,11 +7,9 @@
   import ParticleViewport from './components/ParticleViewport.svelte';
   import ParticleDetail from './components/ParticleDetail.svelte';
   import ScaleAxis from './components/ScaleAxis.svelte';
-  import FormulaAtlas from './components/FormulaAtlas.svelte';
   import FilterPanel from './components/FilterPanel.svelte';
   import LayersPanel from './components/LayersPanel.svelte';
   import LegendPanel from './components/LegendPanel.svelte';
-  import EncyclopediaModal from './components/EncyclopediaModal.svelte';
   import AboutModal from './components/AboutModal.svelte';
   import { biologyObjects, compositeParticles, frontierObjects, particles, technologyObjects, theoryParticles } from './data/particles';
   import { forceEntities } from './data/forces';
@@ -31,8 +29,10 @@
   let axisBreakY = $state(0);
   let layers = $state<Record<LayerId, boolean>>({ composites: false, forces: false, antimatter: false, susy: false, 'dark-sector': false, 'collider-candidates': false, 'quantum-gravity': false, strings: false, technology: false, biology: false });
   let showFormula = $state(false);
+  let FormulaView = $state<typeof import('./components/FormulaAtlas.svelte').default | null>(null);
   let hudPanel = $state<'search' | 'legend' | 'filter' | 'layers' | null>(null);
   let showEncyclopedia = $state(false);
+  let EncyclopediaView = $state<typeof import('./components/EncyclopediaModal.svelte').default | null>(null);
   let showAbout = $state(false);
   let mobileMenuOpen = $state(false);
   let mobileLayout = $state(false);
@@ -132,11 +132,18 @@
     document.documentElement.dataset.themeMode = themeMode;
   }
 
-  function openEncyclopedia(chapter?: string): void {
+  async function openEncyclopedia(chapter?: string): Promise<void> {
     encyclopediaChapter = chapter;
     hudPanel = null;
-    showEncyclopedia = true;
     mobileMenuOpen = false;
+    if (!EncyclopediaView) EncyclopediaView = (await import('./components/EncyclopediaModal.svelte')).default;
+    showEncyclopedia = true;
+  }
+
+  async function openFormula(): Promise<void> {
+    mobileMenuOpen = false;
+    if (!FormulaView) FormulaView = (await import('./components/FormulaAtlas.svelte')).default;
+    showFormula = true;
   }
 
   function openAbout(): void {
@@ -318,7 +325,7 @@
       <button class:active={hudPanel === 'filter'} aria-expanded={hudPanel === 'filter'} type="button" data-tooltip="Filtros" aria-label="Abrir filtros" onclick={() => toggleHudPanel('filter')}><Filter size={17}/><span class="mobile-menu-label">Filtros</span></button>
       <button type="button" data-tooltip="Enciclopedia" aria-label="Abrir enciclopedia" onclick={() => openEncyclopedia()}><BookOpen size={18}/><span class="mobile-menu-label">Enciclopedia</span></button>
       <button class:active={hudPanel === 'legend'} aria-expanded={hudPanel === 'legend'} type="button" data-tooltip="Leyenda" aria-label="Abrir leyenda" onclick={() => toggleHudPanel('legend')}><Tags size={17}/><span class="mobile-menu-label">Leyenda</span></button>
-      <button type="button" data-tooltip="Fórmulas" aria-label="Abrir atlas matemático" onclick={() => { showFormula = true; closeMobileMenu(); }}><Braces size={18}/><span class="mobile-menu-label">Fórmulas</span></button>
+      <button type="button" data-tooltip="Fórmulas" aria-label="Abrir atlas matemático" onclick={openFormula}><Braces size={18}/><span class="mobile-menu-label">Fórmulas</span></button>
       <span class="layers-anchor">
         {#if !hasActiveLayer && hudPanel !== 'layers'}<span class="layers-coachmark">Activa capas para descubrir compuestos, fuerzas, antimateria y nuevas hipótesis.</span>{/if}
         <button class:active={hudPanel === 'layers'} aria-expanded={hudPanel === 'layers'} class="layers-button" type="button" data-tooltip="Capas" aria-label="Abrir capas" onclick={() => toggleHudPanel('layers')}><Layers3 size={18}/><span class="mobile-menu-label">Capas</span></button>
@@ -355,9 +362,9 @@
   {#if !mobileLayout && hudPanel === 'layers'}<LayersPanel {layers} ontoggle={toggleLayer} onclose={() => hudPanel = null}/>{/if}
 
   {#if selected}
-    <ParticleDetail particle={selected} antimatter={selectedMirror} onclose={() => selected = null} onopenformula={() => showFormula = true} onopenencyclopedia={(chapter) => openEncyclopedia(chapter)}/>
+    <ParticleDetail particle={selected} antimatter={selectedMirror} onclose={() => selected = null} onopenformula={openFormula} onopenencyclopedia={openEncyclopedia}/>
   {/if}
-  {#if showFormula}<FormulaAtlas onclose={() => showFormula = false}/>{/if}
-  {#if showEncyclopedia}<EncyclopediaModal initialId={encyclopediaChapter} onclose={() => showEncyclopedia = false}/>{/if}
+  {#if showFormula && FormulaView}<FormulaView onclose={() => showFormula = false}/>{/if}
+  {#if showEncyclopedia && EncyclopediaView}<EncyclopediaView initialId={encyclopediaChapter} onclose={() => showEncyclopedia = false}/>{/if}
   {#if showAbout}<AboutModal onclose={() => showAbout = false}/>{/if}
 </main>
